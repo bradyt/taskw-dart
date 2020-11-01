@@ -1,0 +1,2 @@
+An attempt to write a taskserver client library in Dart, similar to
+[[https://github.com/jrabbit/taskd-client-py/][taskd-client-py]].
