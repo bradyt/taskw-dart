@@ -13,7 +13,7 @@ void main() {
 
     setUp(() {
       home = Platform.environment['HOME'];
-      tc = TaskdConnection.fromTaskrc('$home/.taskrc');
+      tc = TaskdConnection.fromTaskrc('fixture/taskrc');
     });
 
     test('First Test', () {

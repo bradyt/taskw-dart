@@ -1,0 +1,5 @@
+taskd.certificate=\/Users\/alice\/.task\/brady_trainor.cert.pem
+taskd.key=\/Users\/alice\/.task\/brady_trainor.key.pem
+taskd.ca=\/Users\/alice\/.task\/ca.cert.pem
+taskd.server=localhost:53589
+taskd.credentials=Public\/Brady Trainor\/69eeece5-bcda-4ba2-a34c-70fdbbbe6187
