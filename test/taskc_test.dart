@@ -7,37 +7,49 @@ import 'package:test/test.dart';
 import 'package:taskc/taskc.dart';
 
 void main() {
+  var userKey;
+  var docker = false;
+
+  if (docker) {
+    userKey = File('docker/home/output')
+        .readAsStringSync()
+        .split('\n')
+        .first
+        .split(':')
+        .last
+        .trim();
+  }
+
   group('Test rc parse', () {
     var tc;
 
     setUp(() {
-      tc = TaskdConnection.fromTaskrc('fixture/taskrc');
+      tc = TaskdConnection.fromTaskrc('docker/home/.taskrc');
     });
 
     test('First Test', () {
-      expect(tc.clientCert, '/Users/alice/.task/brady_trainor.cert.pem');
-      expect(tc.clientKey, '/Users/alice/.task/brady_trainor.key.pem');
-      expect(tc.cacertFile, '/Users/alice/.task/ca.cert.pem');
+      expect(tc.clientCert, '/root/.task/brady_trainor.cert.pem');
+      expect(tc.clientKey, '/root/.task/brady_trainor.key.pem');
+      expect(tc.cacertFile, '/root/.task/ca.cert.pem');
       expect(tc.server, 'localhost');
       expect(tc.port, 53589);
       expect(tc.group, 'Public');
       expect(tc.username, 'Brady Trainor');
-      expect(tc.uuid, '69eeece5-bcda-4ba2-a34c-70fdbbbe6187');
+      expect(tc.uuid, userKey);
     });
-  });
+  }, skip: !docker);
   group('Test socket', () {
     var tc;
     setUp(() {
-      var home = Platform.environment['HOME'];
       tc = TaskdConnection(
-        clientCert: '$home/.task/brady_trainor.cert.pem',
-        clientKey: '$home/.task/brady_trainor.key.pem',
-        cacertFile: '$home/.task/ca.cert.pem',
+        clientCert: 'docker/home/.task/brady_trainor.cert.pem',
+        clientKey: 'docker/home/.task/brady_trainor.key.pem',
+        cacertFile: 'docker/home/.task/ca.cert.pem',
         server: 'localhost',
         port: 53589,
         group: 'Public',
         username: 'Brady Trainor',
-        uuid: '69eeece5-bcda-4ba2-a34c-70fdbbbe6187',
+        uuid: userKey,
       );
     });
 
@@ -46,7 +58,7 @@ void main() {
           await tc.sendMessageAsBytes(Uint8List.fromList([0, 0, 0, 5, 65]));
 
       expect(response.length, 69);
-    }, skip: true);
+    }, skip: !docker);
   });
   group('Test message encoding/decoding', () {
     var messageBytes;
