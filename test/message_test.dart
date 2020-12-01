@@ -11,6 +11,13 @@ void main() {
   var pathTo = githubActions ? home : 'fixture';
   var config = Config.fromTaskrc('$pathTo/.taskrc');
 
+  group('Test statistics', () {
+    test('test', () async {
+      var response = await statistics(config);
+      expect(response.header['status'], 'Ok');
+    });
+  });
+
   Task newTask() => Task(
         status: 'pending',
         uuid: Uuid().v1(),
