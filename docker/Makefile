@@ -3,7 +3,7 @@ run: home
 	docker run --rm \
 	-it \
 	-p 53589:53589 \
-	--mount type=bind,source="`pwd`/home",dst=/opt/home \
+	--mount type=bind,source="`dirname \`pwd\``/root",dst=/opt/root \
 	this
 
 home:

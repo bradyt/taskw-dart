@@ -8,6 +8,7 @@ import 'package:taskc/taskc.dart';
 
 void main() {
   var githubActions = Platform.environment['GITHUB_ACTIONS'] == 'true';
+  var relative = githubActions ? '/' : '';
 
   group('Test connection', () {
     Connection connection;
@@ -15,9 +16,9 @@ void main() {
       connection = Connection(
         address: 'localhost',
         port: 53589,
-        certificate: 'docker/home/.task/brady_trainor.cert.pem',
-        key: 'docker/home/.task/brady_trainor.key.pem',
-        ca: 'docker/home/.task/ca.cert.pem',
+        certificate: '${relative}root/.task/brady_trainor.cert.pem',
+        key: '${relative}root/.task/brady_trainor.key.pem',
+        ca: '${relative}root/.task/ca.cert.pem',
       );
     });
 
@@ -28,6 +29,6 @@ void main() {
           File('test/examples/malformed_message.msg').readAsStringSync();
 
       expect(utf8.decode(response.sublist(4)), expectedResponse);
-    }, skip: githubActions);
+    });
   });
 }

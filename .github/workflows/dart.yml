@@ -13,11 +13,12 @@ jobs:
     # available. See https://hub.docker.com/r/google/dart/ for the available
     # images.
     container:
-      image:  google/dart:latest
+      image:  bradyt/dart-task
 
     steps:
       - uses: actions/checkout@v2
 
+      - run: taskdctl start
       - name: Print Dart SDK version
         run: dart --version
 

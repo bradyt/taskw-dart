@@ -6,12 +6,11 @@ import 'package:uuid/uuid.dart';
 import 'package:taskc/taskc.dart';
 
 void main() {
-  Config config;
   var githubActions = Platform.environment['GITHUB_ACTIONS'] == 'true';
-
-  if (!githubActions) {
-    config = Config.fromTaskrc('docker/home/.taskrc', relative: true);
-  }
+  var config = Config.fromTaskrc(
+    githubActions ? '/root/.taskrc' : 'root/.taskrc',
+    relative: !githubActions,
+  );
 
   Task newTask() => Task(
         status: 'pending',
@@ -31,7 +30,7 @@ void main() {
       expect(response.header['client'], 'taskd 1.1.0');
       expect(response.header['code'], '200');
       expect(response.header['status'], 'Ok');
-    }, skip: githubActions);
+    });
     test('test', () async {
       var response =
           await synchronize(config, Payload(tasks: [], userKey: userKey));
@@ -39,6 +38,6 @@ void main() {
       expect(response.header['client'], 'taskd 1.1.0');
       expect(response.header['code'], '201');
       expect(response.header['status'], 'No change');
-    }, skip: githubActions);
+    });
   });
 }
