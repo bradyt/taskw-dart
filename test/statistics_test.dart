@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import 'package:taskc/taskc.dart';
 
 void main() {
-  var config;
+  Config config;
   var githubActions = Platform.environment['GITHUB_ACTIONS'] == 'true';
 
   if (!githubActions) {

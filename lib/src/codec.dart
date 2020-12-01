@@ -1,5 +1,5 @@
-import 'dart:math';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 class Codec {
@@ -10,7 +10,8 @@ class Codec {
       ];
 
   static String decode(Uint8List bytes) {
-    assert(fold(bytes.take(4)) == bytes.length);
+    assert(fold(bytes.take(4)) == bytes.length,
+        'ensure first four bytes represent the length of the message');
     return utf8.decode(bytes.sublist(4));
   }
 

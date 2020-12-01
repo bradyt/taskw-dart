@@ -3,9 +3,6 @@ import 'package:taskc/src/payload.dart';
 class Response {
   Response({this.header, this.payload});
 
-  final Map header;
-  final Payload payload;
-
   factory Response.fromString(String string) {
     var firstPart = string.split('\n\n').first;
     var lastPart = string.split('\n\n').sublist(1).join('\n\n');
@@ -19,4 +16,7 @@ class Response {
       payload: payload,
     );
   }
+
+  final Map header;
+  final Payload payload;
 }

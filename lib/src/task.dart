@@ -1,7 +1,11 @@
 import 'package:intl/intl.dart';
+import 'package:meta/meta.dart';
 
+DateFormat format = DateFormat('yMMddTHHmmss\'Z\'');
+
+@immutable
 class Task {
-  Task({
+  const Task({
     this.status,
     this.uuid,
     this.entry,
@@ -23,27 +27,6 @@ class Task {
     this.tags,
     this.annotation,
   });
-
-  final String status;
-  final String uuid;
-  final DateTime entry;
-  final String description;
-  final DateTime start;
-  final DateTime end;
-  final DateTime due;
-  final DateTime until;
-  final DateTime wait;
-  final DateTime modified;
-  final DateTime scheduled;
-  final String recur;
-  final String mask;
-  final int imask;
-  final String parent;
-  final String project;
-  final String priority;
-  final String depends;
-  final String tags;
-  final String annotation;
 
   factory Task.fromJson(Map json) => Task(
         status: json['status'],
@@ -72,7 +55,26 @@ class Task {
         annotation: json['annotation'],
       );
 
-  var format = DateFormat('yMMddTHHmmss\'Z\'');
+  final String status;
+  final String uuid;
+  final DateTime entry;
+  final String description;
+  final DateTime start;
+  final DateTime end;
+  final DateTime due;
+  final DateTime until;
+  final DateTime wait;
+  final DateTime modified;
+  final DateTime scheduled;
+  final String recur;
+  final String mask;
+  final int imask;
+  final String parent;
+  final String project;
+  final String priority;
+  final String depends;
+  final String tags;
+  final String annotation;
 
   Map toJson() => {
         'status': status,

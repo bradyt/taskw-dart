@@ -3,8 +3,6 @@ import 'dart:io';
 class Config {
   Config({this.conf});
 
-  final Map conf;
-
   factory Config.fromTaskrc(String taskrc, {bool relative = false}) {
     var file = File(taskrc);
     var xs = file.readAsStringSync().split('\n');
@@ -13,10 +11,12 @@ class Config {
           .where((x) => x.contains('=') && x[0] != '#')
           .map((x) => x.replaceAll('\\/', '/'))
           .map((x) => x.split('=')))
-        x[0]: (relative) ? x[1].replaceFirst(RegExp(r'^/'), '') : x[1],
+        x[0]: relative ? x[1].replaceFirst(RegExp(r'^/'), '') : x[1],
     };
     return Config(conf: conf);
   }
+
+  final Map conf;
 
   ConnectionData get connectionData => ConnectionData(
         address: conf['taskd.server'].split(':').first,

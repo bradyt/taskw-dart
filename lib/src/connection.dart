@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:taskc/src/config.dart';
+import 'package:taskc/taskc.dart';
 
 class Connection {
   Connection({
@@ -27,7 +27,7 @@ class Connection {
   final String ca;
 
   Future<Uint8List> send(Uint8List bytes) async {
-    var response;
+    Uint8List response;
 
     var context = SecurityContext()
       ..useCertificateChain(certificate)
@@ -41,7 +41,7 @@ class Connection {
       onBadCertificate: (_) => true,
     );
 
-    await socket.add(bytes);
+    socket.add(bytes);
 
     response = await socket.first;
 

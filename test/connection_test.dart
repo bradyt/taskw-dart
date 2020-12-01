@@ -10,7 +10,7 @@ void main() {
   var githubActions = Platform.environment['GITHUB_ACTIONS'] == 'true';
 
   group('Test connection', () {
-    var connection;
+    Connection connection;
     setUp(() {
       connection = Connection(
         address: 'localhost',

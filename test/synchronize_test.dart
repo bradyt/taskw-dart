@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 import 'package:taskc/taskc.dart';
 
 void main() {
-  var config;
+  Config config;
   var githubActions = Platform.environment['GITHUB_ACTIONS'] == 'true';
 
   if (!githubActions) {
@@ -21,7 +21,7 @@ void main() {
       );
 
   group('Test synchronize', () {
-    var userKey;
+    String userKey;
 
     test('test', () async {
       var response = await synchronize(config, Payload(tasks: [newTask()]));
