@@ -1,4 +1,4 @@
-.PHONY: test
+.PHONY: test coverage
 
 default: test
 
@@ -12,7 +12,7 @@ test: pubspec.lock
 	find . -name '*.dart' | entr -cs 'dart pub run test'
 
 coverage:
-	dart pub run test_coverage --no-badge --min-coverage 98
+	dart pub run test_coverage --no-badge --min-coverage 97
 
 pubspec.lock:
 	dart pub get
