@@ -119,8 +119,8 @@ linter:
     - prefer_equal_for_default_values
     - prefer_expression_function_bodies
     - prefer_final_fields
-    - prefer_final_in_for_each
-    # - prefer_final_locals # does not reflect common usage
+    # - prefer_final_in_for_each # https://pub.dev/packages/pedantic#unused-lints
+    # - prefer_final_locals # https://pub.dev/packages/pedantic#unused-lints
     - prefer_for_elements_to_map_fromIterable
     - prefer_foreach
     - prefer_function_declarations_over_variables
