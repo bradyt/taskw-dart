@@ -11,7 +11,7 @@ class Payload {
   factory Payload.fromString(String string) {
     var lines = string.trim().split('\n');
     var userKey = lines.removeLast();
-    List tasks = lines.map((line) => Task.fromJson(json.decode(line))).toList();
+    var tasks = lines.map((line) => Task.fromJson(json.decode(line))).toList();
     return Payload(
       tasks: tasks,
       userKey: userKey,
@@ -19,6 +19,9 @@ class Payload {
   }
 
   @override
-  String toString() =>
-      tasks.map((task) => json.encode(task.toJson())).join('\n');
+  String toString() => (tasks ?? [])
+      .map((task) => json.encode(task.toJson()))
+      .followedBy([userKey ?? ''])
+      .join('\n')
+      .trim();
 }
