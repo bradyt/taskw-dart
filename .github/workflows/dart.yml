@@ -18,7 +18,40 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # toc: https://taskwarrior.org/docs/taskserver/setup.html
+
+      # 3: https://taskwarrior.org/docs/taskserver/configure.html
+
+      - run: export TASKDDATA=/var/taskd
+
+      - run: cp fixture/pki/client.cert.pem $TASKDDATA
+      - run: cp fixture/pki/client.key.pem  $TASKDDATA
+      - run: cp fixture/pki/server.cert.pem $TASKDDATA
+      - run: cp fixture/pki/server.key.pem  $TASKDDATA
+      - run: cp fixture/pki/server.crl.pem  $TASKDDATA
+      - run: cp fixture/pki/ca.cert.pem     $TASKDDATA
+
+      # 3: https://taskwarrior.org/docs/taskserver/control.html
+
       - run: taskdctl start
+
+      # 4: https://taskwarrior.org/docs/taskserver/user.html
+
+      - run: taskd add org Public
+      - run: taskd add user 'Public' 'First Last'
+
+      # 4: https://taskwarrior.org/docs/taskserver/taskwarrior.html
+
+      - run: cp -r fixture/.task            ~/
+      - run: cp    fixture/.taskrc.template ~/.taskrc
+
+      - run: task rc.confirmation:no config confirmation -- no
+      - run: task config taskd.credentials -- Public/First Last/`ls $TASKDDATA/orgs/Public/users`
+
+      # 5: https://taskwarrior.org/docs/taskserver/sync.html
+
+      - run: task sync init
+      - run: task config confirmation -- yes
 
       - name: Print Dart SDK version
         run: dart --version

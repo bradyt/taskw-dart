@@ -6,10 +6,9 @@ import 'package:taskc/taskc.dart';
 
 void main() {
   var githubActions = Platform.environment['GITHUB_ACTIONS'] == 'true';
-  var config = Config.fromTaskrc(
-    githubActions ? '/root/.taskrc' : 'root/.taskrc',
-    relative: !githubActions,
-  );
+  var home = Platform.environment['HOME'];
+  var pathTo = githubActions ? home : 'fixture';
+  var config = Config.fromTaskrc('$pathTo/.taskrc');
 
   group('Test statistics', () {
     test('test', () async {

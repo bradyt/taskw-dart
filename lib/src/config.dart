@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 class Config {
   Config(this.conf);
 
-  factory Config.fromTaskrc(String taskrc, {bool relative = false}) {
+  factory Config.fromTaskrc(String taskrc) {
     var file = File(taskrc);
     var xs = file.readAsStringSync().split('\n');
     var conf = {
@@ -13,7 +13,7 @@ class Config {
           .where((x) => x.contains('=') && x[0] != '#')
           .map((x) => x.replaceAll('\\/', '/'))
           .map((x) => x.split('=')))
-        x[0]: relative ? x[1].replaceFirst(RegExp(r'^/'), '') : x[1],
+        x[0]: x[1],
     };
     return Config(conf);
   }
