@@ -9,11 +9,32 @@ void main() {
   var githubActions = Platform.environment['GITHUB_ACTIONS'] == 'true';
   var home = Platform.environment['HOME'];
   var pathTo = githubActions ? home : 'fixture';
-  var config = Config.fromTaskrc('$pathTo/.taskrc');
+  var config = {
+    for (var pair in File('$pathTo/.taskrc')
+        .readAsStringSync()
+        .split('\n')
+        .where((line) => line.contains('=') && line[0] != '#')
+        .map((line) => line.replaceAll('\\/', '/'))
+        .map((line) => line.split('=')))
+      pair[0]: pair[1],
+  };
+  var server = config['taskd.server'].split(':');
+  var connection = Connection(
+    address: server[0],
+    port: int.parse(server[1]),
+    context: SecurityContext()
+      ..useCertificateChain(config['taskd.certificate'])
+      ..usePrivateKey(config['taskd.key']),
+    onBadCertificate: (_) => true,
+  );
+  var credentials = Credentials.fromString(config['taskd.credentials']);
 
   group('Test statistics', () {
     test('test', () async {
-      var response = await statistics(config);
+      var response = await statistics(
+        connection: connection,
+        credentials: credentials,
+      );
       expect(response.header['status'], 'Ok');
     });
   });
@@ -29,7 +50,11 @@ void main() {
     String userKey;
 
     test('test', () async {
-      var response = await synchronize(config, Payload(tasks: [newTask()]));
+      var response = await synchronize(
+        connection: connection,
+        credentials: credentials,
+        payload: Payload(tasks: [newTask()]),
+      );
 
       userKey = response.payload.userKey;
 
@@ -38,8 +63,11 @@ void main() {
       expect(response.header['status'], 'Ok');
     });
     test('test', () async {
-      var response =
-          await synchronize(config, Payload(tasks: [], userKey: userKey));
+      var response = await synchronize(
+        connection: connection,
+        credentials: credentials,
+        payload: Payload(tasks: [], userKey: userKey),
+      );
 
       expect(response.header['client'], 'taskd 1.1.0');
       expect(response.header['code'], '201');

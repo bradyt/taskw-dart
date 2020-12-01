@@ -1,23 +1,40 @@
-import 'package:taskc/src/codec.dart';
-import 'package:taskc/src/config.dart';
-import 'package:taskc/src/connection.dart';
-import 'package:taskc/src/payload.dart';
-import 'package:taskc/src/response.dart';
+import 'package:meta/meta.dart';
 
-Future<Response> statistics(Config config) =>
-    message(config: config, type: 'statistics');
+import 'package:taskc/taskc.dart';
 
-Future<Response> synchronize(Config config, Payload payload) =>
-    message(config: config, type: 'sync', payload: payload);
+Future<Response> statistics({
+  @required Connection connection,
+  @required Credentials credentials,
+}) =>
+    message(
+      connection: connection,
+      credentials: credentials,
+      type: 'statistics',
+    );
 
-Future<Response> message({Config config, String type, Payload payload}) async {
-  var connection = Connection.fromConnectionData(config.connectionData);
-  var auth = config.authData;
+Future<Response> synchronize({
+  @required Connection connection,
+  @required Credentials credentials,
+  @required Payload payload,
+}) =>
+    message(
+      connection: connection,
+      credentials: credentials,
+      type: 'sync',
+      payload: payload,
+    );
+
+Future<Response> message({
+  @required Connection connection,
+  @required Credentials credentials,
+  @required String type,
+  Payload payload,
+}) async {
   var message = '''
 type: $type
-org: ${auth.org}
-user: ${auth.user}
-key: ${auth.key}
+org: ${credentials.org}
+user: ${credentials.user}
+key: ${credentials.key}
 protocol: v1
 
 ${payload ?? ''}''';

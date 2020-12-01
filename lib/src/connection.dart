@@ -3,44 +3,29 @@ import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
-import 'package:taskc/taskc.dart';
+typedef Handler = bool Function(X509Certificate);
 
 class Connection {
   Connection({
     @required this.address,
     @required this.port,
-    @required this.certificate,
-    @required this.key,
-    @required this.ca,
+    @required this.context,
+    this.onBadCertificate,
   });
-
-  factory Connection.fromConnectionData(ConnectionData data) => Connection(
-        address: data.address,
-        port: data.port,
-        certificate: data.certificate,
-        key: data.key,
-        ca: data.ca,
-      );
 
   final String address;
   final int port;
-  final String certificate;
-  final String key;
-  final String ca;
+  final SecurityContext context;
+  final Handler onBadCertificate;
 
   Future<Uint8List> send(Uint8List bytes) async {
     Uint8List response;
-
-    var context = SecurityContext()
-      ..useCertificateChain(certificate)
-      ..usePrivateKey(key)
-      ..setTrustedCertificates(ca);
 
     var socket = await SecureSocket.connect(
       address,
       port,
       context: context,
-      onBadCertificate: (_) => true,
+      onBadCertificate: onBadCertificate,
     );
 
     socket.add(bytes);

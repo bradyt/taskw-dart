@@ -1,31 +1,46 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:test/test.dart';
 
-import 'package:taskc/taskc.dart';
-
 void main() {
-  group('Test connection', () {
-    Connection connection;
-    setUp(() {
-      connection = Connection(
-        address: 'localhost',
-        port: 53589,
-        certificate: 'fixture/.task/first_last.cert.pem',
-        key: 'fixture/.task/first_last.key.pem',
-        ca: 'fixture/.task/ca.cert.pem',
-      );
-    });
+  var address = 'localhost';
+  var port = 53589;
+  var certificate = 'fixture/.task/first_last.cert.pem';
+  var key = 'fixture/.task/first_last.key.pem';
+  var ca = 'fixture/.task/ca.cert.pem';
 
-    test('test message \'A\'', () async {
-      var response =
-          await connection.send(Uint8List.fromList([0, 0, 0, 5, 65]));
-      var expectedResponse =
-          File('test/examples/malformed_message.msg').readAsStringSync();
+  test('test fails', () async {
+    var socket = await Socket.connect(
+      address,
+      port,
+    );
 
-      expect(utf8.decode(response.sublist(4)), expectedResponse);
-    });
+    var secureSocketFuture = SecureSocket.secure(
+      socket,
+      context: SecurityContext(withTrustedRoots: true)
+        ..useCertificateChain(certificate)
+        ..usePrivateKey(key)
+        ..setTrustedCertificates(ca),
+    ).then((socket) => socket.close());
+
+    expect(() => secureSocketFuture, throwsA(isA<HandshakeException>()));
+  }, skip: Platform.environment.containsKey('GITHUB_ACTIONS'));
+  test('test succeeds', () async {
+    var socket = await Socket.connect(
+      address,
+      port,
+    );
+    var secureSocket = await SecureSocket.secure(
+      socket,
+      context: SecurityContext(withTrustedRoots: true)
+        ..useCertificateChain(certificate)
+        ..usePrivateKey(key)
+        ..setTrustedCertificates(ca),
+      onBadCertificate: (_) => true,
+    );
+
+    await secureSocket.close();
+
+    expect(secureSocket.done, completion(isA<SecureSocket>()));
   });
 }

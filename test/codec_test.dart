@@ -8,9 +8,9 @@ import 'package:taskc/taskc.dart';
 
 void main() {
   group('Test string encoding/decoding', () {
-    test('test letter A', () async {
-      var string = 'A';
-      var bytes = Uint8List.fromList([0, 0, 0, 5, 65]);
+    test('test string \'ABC\'', () async {
+      var string = 'ABC';
+      var bytes = Uint8List.fromList([0, 0, 0, 7, 65, 66, 67]);
 
       expect(Codec.decode(bytes), string);
       expect(Codec.encode(string), bytes);

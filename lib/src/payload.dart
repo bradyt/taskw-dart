@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:meta/meta.dart';
 
-import 'package:taskc/src/task.dart';
+import 'package:taskc/taskc.dart';
 
 class Payload {
   Payload({@required this.tasks, this.userKey});
