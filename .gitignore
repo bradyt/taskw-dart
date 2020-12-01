@@ -18,4 +18,8 @@ coverage/
 coverage_badge.svg
 test/.test_coverage.dart
 
+fixture/.task/backlog.data
+fixture/.task/completed.data
+fixture/.task/pending.data
+fixture/.task/undo.data
 fixture/.taskrc
