@@ -1,13 +1,15 @@
 name: taskc
-description: A starting point for Dart libraries or applications.
-# version: 1.0.0
-# homepage: https://www.example.com
+description: A Taskserver client library
+repository: https://github.com/bradyt/taskd-client-dart
+version: 0.0.0-alpha.0
 
 environment:
-  sdk: '>=2.10.0-0 <3.0.0'
+  sdk: '>=2.10.0 <3.0.0'
 
 dependencies:
-  uuid:
+  intl: ^0.16.1
+  meta: ^1.2.4
+  uuid: ^2.2.2
 
 dev_dependencies:
   pedantic:
