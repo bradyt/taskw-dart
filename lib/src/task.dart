@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Task {
   Task({
     this.status,
@@ -46,7 +48,7 @@ class Task {
   factory Task.fromJson(Map json) => Task(
         status: json['status'],
         uuid: json['uuid'],
-        entry: (json['entry'] == null) ? null : DateTime.parse(json['entry']),
+        entry: DateTime.parse(json['entry']),
         description: json['description'],
         start: (json['start'] == null) ? null : DateTime.parse(json['start']),
         end: (json['end'] == null) ? null : DateTime.parse(json['end']),
@@ -70,7 +72,55 @@ class Task {
         annotation: json['annotation'],
       );
 
+  var format = DateFormat('yMMddTHHmmss\'Z\'');
+
   Map toJson() => {
+        'status': status,
+        'uuid': uuid,
+        'entry': format.format(entry),
         'description': description,
-      };
+        'start': start,
+        'end': end,
+        'due': due,
+        'until': until,
+        'scheduled': scheduled,
+        'wait': wait,
+        'recur': recur,
+        'mask': mask,
+        'imask': imask,
+        'parent': parent,
+        'annotation': annotation,
+        'project': project,
+        'tags': tags,
+        'priority': priority,
+        'depends': depends,
+        'modified': modified,
+      }..removeWhere((_, value) => value == null);
+
+  @override
+  int get hashCode => 0;
+
+  @override
+  bool operator ==(Object other) =>
+      other is Task &&
+      status == other.status &&
+      uuid == other.uuid &&
+      entry == other.entry &&
+      description == other.description &&
+      start == other.start &&
+      end == other.end &&
+      due == other.due &&
+      until == other.until &&
+      scheduled == other.scheduled &&
+      wait == other.wait &&
+      recur == other.recur &&
+      mask == other.mask &&
+      imask == other.imask &&
+      parent == other.parent &&
+      annotation == other.annotation &&
+      project == other.project &&
+      tags == other.tags &&
+      priority == other.priority &&
+      depends == other.depends &&
+      modified == other.modified;
 }
