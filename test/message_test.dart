@@ -43,7 +43,7 @@ void main() {
   group('Test synchronize', () {
     String userKey;
 
-    test('test', () async {
+    test('test first sync with one task', () async {
       var response = await synchronize(
         connection: connection,
         credentials: credentials,
@@ -56,7 +56,8 @@ void main() {
       expect(response.header['code'], '200');
       expect(response.header['status'], 'Ok');
     });
-    test('test', () async {
+
+    test('test second sync with userKey and no tasks', () async {
       var response = await synchronize(
         connection: connection,
         credentials: credentials,
