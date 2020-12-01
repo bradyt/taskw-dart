@@ -23,3 +23,4 @@ fixture/.task/completed.data
 fixture/.task/pending.data
 fixture/.task/undo.data
 fixture/.taskrc
+fixture/var

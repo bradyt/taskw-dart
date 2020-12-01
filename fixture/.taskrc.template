@@ -29,7 +29,7 @@ data.location=~/.task
 #include /usr/share/taskwarrior/solarized-light-256.theme
 #include /usr/share/taskwarrior/no-color.theme
 
-confirmation=yes
+confirmation=no
 taskd.certificate=fixture\/.task\/first_last.cert.pem
 taskd.key=fixture\/.task\/first_last.key.pem
 taskd.ca=fixture\/.task\/ca.cert.pem

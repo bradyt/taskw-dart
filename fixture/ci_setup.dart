@@ -18,21 +18,24 @@ Future<void> main() async {
     await File('fixture/pki/$pem').copy('/var/taskd/$pem');
   }
 
-  // https://taskwarrior.org/docs/taskserver/control.html
+  // 3: https://taskwarrior.org/docs/taskserver/control.html
 
   await Process.run('taskdctl', ['start']);
 
   // 4: https://taskwarrior.org/docs/taskserver/user.html
 
-  var home = Platform.environment['HOME'];
   var org = 'Public';
   var user = 'First Last';
+
   await Process.run('taskd', ['add', 'org', org]);
   var result = await Process.run('taskd', ['add', 'user', org, user]);
+
   var key = result.stdout.split('\n').first.split(': ').last;
   var credentials = '$org/$user/$key';
 
   // 4: https://taskwarrior.org/docs/taskserver/taskwarrior.html
+
+  var home = Platform.environment['HOME'];
 
   await Process.run('cp', ['-r', 'fixture/.task', '$home/']);
   await Process.run('cp', ['fixture/.taskrc.template', '$home/.taskrc']);
