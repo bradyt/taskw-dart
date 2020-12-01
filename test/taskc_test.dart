@@ -9,17 +9,15 @@ import 'package:taskc/taskc.dart';
 void main() {
   group('Test rc parse', () {
     var tc;
-    var home;
 
     setUp(() {
-      home = Platform.environment['HOME'];
       tc = TaskdConnection.fromTaskrc('fixture/taskrc');
     });
 
     test('First Test', () {
-      expect(tc.clientCert, '$home/.task/brady_trainor.cert.pem');
-      expect(tc.clientKey, '$home/.task/brady_trainor.key.pem');
-      expect(tc.cacertFile, '$home/.task/ca.cert.pem');
+      expect(tc.clientCert, '/Users/alice/.task/brady_trainor.cert.pem');
+      expect(tc.clientKey, '/Users/alice/.task/brady_trainor.key.pem');
+      expect(tc.cacertFile, '/Users/alice/.task/ca.cert.pem');
       expect(tc.server, 'localhost');
       expect(tc.port, 53589);
       expect(tc.group, 'Public');
@@ -48,7 +46,7 @@ void main() {
           await tc.sendMessageAsBytes(Uint8List.fromList([0, 0, 0, 5, 65]));
 
       expect(response.length, 69);
-    });
+    }, skip: true);
   });
   group('Test message encoding/decoding', () {
     var messageBytes;

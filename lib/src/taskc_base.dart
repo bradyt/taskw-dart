@@ -23,16 +23,15 @@ class TaskdConnection {
   final String uuid;
 
   factory TaskdConnection.fromTaskrc(String taskrc) {
-    File file = File(taskrc);
+    var file = File(taskrc);
     var xs = file.readAsStringSync().split('\n');
-    var conf = Map.fromIterable(
-      xs
+    var conf = {
+      for (var item in xs
           .where((x) => x.contains('=') && x[0] != '#')
           .map((x) => x.replaceAll('\\/', '/'))
-          .map((x) => x.split('=')),
-      key: (item) => item[0],
-      value: (item) => item[1],
-    );
+          .map((x) => x.split('=')))
+        item[0]: item[1],
+    };
 
     return TaskdConnection(
       clientCert: conf['taskd.certificate'],
@@ -47,12 +46,12 @@ class TaskdConnection {
   }
 
   Future<Uint8List> sendMessageAsBytes(Uint8List message) async {
-    SecurityContext context = SecurityContext()
+    var context = SecurityContext()
       ..useCertificateChain(clientCert)
       ..usePrivateKey(clientKey)
       ..setTrustedCertificates(cacertFile);
 
-    SecureSocket socket = await SecureSocket.connect(
+    var socket = await SecureSocket.connect(
       server,
       port,
       context: context,
