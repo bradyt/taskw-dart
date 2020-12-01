@@ -1,8 +1,10 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
 library taskc;
 
-export 'src/taskc_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'src/codec.dart';
+export 'src/config.dart';
+export 'src/connection.dart';
+export 'src/payload.dart';
+export 'src/response.dart';
+export 'src/statistics.dart';
+export 'src/synchronize.dart';
+export 'src/task.dart';
