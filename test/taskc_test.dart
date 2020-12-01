@@ -8,9 +8,9 @@ import 'package:taskc/taskc.dart';
 
 void main() {
   var userKey;
-  var docker = false;
+  var githubActions = Platform.environment['GITHUB_ACTIONS'] == 'true';
 
-  if (docker) {
+  if (!githubActions) {
     userKey = File('docker/home/output')
         .readAsStringSync()
         .split('\n')
@@ -37,7 +37,7 @@ void main() {
       expect(tc.username, 'Brady Trainor');
       expect(tc.uuid, userKey);
     });
-  }, skip: !docker);
+  }, skip: githubActions);
   group('Test socket', () {
     var tc;
     setUp(() {
@@ -58,7 +58,7 @@ void main() {
           await tc.sendMessageAsBytes(Uint8List.fromList([0, 0, 0, 5, 65]));
 
       expect(response.length, 69);
-    }, skip: !docker);
+    }, skip: githubActions);
   });
   group('Test message encoding/decoding', () {
     var messageBytes;
