@@ -1,15 +1,17 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:meta/meta.dart';
+
 import 'package:taskc/taskc.dart';
 
 class Connection {
   Connection({
-    this.address,
-    this.port,
-    this.certificate,
-    this.key,
-    this.ca,
+    @required this.address,
+    @required this.port,
+    @required this.certificate,
+    @required this.key,
+    @required this.ca,
   });
 
   factory Connection.fromConnectionData(ConnectionData data) => Connection(

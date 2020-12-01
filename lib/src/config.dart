@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:meta/meta.dart';
+
 class Config {
-  Config({this.conf});
+  Config(this.conf);
 
   factory Config.fromTaskrc(String taskrc, {bool relative = false}) {
     var file = File(taskrc);
@@ -13,7 +15,7 @@ class Config {
           .map((x) => x.split('=')))
         x[0]: relative ? x[1].replaceFirst(RegExp(r'^/'), '') : x[1],
     };
-    return Config(conf: conf);
+    return Config(conf);
   }
 
   final Map conf;
@@ -35,9 +37,9 @@ class Config {
 
 class AuthData {
   AuthData({
-    this.org,
-    this.user,
-    this.key,
+    @required this.org,
+    @required this.user,
+    @required this.key,
   });
 
   final String org;
@@ -47,11 +49,11 @@ class AuthData {
 
 class ConnectionData {
   ConnectionData({
-    this.address,
-    this.port,
-    this.certificate,
-    this.key,
-    this.ca,
+    @required this.address,
+    @required this.port,
+    @required this.certificate,
+    @required this.key,
+    @required this.ca,
   });
 
   final String address;

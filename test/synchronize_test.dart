@@ -33,7 +33,8 @@ void main() {
       expect(response.header['status'], 'Ok');
     }, skip: githubActions);
     test('test', () async {
-      var response = await synchronize(config, Payload(userKey: userKey));
+      var response =
+          await synchronize(config, Payload(tasks: [], userKey: userKey));
 
       expect(response.header['client'], 'taskd 1.1.0');
       expect(response.header['code'], '201');

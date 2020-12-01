@@ -6,10 +6,10 @@ DateFormat format = DateFormat('yMMddTHHmmss\'Z\'');
 @immutable
 class Task {
   const Task({
-    this.status,
-    this.uuid,
-    this.entry,
-    this.description,
+    @required this.status,
+    @required this.uuid,
+    @required this.entry,
+    @required this.description,
     this.start,
     this.end,
     this.due,
