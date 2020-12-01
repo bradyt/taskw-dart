@@ -9,15 +9,9 @@ void main() {
   var githubActions = Platform.environment['GITHUB_ACTIONS'] == 'true';
   var home = Platform.environment['HOME'];
   var pathTo = githubActions ? home : 'fixture';
-  var config = {
-    for (var pair in File('$pathTo/.taskrc')
-        .readAsStringSync()
-        .split('\n')
-        .where((line) => line.contains('=') && line[0] != '#')
-        .map((line) => line.replaceAll('\\/', '/'))
-        .map((line) => line.split('=')))
-      pair[0]: pair[1],
-  };
+  var config = parseTaskrc(
+    File('$pathTo/.taskrc').readAsStringSync(),
+  );
   var server = config['taskd.server'].split(':');
   var connection = Connection(
     address: server[0],

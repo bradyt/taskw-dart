@@ -7,3 +7,4 @@ export 'src/message.dart';
 export 'src/payload.dart';
 export 'src/response.dart';
 export 'src/task.dart';
+export 'src/taskrc.dart';
