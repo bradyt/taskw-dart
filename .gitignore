@@ -13,3 +13,7 @@ build/
 doc/api/
 
 root/
+
+coverage/
+coverage_badge.svg
+test/.test_coverage.dart

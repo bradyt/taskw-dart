@@ -19,6 +19,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - run: taskdctl start
+
       - name: Print Dart SDK version
         run: dart --version
 
@@ -38,3 +39,6 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         run: dart test
+
+      - name: test coverage
+        run: dart pub run test_coverage --min-coverage 95
