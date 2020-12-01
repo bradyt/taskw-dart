@@ -148,7 +148,7 @@ class Task {
 
 @immutable
 class Annotation {
-  const Annotation({this.entry, this.description});
+  const Annotation({@required this.entry, @required this.description});
 
   factory Annotation.fromJson(Map annotation) => Annotation(
         entry: DateTime.parse(annotation['entry']),
