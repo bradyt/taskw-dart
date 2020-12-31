@@ -15,16 +15,21 @@ void main() {
       port,
     );
 
-    var secureSocketFuture = SecureSocket.secure(
-      socket,
-      context: SecurityContext(withTrustedRoots: true)
-        ..useCertificateChain(certificate)
-        ..usePrivateKey(key)
-        ..setTrustedCertificates(ca),
-    ).then((socket) => socket.close());
+    var madeIt = false;
 
-    expect(() => secureSocketFuture, throwsA(isA<HandshakeException>()));
-  }, skip: Platform.environment.containsKey('GITHUB_ACTIONS'));
+    try {
+      await SecureSocket.secure(
+        socket,
+        context: SecurityContext(withTrustedRoots: true)
+          ..useCertificateChain(certificate)
+          ..usePrivateKey(key)
+          ..setTrustedCertificates(ca),
+      ).then((socket) => socket.close());
+      madeIt = true;
+    } on HandshakeException catch (_) {}
+
+    expect(madeIt, !Platform.isMacOS);
+  });
   test('test succeeds', () async {
     var socket = await Socket.connect(
       address,
