@@ -111,5 +111,28 @@ void main() {
 
       expect(response.payload.tasks.length, 2);
     });
+    test('too many tasks', () async {
+      var payload = '{"description":"foo"}\n' * pow(2, 16);
+
+      var response = await synchronize(
+        connection: connection,
+        credentials: credentials,
+        payload: payload,
+      );
+
+      expect(response.header['code'], '504');
+      expect(response.header['status'], 'Request too big');
+
+      payload = '{"description":"foo"}\n' * pow(2, 15);
+
+      response = await synchronize(
+        connection: connection,
+        credentials: credentials,
+        payload: payload,
+      );
+
+      expect(response.header['code'], '200');
+      expect(response.header['status'], 'Ok');
+    });
   });
 }
