@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
 
       # toc: https://taskwarrior.org/docs/taskserver/setup.html
-      - run: dart fixture/ci_setup.dart
+      - run: dart fixture/setup.dart
 
       - name: Print Dart SDK version
         run: dart --version
