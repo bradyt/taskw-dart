@@ -26,36 +26,53 @@ class Task {
     this.depends,
     this.tags,
     this.annotations,
+    this.udas,
   });
 
-  factory Task.fromJson(Map json) => Task(
-        status: json['status'],
-        uuid: json['uuid'],
-        entry: DateTime.parse(json['entry']),
-        description: json['description'],
-        start: (json['start'] == null) ? null : DateTime.parse(json['start']),
-        end: (json['end'] == null) ? null : DateTime.parse(json['end']),
-        due: (json['due'] == null) ? null : DateTime.parse(json['due']),
-        until: (json['until'] == null) ? null : DateTime.parse(json['until']),
-        wait: (json['wait'] == null) ? null : DateTime.parse(json['wait']),
-        modified: (json['modified'] == null)
-            ? null
-            : DateTime.parse(json['modified']),
-        scheduled: (json['scheduled'] == null)
-            ? null
-            : DateTime.parse(json['scheduled']),
-        recur: json['recur'],
-        mask: json['mask'],
-        imask: json['imask']?.toInt(),
-        parent: json['parent'],
-        project: json['project'],
-        priority: json['priority'],
-        depends: json['depends'],
-        tags: json['tags'],
-        annotations: json['annotations']
-            ?.map<Annotation>((annotation) => Annotation.fromJson(annotation))
-            ?.toList(),
-      );
+  factory Task.fromJson(Map rawJson) {
+    var json = {};
+    var udas = {};
+    for (var entry in rawJson.entries.toList()
+      ..removeWhere((entry) => entry.value == null)) {
+      if ('entry,start,end,due,until,scheduled,wait,modified'
+          .contains(entry.key)) {
+        json[entry.key] = DateTime.parse(entry.value);
+        // ignore: lines_longer_than_80_chars
+      } else if ('status,uuid,description,recur,mask,imask,parent,project,priority,depends,tags,annotations'
+          .contains(entry.key)) {
+        json[entry.key] = entry.value;
+      } else {
+        udas[entry.key] = entry.value;
+      }
+    }
+    udas = (udas.isEmpty) ? null : udas;
+
+    return Task(
+      status: json['status'],
+      uuid: json['uuid'],
+      entry: json['entry'],
+      description: json['description'],
+      start: json['start'],
+      end: json['end'],
+      due: json['due'],
+      until: json['until'],
+      wait: json['wait'],
+      modified: json['modified'],
+      scheduled: json['scheduled'],
+      recur: json['recur'],
+      mask: json['mask'],
+      imask: json['imask'],
+      parent: json['parent'],
+      project: json['project'],
+      priority: json['priority'],
+      depends: json['depends'],
+      tags: json['tags'],
+      annotations: json['annotations']
+          ?.map<Annotation>((annotation) => Annotation.fromJson(annotation))
+          ?.toList(),
+      udas: udas,
+    );
+  }
 
   final String status;
   final String uuid;
@@ -77,6 +94,7 @@ class Task {
   final String depends;
   final String tags;
   final List<Annotation> annotations;
+  final Map udas;
 
   Map toJson() => {
         'status': status,
@@ -100,6 +118,7 @@ class Task {
         'priority': priority,
         'depends': depends,
         'modified': modified,
+        if (udas != null) ...udas,
       }
         ..removeWhere((_, value) => value == null)
         ..updateAll((key, value) =>
@@ -132,7 +151,8 @@ class Task {
       tags == other.tags &&
       priority == other.priority &&
       depends == other.depends &&
-      modified == other.modified;
+      modified == other.modified &&
+      _mapEquals(udas, other.udas);
 
   // copied from 'package:flutter/foundation.dart'
   bool _listEquals<T>(List<T> a, List<T> b) {
@@ -141,6 +161,19 @@ class Task {
     if (identical(a, b)) return true;
     for (var index = 0; index < a.length; index += 1) {
       if (a[index] != b[index]) return false;
+    }
+    return true;
+  }
+
+  // copied from 'package:flutter/foundation.dart'
+  bool _mapEquals<T, U>(Map<T, U> a, Map<T, U> b) {
+    if (a == null) return b == null;
+    if (b == null || a.length != b.length) return false;
+    if (identical(a, b)) return true;
+    for (var key in a.keys) {
+      if (!b.containsKey(key) || b[key] != a[key]) {
+        return false;
+      }
     }
     return true;
   }

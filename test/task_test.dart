@@ -58,5 +58,20 @@ void main() {
         complexTask,
       );
     });
+
+    test('test parsing task with uda', () {
+      var udaTask = Task(
+        status: 'pending',
+        uuid: Uuid().v1(),
+        entry: unixEpoch,
+        description: 'test',
+        udas: const {'estimate': 4},
+      );
+
+      expect(
+        Task.fromJson(json.decode(json.encode(udaTask.toJson()))),
+        udaTask,
+      );
+    });
   });
 }
