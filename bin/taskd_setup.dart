@@ -50,6 +50,8 @@ Future<void> setup({
   }
   'taskd init'.run;
 
+  replace('$fixture/pki/vars', 'CN=localhost', 'CN=$cn');
+
   run('./generate', workingDirectory: '$fixture/pki');
 
   for (var pem in [
@@ -109,8 +111,7 @@ Future<void> setup({
   'task rc.confirmation:no config taskd.server -- localhost:53589'.run;
   'task rc.confirmation:no config taskd.credentials -- $org/$user/$key'.run;
 
-  var contents = File('$fixture/.taskrc')
-      .readAsStringSync()
-      .replaceAll(r'=.\/', '=fixture\/');
-  await File('$fixture/.taskrc').writeAsString(contents);
+  replace('$fixture/.taskrc', r'=.\/', r'=fixture\/');
+
+  replace('$fixture/pki/vars', 'CN=$cn', 'CN=localhost');
 }
