@@ -7,14 +7,13 @@ Future<void> main() async {
   if (Platform.environment['GITHUB_ACTIONS'] == 'true') {
     print('running ci setup script...');
     await ciSetup();
-  } else if (Platform.isMacOS ||
-      Platform.environment['WSL_DISTRO_NAME']?.isNotEmpty != null) {
-    print('running local setup script...');
-    await localSetup();
     // ignore: avoid_slow_async_io
   } else if (Platform.isLinux && await File('/.dockerenv').exists()) {
     print('running docker setup script...');
     await dockerSetup();
+  } else if (Platform.isMacOS || Platform.isLinux) {
+    print('running local setup script...');
+    await localSetup();
   }
   print('done');
 }
