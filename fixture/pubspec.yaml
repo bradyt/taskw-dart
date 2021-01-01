@@ -1,4 +1,0 @@
-name: taskd_setup
-
-dependencies:
-  dcli:
