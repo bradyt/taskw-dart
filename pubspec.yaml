@@ -1,7 +1,7 @@
 name: taskc
 description: A Taskserver client library
 repository: https://github.com/bradyt/taskd-client-dart
-version: 0.0.0-alpha.0
+version: 0.0.0
 
 environment:
   sdk: '>=2.10.0 <3.0.0'
