@@ -26,6 +26,9 @@ jobs:
         working-directory: fixture
 
       - run: TASKDDATA='/var/taskd' taskdctl start
+      - run: sleep 2
+
+      - run: HOME=fixture task sync
 
       - name: Print Dart SDK version
         run: dart --version
@@ -52,3 +55,6 @@ jobs:
 
       - name: run pub publish --dry-run
         run: dart pub publish --dry-run
+
+      - run: HOME=fixture task sync
+      - run: HOME=fixture task
