@@ -30,7 +30,13 @@ class Connection {
 
     socket.add(bytes);
 
-    response = await socket.first;
+    response = Uint8List.fromList(
+      (await socket.toList())
+          .expand(
+            (x) => x,
+          )
+          .toList(),
+    );
 
     await socket.close();
 

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
@@ -67,6 +68,28 @@ void main() {
       expect(response.header['client'], 'taskd 1.1.0');
       expect(response.header['code'], '201');
       expect(response.header['status'], 'No change');
+    });
+    test('test response with more than 2^13th bytes', () async {
+      var payload = Payload(
+        tasks: List.generate(100, (_) => newTask()).toList(),
+      ).toString();
+
+      expect(Codec.encode(payload).length > pow(2, 13), true);
+
+      var response = await synchronize(
+        connection: connection,
+        credentials: credentials,
+        payload: payload,
+      );
+
+      response = await synchronize(
+        connection: connection,
+        credentials: credentials,
+        payload: '',
+      );
+
+      expect(Codec.encode('${response.payload}').length > pow(2, 13), true);
+      expect(response.header['status'], 'Ok');
     });
   });
 }
