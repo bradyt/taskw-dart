@@ -66,7 +66,7 @@ class Task {
       project: json['project'],
       priority: json['priority'],
       depends: json['depends'],
-      tags: json['tags'],
+      tags: json['tags']?.cast<String>(),
       annotations: json['annotations']
           ?.map<Annotation>((annotation) => Annotation.fromJson(annotation))
           ?.toList(),
@@ -92,7 +92,7 @@ class Task {
   final String project;
   final String priority;
   final String depends;
-  final String tags;
+  final List<String> tags;
   final List<Annotation> annotations;
   final Map udas;
 
@@ -148,7 +148,7 @@ class Task {
       parent == other.parent &&
       _listEquals(annotations, other.annotations) &&
       project == other.project &&
-      tags == other.tags &&
+      _listEquals(tags, other.tags) &&
       priority == other.priority &&
       depends == other.depends &&
       modified == other.modified &&

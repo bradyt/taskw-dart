@@ -44,7 +44,7 @@ void main() {
         project: 'some_project',
         priority: 'H',
         depends: Uuid().v1(),
-        tags: '+some_tag',
+        tags: const ['+some_tag'],
         annotations: [
           Annotation(
             entry: unixEpoch,
@@ -71,6 +71,13 @@ void main() {
       expect(
         Task.fromJson(json.decode(json.encode(udaTask.toJson()))),
         udaTask,
+      );
+    });
+    test('test parsing json string task with tags', () {
+      expect(
+        Task.fromJson(json.decode('{"tags":["+foo"]}')),
+        // ignore: missing_required_param
+        const Task(tags: ['+foo']),
       );
     });
   });
