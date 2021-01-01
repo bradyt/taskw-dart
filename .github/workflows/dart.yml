@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
 
       # toc: https://taskwarrior.org/docs/taskserver/setup.html
-      - run: echo "::add-path::$HOME/.pub-cache/bin"
+      - run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
       - run: dart pub global activate --source git https://github.com/bradyt/taskd-setup-dart.git
       - run: taskd-setup --TASKDDATA '/var/taskd'
         working-directory: fixture
