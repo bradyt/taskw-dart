@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:test/test.dart';
@@ -30,11 +31,13 @@ void main() {
     });
   });
 
-  Task newTask() => Task(
-        status: 'pending',
-        uuid: Uuid().v1(),
-        entry: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
-        description: 'test',
+  String newTask() => json.encode(
+        Task(
+          status: 'pending',
+          uuid: Uuid().v1(),
+          entry: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+          description: 'test',
+        ).toJson(),
       );
 
   group('Test synchronize', () {
@@ -44,7 +47,7 @@ void main() {
       var response = await synchronize(
         connection: connection,
         credentials: credentials,
-        payload: Payload(tasks: [newTask()]),
+        payload: '${Payload(tasks: [newTask()])}',
       );
 
       userKey = response.payload.userKey;
@@ -58,7 +61,7 @@ void main() {
       var response = await synchronize(
         connection: connection,
         credentials: credentials,
-        payload: Payload(tasks: [], userKey: userKey),
+        payload: '${Payload(tasks: [], userKey: userKey)}',
       );
 
       expect(response.header['client'], 'taskd 1.1.0');

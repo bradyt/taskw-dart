@@ -15,7 +15,7 @@ Future<Response> statistics({
 Future<Response> synchronize({
   @required Connection connection,
   @required Credentials credentials,
-  @required Payload payload,
+  @required String payload,
 }) =>
     message(
       connection: connection,
@@ -28,7 +28,7 @@ Future<Response> message({
   @required Connection connection,
   @required Credentials credentials,
   @required String type,
-  Payload payload,
+  String payload,
 }) async {
   var message = '''
 type: $type
@@ -37,7 +37,7 @@ user: ${credentials.user}
 key: ${credentials.key}
 protocol: v1
 
-${payload ?? ''}''';
+$payload''';
   var response = await connection.send(Codec.encode(message));
   return Response.fromString(Codec.decode(response));
 }
