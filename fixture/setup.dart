@@ -2,81 +2,52 @@
 
 import 'dart:io';
 
+import 'package:dcli/dcli.dart';
+
+enum Script {
+  ci,
+  docker,
+  local,
+}
+
 Future<void> main() async {
   print('running setup script...');
+  Script script;
   if (Platform.environment['GITHUB_ACTIONS'] == 'true') {
     print('running ci setup script...');
-    await ciSetup();
+    script = Script.ci;
     // ignore: avoid_slow_async_io
   } else if (Platform.isLinux && await File('/.dockerenv').exists()) {
     print('running docker setup script...');
-    await dockerSetup();
+    script = Script.docker;
   } else if (Platform.isMacOS || Platform.isLinux) {
     print('running local setup script...');
-    await localSetup();
+    script = Script.local;
   }
+  await setup(script: script);
   print('done');
 }
 
-Future<void> ciSetup() async {
+Future<void> setup({
+  Script script,
+}) async {
+  var taskddata = (script == Script.ci) ? '/var/taskd' : 'var/taskd';
+  var address = (script == Script.docker) ? '0.0.0.0' : 'localhost';
+  var fixture = '.';
+
+  env['TASKDDATA'] = taskddata;
+  env['HOME'] = fixture;
+
   // toc: https://taskwarrior.org/docs/taskserver/setup.html
 
   // 3: https://taskwarrior.org/docs/taskserver/configure.html
 
-  for (var pem in [
-    'client.cert.pem',
-    'client.cert.pem',
-    'client.key.pem',
-    'server.cert.pem',
-    'server.key.pem',
-    'server.crl.pem',
-    'ca.cert.pem',
-  ]) {
-    await File('fixture/pki/$pem').copy('/var/taskd/$pem');
+  if (!exists(taskddata)) {
+    createDir(taskddata, recursive: true);
   }
+  'taskd init'.run;
 
-  // 3: https://taskwarrior.org/docs/taskserver/control.html
-
-  await Process.run('taskdctl', ['start']);
-
-  // 4: https://taskwarrior.org/docs/taskserver/user.html
-
-  var org = 'Public';
-  var user = 'First Last';
-
-  await Process.run('taskd', ['add', 'org', org]);
-  var result = await Process.run('taskd', ['add', 'user', org, user]);
-
-  var key = result.stdout.split('\n').first.split(': ').last;
-  var credentials = '$org/$user/$key';
-
-  // 4: https://taskwarrior.org/docs/taskserver/taskwarrior.html
-
-  var home = Platform.environment['HOME'];
-
-  await Process.run('cp', ['-r', 'fixture/.task', '$home/']);
-  await Process.run('cp', ['fixture/.taskrc.template', '$home/.taskrc']);
-  await Process.run(
-      'task', ['rc.confirmation:no', 'config', 'confirmation', '--', 'no']);
-  await Process.run('task', ['config', 'taskd.credentials', '--', credentials]);
-
-  // 5: https://taskwarrior.org/docs/taskserver/sync.html
-
-  await Process.run('task', ['sync', 'init']);
-  await Process.run('task', ['config', 'confirmation', '--', 'yes']);
-}
-
-Future<void> localSetup() async {
-  ProcessResult result;
-
-  // toc: https://taskwarrior.org/docs/taskserver/setup.html
-
-  // 3: https://taskwarrior.org/docs/taskserver/configure.html
-
-  var taskddata = './var/taskd';
-
-  await Directory(taskddata).create(recursive: true);
-  await Process.run('taskd', ['init', '--data', taskddata]);
+  run('./generate', workingDirectory: '$fixture/pki');
 
   for (var pem in [
     'client.cert',
@@ -86,91 +57,57 @@ Future<void> localSetup() async {
     'server.crl',
     'ca.cert',
   ]) {
-    await File('pki/$pem.pem').copy('$taskddata/$pem.pem');
-    await Process.run('taskd',
-        ['config', '--force', pem, '$taskddata/$pem.pem', '--data', taskddata]);
+    copy('$fixture/pki/$pem.pem', '$taskddata/$pem.pem', overwrite: true);
+
+    'taskd config $pem $taskddata/$pem.pem'.run;
   }
-  await Process.run('taskd',
-      ['config', '--force', 'log', '/dev/stdout', '--data', taskddata]);
-  await Process.run('taskd',
-      ['config', '--force', 'server', 'localhost:53589', '--data', taskddata]);
+
+  'taskd config log /dev/stdout'.run;
+  'taskd config server $address:53589'.run;
 
   // 3: https://taskwarrior.org/docs/taskserver/control.html
 
-  await Process.run('taskd', ['config', 'debug.tls', '2', '--data', taskddata]);
+  'taskd config debug.tls 2'.run;
 
   // 4: https://taskwarrior.org/docs/taskserver/user.html
 
   var org = 'Public';
   var user = 'First Last';
+  String key;
 
-  await Process.run('taskd', ['add', 'org', org, '--data', taskddata]);
-  result = await Process.run(
-      'taskd', ['add', 'user', org, user, '--data', taskddata]);
+  if (!exists('$taskddata/orgs/$org')) {
+    'taskd add org $org'.run;
+  }
+  'taskd add user $org \'$user\''.forEach((line) {
+    if (line.contains(': ')) {
+      key = line.split(': ').last;
+    }
+  });
 
-  var key = result.stdout.split('\n').first.split(': ').last;
-  var credentials = '$org/$user/$key';
+  run('./generate.client first_last', workingDirectory: '$fixture/pki');
 
   // 4: https://taskwarrior.org/docs/taskserver/taskwarrior.html
 
-  await Process.run('cp', ['.taskrc.template', '.taskrc']);
-
-  result = await Process.run(
-      'task', ['config', 'taskd.credentials', '--', credentials],
-      environment: {'HOME': '.'});
-}
-
-Future<void> dockerSetup() async {
-  // toc: https://taskwarrior.org/docs/taskserver/setup.html
-
-  // 3: https://taskwarrior.org/docs/taskserver/configure.html
-
-  Directory.current = '/opt/';
-
-  for (var pem in [
-    'client.cert.pem',
-    'client.cert.pem',
-    'client.key.pem',
-    'server.cert.pem',
-    'server.key.pem',
-    'server.crl.pem',
-    'ca.cert.pem',
-  ]) {
-    await File('fixture/pki/$pem').copy('/var/taskd/$pem');
+  if (!exists('$fixture/.task')) {
+    createDir('$fixture/.task', recursive: true);
   }
 
-  // 4: https://taskwarrior.org/docs/taskserver/user.html
+  for (var pem in {
+    'certificate': 'first_last.cert.pem',
+    'key': 'first_last.key.pem',
+    'ca': 'ca.cert.pem',
+  }.entries) {
+    copy('$fixture/pki/${pem.value}', '$fixture/.task', overwrite: true);
 
-  var home = Platform.environment['HOME'];
+    'task rc.confirmation:no config taskd.${pem.key} -- $fixture/.task/${pem.value}'
+        .run;
+  }
 
-  var org = 'Public';
-  var user = 'First Last';
+  'task rc.confirmation:no config taskd.server -- localhost:53589'.run;
+  'task rc.confirmation:no config taskd.credentials -- $org/$user/$key'.run;
 
-  await Process.run('taskd', ['add', 'org', org]);
-  var result = await Process.run('taskd', ['add', 'user', org, user]);
-
-  var key = result.stdout.split('\n').first.split(': ').last;
-  var credentials = '$org/$user/$key';
-
-  // 4: https://taskwarrior.org/docs/taskserver/taskwarrior.html
-
-  await Process.run('cp', ['-r', 'fixture/.task', '$home/']);
-  await Process.run('cp', ['fixture/.taskrc.template', '$home/.taskrc']);
-
-  await Process.run(
-      'task', ['rc.confirmation:no', 'config', 'confirmation', '--', 'no']);
-  await Process.run('task', ['config', 'taskd.credentials', '--', credentials]);
-  await Process.run('task', ['config', 'confirmation', '--', 'yes']);
-
-  await Process.run('cp', ['$home/.taskrc', 'fixture']);
-
-  await Process.run(
-      'task', ['rc.confirmation:no', 'config', 'confirmation', '--', 'no']);
-
-  await Process.run(
-      'task', ['taskd.certificate', '--', '~/.task/first_last.cert.pem']);
-  await Process.run('task', ['taskd.key', '--', '~/.task/first_last.key.pem']);
-  await Process.run('task', ['taskd.ca', '--', '~/.task/ca.cert.pem']);
-
-  await Process.run('task', ['config', 'confirmation', '--', 'yes']);
+  var contents = File('$fixture/.taskrc')
+      .readAsStringSync()
+      .replaceAll(r'=.\/', '=fixture\/');
+  await File('$fixture/.taskrc').writeAsString(contents);
 }

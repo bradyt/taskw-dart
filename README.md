@@ -20,6 +20,7 @@ ways to do this.
 
 ```sh
 cd fixture
+dart pub get
 dart setup.dart
 make
 ```
@@ -32,6 +33,7 @@ Debian is recommended as their package manager provides taskd.
 
 ```sh
 cd fixture
+dart pub get
 dart setup.dart
 make
 ```

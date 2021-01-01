@@ -6,11 +6,8 @@ import 'package:uuid/uuid.dart';
 import 'package:taskc/taskc.dart';
 
 void main() {
-  var githubActions = Platform.environment['GITHUB_ACTIONS'] == 'true';
-  var home = Platform.environment['HOME'];
-  var pathTo = githubActions ? home : 'fixture';
   var config = parseTaskrc(
-    File('$pathTo/.taskrc').readAsStringSync(),
+    File('fixture/.taskrc').readAsStringSync(),
   );
   var server = config['taskd.server'].split(':');
   var connection = Connection(
