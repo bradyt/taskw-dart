@@ -76,13 +76,13 @@ void main() {
 
       expect(Codec.encode(payload).length > pow(2, 13), true);
 
-      var response = await synchronize(
+      await synchronize(
         connection: connection,
         credentials: credentials,
         payload: payload,
       );
 
-      response = await synchronize(
+      var response = await synchronize(
         connection: connection,
         credentials: credentials,
         payload: '',
@@ -90,6 +90,26 @@ void main() {
 
       expect(Codec.encode('${response.payload}').length > pow(2, 13), true);
       expect(response.header['status'], 'Ok');
+    });
+    test('count tasks', () async {
+      var path =
+          (Platform.environment['GITHUB_ACTIONS'] == 'true') ? '' : 'fixture';
+      await File('$path/var/taskd/orgs/Public/users/${credentials.key}/tx.data')
+          .delete();
+
+      await synchronize(
+        connection: connection,
+        credentials: credentials,
+        payload: '${newTask()}\n${newTask()}',
+      );
+
+      var response = await synchronize(
+        connection: connection,
+        credentials: credentials,
+        payload: '',
+      );
+
+      expect(response.payload.tasks.length, 2);
     });
   });
 }
