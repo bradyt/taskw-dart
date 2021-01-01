@@ -4,35 +4,38 @@ import 'dart:io';
 
 import 'package:dcli/dcli.dart';
 
-enum Script {
-  ci,
-  docker,
-  local,
-}
+Future<void> main(List<String> args) async {
+  var parser = ArgParser();
 
-Future<void> main() async {
-  print('running setup script...');
-  Script script;
-  if (Platform.environment['GITHUB_ACTIONS'] == 'true') {
-    print('running ci setup script...');
-    script = Script.ci;
-    // ignore: avoid_slow_async_io
-  } else if (Platform.isLinux && await File('/.dockerenv').exists()) {
-    print('running docker setup script...');
-    script = Script.docker;
-  } else if (Platform.isMacOS || Platform.isLinux) {
-    print('running local setup script...');
-    script = Script.local;
+  parser.addFlag('help',
+      abbr: 'h', negatable: false, help: 'Displays this help information.');
+
+  parser.addOption('CN', abbr: 'c', defaultsTo: 'localhost');
+  parser.addOption('address', abbr: 'a', defaultsTo: 'localhost');
+  parser.addOption('TASKDDATA', abbr: 't', defaultsTo: 'var/taskd');
+
+  var results = parser.parse(args);
+
+  if (results['help']) {
+    print(parser.usage);
+  } else {
+    print('running setup script...');
+
+    await setup(
+      cn: results['CN'],
+      address: results['address'],
+      taskddata: results['TASKDDATA'],
+    );
+
+    print('done');
   }
-  await setup(script: script);
-  print('done');
 }
 
 Future<void> setup({
-  Script script,
+  String cn,
+  String taskddata,
+  String address,
 }) async {
-  var taskddata = (script == Script.ci) ? '/var/taskd' : 'var/taskd';
-  var address = (script == Script.docker) ? '0.0.0.0' : 'localhost';
   var fixture = '.';
 
   env['TASKDDATA'] = taskddata;
