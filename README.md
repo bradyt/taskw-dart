@@ -1,7 +1,7 @@
 # What is it?
 
 `task` is a todo app for
-Android<sup>[1](#fdroid),[2](#playstore)</sup> and
+Android<sup>[0](#fdroid-MR),[1](#fdroid),[2](#playstore)</sup> and
 iOS<sup>[3](#ios)</sup>, inspired by
 [Taskwarrior](https://taskwarrior.org) and
 [TaskwarriorC2](https://bitbucket.org/kvorobyev/taskwarriorc2/).
@@ -43,6 +43,8 @@ The code used to synchronize tasks with a Taskserver was started in an
 earlier project, at
 [taskd-client-dart](https://github.com/bradyt/taskd-client-dart).
 
+<a name="fdroid-MR">0</a>:
+<https://gitlab.com/fdroid/fdroiddata/-/merge_requests/8436/></br>
 <a name="fdroid">1</a>:
 <https://f-droid.org/en/packages/info.tangential.task/></br>
 <a name="playstore">2</a>:
