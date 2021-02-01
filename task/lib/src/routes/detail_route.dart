@@ -35,6 +35,9 @@ class _DetailRouteState extends State<DetailRoute> {
         case 'due':
           modify.setDue(newValue);
           break;
+        case 'priority':
+          modify.setPriority(newValue);
+          break;
         default:
       }
       setState(() {});
@@ -140,6 +143,12 @@ class AttributeWidget extends StatelessWidget {
           value: localValue,
           callback: callback,
         );
+      case 'priority':
+        return PriorityWidget(
+          name: name,
+          value: localValue,
+          callback: callback,
+        );
       default:
         return Card(
           child: ListTile(
@@ -189,6 +198,45 @@ class DueWidget extends StatelessWidget {
               }
             : null,
         onLongPress: (name == 'due') ? () => callback(null) : null,
+      ),
+    );
+  }
+}
+
+class PriorityWidget extends StatelessWidget {
+  PriorityWidget({this.name, this.value, this.callback});
+
+  final String name;
+  final dynamic value;
+  final void Function(dynamic) callback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              Text(
+                '${'$name:'.padRight(13)}$value',
+                style: GoogleFonts.firaMono(),
+              ),
+            ],
+          ),
+        ),
+        onTap: () {
+          switch (value) {
+            case 'H':
+              return callback('M');
+            case 'M':
+              return callback('L');
+            case 'L':
+              return callback(null);
+            default:
+              return callback('H');
+          }
+        },
       ),
     );
   }

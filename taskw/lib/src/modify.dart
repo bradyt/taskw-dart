@@ -25,11 +25,21 @@ class Modify {
         'new': _draft.due,
       };
     }
+    if (_draft.priority != _saved.priority) {
+      result['priority'] = {
+        'old': _saved.priority,
+        'new': _draft.priority,
+      };
+    }
     return result;
   }
 
   void setDue(DateTime due) {
     _draft = _draft.copyWith(due: () => due);
+  }
+
+  void setPriority(String priority) {
+    _draft = _draft.copyWith(priority: () => priority);
   }
 
   void save({DateTime Function() modified}) {
