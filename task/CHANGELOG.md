@@ -1,5 +1,6 @@
 # 0.0.5
 
+- Add privacy policy to Android app, to comply with Play Store.
 - Make the following display improvements:
   - 3.1424657534246574y ==> 3.1y
   - 1.0027397260273974y ==> 1y
