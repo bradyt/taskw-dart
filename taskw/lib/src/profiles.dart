@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:uuid/uuid.dart';
 
 class Profiles {
-  final List<String> profiles = [];
+  Profiles(this.base);
 
-  void addProfile() {
-    profiles.add(Uuid().v1());
-  }
+  final Directory base;
+
+  List<String> listProfiles() =>
+      base.listSync().map((entity) => entity.path.split('/').last).toList();
+
+  void addProfile() => Directory('${base.path}/${Uuid().v1()}').createSync();
 }

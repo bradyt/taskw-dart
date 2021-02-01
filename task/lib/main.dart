@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:path_provider/path_provider.dart';
+
 import 'package:taskw/taskw.dart';
 
 void main() {
@@ -31,11 +33,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Profiles _profiles = Profiles();
+  List<String> _profiles;
+
+  @override
+  void initState() {
+    super.initState();
+    getApplicationDocumentsDirectory().then((dir) {
+      _profiles = Profiles(dir).listProfiles();
+      setState(() {});
+    });
+  }
 
   void _addProfile() {
-    setState(() {
-      _profiles.addProfile();
+    getApplicationDocumentsDirectory().then((dir) {
+      var profiles = Profiles(dir);
+      profiles.addProfile();
+      _profiles = profiles.listProfiles();
+      setState(() {});
     });
   }
 
@@ -47,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView(
         children: [
-          for (var profile in _profiles.profiles)
+          for (var profile in (_profiles ?? []))
             Card(
               child: ListTile(
                 title: Text(profile),
