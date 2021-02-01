@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+
+import 'package:taskw/taskw.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,11 +31,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> _profiles = [];
+  Profiles _profiles = Profiles();
 
-  void _incrementCounter() {
+  void _addProfile() {
     setState(() {
-      _profiles.add(Uuid().v1());
+      _profiles.addProfile();
     });
   }
 
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView(
         children: [
-          for (var profile in _profiles)
+          for (var profile in _profiles.profiles)
             Card(
               child: ListTile(
                 title: Text(profile),
@@ -55,8 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: _addProfile,
+        tooltip: 'Add profile',
         child: Icon(Icons.add),
       ),
     );

@@ -12,6 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
+  taskw:
+    path: ../taskw
   uuid:
 
 dev_dependencies:
