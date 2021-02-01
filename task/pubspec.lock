@@ -315,11 +315,11 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "v0.0.0"
-      resolved-ref: "925c9305bc1be916ab2ee4ab91d83a0bfb8891b4"
+      ref: "v0.0.1"
+      resolved-ref: "5e8234add60481eaec6ef22af3cdaa18b8ff6a12"
       url: "git://github.com/bradyt/taskd-client-dart.git"
     source: git
-    version: "0.0.0"
+    version: "0.0.1"
   taskw:
     dependency: "direct main"
     description:
