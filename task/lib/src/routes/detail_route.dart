@@ -54,7 +54,7 @@ class _DetailRouteState extends State<DetailRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.uuid.split('-').first),
+        title: Text('edit'),
       ),
       body: ListView(
         children: [
@@ -69,6 +69,7 @@ class _DetailRouteState extends State<DetailRoute> {
               'priority': modify.draft.priority,
               'tags': modify.draft.tags,
               'urgency': urgency(modify.draft),
+              'uuid': modify.draft.uuid,
             }.entries)
               AttributeWidget(
                 name: entry.key,
