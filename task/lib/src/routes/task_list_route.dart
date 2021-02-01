@@ -21,11 +21,14 @@ class _TaskListRouteState extends State<TaskListRoute> {
   List<Task> tasks;
   String currentProfile;
   Map<String, String> profiles;
+  Map<String, int> globalTags;
+  Set<String> selectedTags;
 
   @override
   void initState() {
     super.initState();
     profiles = {};
+    selectedTags = {};
     _initialize();
   }
 
@@ -38,6 +41,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
         ..setCurrentProfile(p.listProfiles().first);
     }
     tasks = p.getCurrentStorage().next();
+    globalTags = p.getCurrentStorage().tags();
     currentProfile = p.getCurrentProfile();
     for (var profile in p.listProfiles()) {
       profiles[profile] = p.getAlias(profile);
@@ -58,8 +62,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
   Future<void> _selectProfile(String profile) async {
     var dir = await getApplicationDocumentsDirectory();
     Profiles(dir).setCurrentProfile(profile);
-    tasks = Profiles(dir).getCurrentStorage().next();
     currentProfile = Profiles(dir).getCurrentProfile();
+    tasks = Profiles(dir).getCurrentStorage().next();
+    globalTags = Profiles(dir).getCurrentStorage().tags();
     setState(() {});
   }
 
@@ -108,6 +113,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
       p
         ..addProfile()
         ..setCurrentProfile(p.listProfiles().first);
+      globalTags = p.getCurrentStorage().tags();
     }
     profiles = {
       for (var profile in p.listProfiles()) profile: p.getAlias(profile),
@@ -116,6 +122,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
       p.setCurrentProfile(profiles.keys.first);
       currentProfile = p.getCurrentProfile();
       tasks = p.getCurrentStorage().next();
+      globalTags = p.getCurrentStorage().tags();
     }
     setState(() {});
   }
@@ -197,6 +204,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     try {
       var header = await Profiles(dir).getCurrentStorage().synchronize();
       tasks = Profiles(dir).getCurrentStorage().next();
+      globalTags = Profiles(dir).getCurrentStorage().tags();
       setState(() {});
       // ignore: deprecated_member_use
       Scaffold.of(context).showSnackBar(SnackBar(
@@ -211,6 +219,15 @@ class _TaskListRouteState extends State<TaskListRoute> {
     }
   }
 
+  void _toggleTagFilter(String tag) {
+    if (selectedTags.contains(tag)) {
+      selectedTags.remove(tag);
+    } else {
+      selectedTags.add(tag);
+    }
+    setState(() {});
+  }
+
   Future<void> _refreshTasks() async {
     var dir = await getApplicationDocumentsDirectory();
     var p = Profiles(dir);
@@ -220,6 +237,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
         ..setCurrentProfile(p.listProfiles().first);
     }
     tasks = p.getCurrentStorage().next();
+    globalTags = p.getCurrentStorage().tags();
     setState(() {});
   }
 
@@ -325,48 +343,82 @@ class _TaskListRouteState extends State<TaskListRoute> {
           children: [
             if (tasks != null)
               for (var task in tasks)
-                Card(
-                  child: InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailRoute(task.uuid),
-                      ),
-                    ).then((_) => _refreshTasks()),
-                    child: ListTile(
-                      title: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Text(
-                          task.description,
-                          style: GoogleFonts.firaMono(),
+                if (selectedTags.isEmpty ||
+                    (task.tags != null &&
+                        task.tags
+                            .toSet()
+                            .intersection(selectedTags)
+                            .isNotEmpty))
+                  Card(
+                    child: InkWell(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailRoute(task.uuid),
                         ),
-                      ),
-                      subtitle: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Text(
-                                '${age(task.entry)} '
-                                        '${(task.due != null) ? when(task.due) : ''} '
-                                        '${task?.priority ?? ''} '
-                                        '${task.tags?.join(' ') ?? ''}'
-                                    .replaceAll(RegExp(r' +'), ' '),
-                                style: GoogleFonts.firaMono(),
-                              ),
-                            ),
-                          ),
-                          Text(
-                            '${urgency(task)}',
+                      ).then((_) => _refreshTasks()),
+                      child: ListTile(
+                        title: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Text(
+                            task.description,
                             style: GoogleFonts.firaMono(),
                           ),
-                        ],
+                        ),
+                        subtitle: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Text(
+                                  '${age(task.entry)} '
+                                          '${(task.due != null) ? when(task.due) : ''} '
+                                          '${task?.priority ?? ''} '
+                                          '${task.tags?.join(' ') ?? ''}'
+                                      .replaceAll(RegExp(r' +'), ' '),
+                                  style: GoogleFonts.firaMono(),
+                                ),
+                              ),
+                            ),
+                            Text(
+                              '${urgency(task)}',
+                              style: GoogleFonts.firaMono(),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
           ],
+        ),
+      ),
+      endDrawer: Drawer(
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: ListView(
+              key: PageStorageKey('tags-filter'),
+              children: [
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: [
+                    if (globalTags != null)
+                      for (var tag in globalTags.entries)
+                        FilterChip(
+                          onSelected: (_) => _toggleTagFilter(tag.key),
+                          label: Text(
+                            '${selectedTags.contains(tag.key) ? '+' : '-'}'
+                            '${tag.key}',
+                            style: GoogleFonts.firaMono(),
+                          ),
+                        ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

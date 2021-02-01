@@ -20,7 +20,9 @@ class Storage {
   File get _key => File('${profile.path}/.task/first_last.key.pem');
 
   Map<String, int> tags() {
-    var listOfLists = listTasks().map((task) => task.tags);
+    var listOfLists = listTasks()
+        .where((task) => task.status == 'pending')
+        .map((task) => task.tags);
     var listOfTags = listOfLists.expand((tags) => tags ?? []);
     var setOfTags = listOfTags.toSet() ?? {};
     return SplayTreeMap.of({
