@@ -316,7 +316,11 @@ class _TaskListRouteState extends State<TaskListRoute> {
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Text(
-                              '${age(task.entry)} ${when(task.due)} ${task.tags?.join(' ') ?? ''}',
+                              '${age(task.entry)} '
+                              '${(task.due != null) ? when(task.due) : ''} '
+                              '${task?.priority ?? ''} '
+                              '${task.tags?.join(' ') ?? ''}'
+                                  .replaceAll(RegExp(r' +'), ' '),
                               style: GoogleFonts.firaMono(),
                             ),
                           ),

@@ -1,6 +1,6 @@
 # 0.0.3
 
-- Add due date to task list view
+- Add due date and priority to task list view
 
 # 0.0.2
 
