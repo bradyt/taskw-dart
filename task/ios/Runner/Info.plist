@@ -41,5 +41,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>User might look for todo list synchronize keys in photo library.</string>
 </dict>
 </plist>
