@@ -12,5 +12,8 @@ void main() {
     test('positive values', () {
       expect(difference(const Duration(minutes: 42)), '42m');
     });
+    test('negative values', () {
+      expect(difference(const Duration(minutes: -42)), '-42m');
+    });
   });
 }
