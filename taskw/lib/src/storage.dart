@@ -131,10 +131,43 @@ class Storage {
   Credentials _getCredentials(Map config) =>
       Credentials.fromString(config['taskd.credentials']);
 
-  Map getConfig() =>
-      parseTaskrc(File('${profile.path}/.taskrc').readAsStringSync());
+  Map getConfig() {
+    return parseTaskrc(_taskrc.readAsStringSync());
+  }
+
+  void checkFilesExist() {
+    if (!_taskrc.existsSync()) {
+      throw TaskserverConfigurationException(
+        'Missing: .taskrc\n\n'
+        'If you want to configure your Taskserver, '
+        'please add your .taskrc or taskrc.txt configuration to this profile.',
+      );
+    }
+    if (!_ca.existsSync()) {
+      throw TaskserverConfigurationException(
+        'Missing: taskd.ca\n\n'
+        'If you want to configure your Taskserver, '
+        'please add your taskd.ca file to this profile.',
+      );
+    }
+    if (!_cert.existsSync()) {
+      throw TaskserverConfigurationException(
+        'Missing: taskd.cert\n\n'
+        'If you want to configure your Taskserver, '
+        'please add your taskd.ca file to this profile.',
+      );
+    }
+    if (!_key.existsSync()) {
+      throw TaskserverConfigurationException(
+        'Missing: taskd.key\n\n'
+        'If you want to configure your Taskserver, '
+        'please add your taskd.ca file to this profile.',
+      );
+    }
+  }
 
   Future<Map> statistics() async {
+    checkFilesExist();
     var config = getConfig();
     var response = await taskc.statistics(
       connection: _getConnection(config),
@@ -144,6 +177,7 @@ class Storage {
   }
 
   Future<Map> synchronize() async {
+    checkFilesExist();
     var config = getConfig();
     var payload = '';
     if (File('${profile.path}/.task/backlog.data').existsSync()) {
