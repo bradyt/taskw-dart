@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:file_picker_writable/file_picker_writable.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -132,15 +134,28 @@ class ConfigureTaskserverRoute extends StatelessWidget {
           ])
             ListTile(
               title: Text(key),
-              onTap: () {
-                FilePickerWritable().openFile((_, file) async {
-                  var contents = file.readAsStringSync();
-                  getApplicationDocumentsDirectory().then((dir) {
-                    Profiles(dir)
-                        .getStorage(profile)
-                        .addFileContents(key: key, contents: contents);
+              onTap: () async {
+                if (Platform.isMacOS) {
+                  final typeGroup = XTypeGroup(label: 'config', extensions: []);
+                  final file = await openFile(acceptedTypeGroups: [typeGroup]);
+                  if (file != null) {
+                    var contents = await file.readAsString();
+                    getApplicationDocumentsDirectory().then((dir) {
+                      Profiles(dir)
+                          .getStorage(profile)
+                          .addFileContents(key: key, contents: contents);
+                    });
+                  }
+                } else {
+                  FilePickerWritable().openFile((_, file) async {
+                    var contents = file.readAsStringSync();
+                    getApplicationDocumentsDirectory().then((dir) {
+                      Profiles(dir)
+                          .getStorage(profile)
+                          .addFileContents(key: key, contents: contents);
+                    });
                   });
-                });
+                }
               },
             ),
         ],

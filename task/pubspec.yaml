@@ -13,8 +13,11 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.0
   file_picker_writable:
+  file_selector:
+  file_selector_macos:
   google_fonts:
   path_provider:
+  path_provider_macos:
   taskw:
     path: ../taskw
   uuid:
