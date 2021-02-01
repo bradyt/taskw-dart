@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# For a public or production server, purchase a cert from a known CA, and skip
+# the next step.
+
+# For development, testing and personal server management, create a CA key and
+# cert, and use that to generate a server key and cert.  Creates:
+#   ca.key.pem
+#   ca.cert.pem
+#   server.key.pem
+#   server.cert.pem
+
+./generate.ca
+./generate.server
+
+# Generate a certificate revocation list (CRL).  The initial CRL is empty, but
+# can grow over time.  Creates:
+#   server.crl.pem
+
+./generate.crl
+
+# The above is sufficient to operate a server.  What follows is a per-client
+# process.  Creates:
+#   ${1}.key.pem
+#   ${1}.cert.pem
+
+./generate.client client
+
