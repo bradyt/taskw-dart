@@ -288,7 +288,31 @@ class _TaskListRouteState extends State<TaskListRoute> {
                     ),
                   ).then((_) => setState(() {})),
                   child: ListTile(
-                    title: Text('${task.description}'),
+                    title: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(
+                        '${task.description}',
+                        style: GoogleFonts.firaMono(),
+                      ),
+                    ),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              '${age(task.entry)} ${task.tags?.join(' ') ?? ''}',
+                              style: GoogleFonts.firaMono(),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '${urgency(task)}',
+                          style: GoogleFonts.firaMono(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
