@@ -7,8 +7,12 @@ class Profiles {
 
   final Directory base;
 
-  List<String> listProfiles() =>
-      base.listSync().map((entity) => entity.path.split('/').last).toList();
+  List<String> listProfiles() {
+    var dir = Directory('${base.path}/profiles');
+    dir.createSync();
+    return dir.listSync().map((entity) => entity.path.split('/').last).toList();
+  }
 
-  void addProfile() => Directory('${base.path}/${Uuid().v1()}').createSync();
+  void addProfile() =>
+      Directory('${base.path}/profiles/${Uuid().v1()}').createSync();
 }
