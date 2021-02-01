@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:taskc/taskc.dart';
 
+import 'package:taskw/taskw.dart';
+
 class DetailRoute extends StatefulWidget {
   DetailRoute(this.task);
 
