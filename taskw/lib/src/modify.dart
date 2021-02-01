@@ -1,3 +1,5 @@
+// ignore_for_file: always_put_control_body_on_new_line
+
 import 'package:taskc/taskc.dart';
 
 import 'package:taskw/taskw.dart';
@@ -31,6 +33,12 @@ class Modify {
         'new': _draft.priority,
       };
     }
+    if (!_listEquals(_draft.tags, _saved.tags)) {
+      result['tags'] = {
+        'old': _saved.tags,
+        'new': _draft.tags,
+      };
+    }
     return result;
   }
 
@@ -42,11 +50,26 @@ class Modify {
     _draft = _draft.copyWith(priority: () => priority);
   }
 
+  void setTags(List<String> tags) {
+    _draft = _draft.copyWith(tags: () => tags);
+  }
+
   void save({DateTime Function() modified}) {
     _storage.mergeTask(
       _draft.copyWith(modified: modified),
     );
     _saved = _storage.getTask(_uuid);
     _draft = _storage.getTask(_uuid);
+  }
+
+  // copied from 'package:flutter/foundation.dart'
+  bool _listEquals<T>(List<T> a, List<T> b) {
+    if (a == null) return b == null;
+    if (b == null || a.length != b.length) return false;
+    if (identical(a, b)) return true;
+    for (var index = 0; index < a.length; index += 1) {
+      if (a[index] != b[index]) return false;
+    }
+    return true;
   }
 }

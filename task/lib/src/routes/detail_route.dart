@@ -38,6 +38,9 @@ class _DetailRouteState extends State<DetailRoute> {
         case 'priority':
           modify.setPriority(newValue);
           break;
+        case 'tags':
+          modify.setTags(newValue);
+          break;
         default:
       }
       setState(() {});
@@ -149,6 +152,12 @@ class AttributeWidget extends StatelessWidget {
           value: localValue,
           callback: callback,
         );
+      case 'tags':
+        return TagsWidget(
+          name: name,
+          value: localValue,
+          callback: callback,
+        );
       default:
         return Card(
           child: ListTile(
@@ -235,6 +244,47 @@ class PriorityWidget extends StatelessWidget {
               return callback(null);
             default:
               return callback('H');
+          }
+        },
+      ),
+    );
+  }
+}
+
+class TagsWidget extends StatelessWidget {
+  TagsWidget({this.name, this.value, this.callback});
+
+  final String name;
+  final dynamic value;
+  final void Function(dynamic) callback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              Text(
+                '${'$name:'.padRight(13)}$value',
+                style: GoogleFonts.firaMono(),
+              ),
+            ],
+          ),
+        ),
+        onTap: () {
+          if (value == null) {
+            return callback(['next']);
+          } else if (value.contains('next')) {
+            value.remove('next');
+            if (value.isEmpty) {
+              return callback(null);
+            }
+            return callback(value);
+          } else {
+            value.add('next');
+            return callback(value);
           }
         },
       ),
