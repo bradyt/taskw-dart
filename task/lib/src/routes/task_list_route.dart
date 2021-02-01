@@ -29,8 +29,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
     getApplicationDocumentsDirectory().then((dir) {
       var p = Profiles(dir);
       if (p.listProfiles().isEmpty) {
-        p.addProfile();
-        p.setCurrentProfile(p.listProfiles().first);
+        p
+          ..addProfile()
+          ..setCurrentProfile(p.listProfiles().first);
       }
       tasks = p.getCurrentStorage().next();
       currentProfile = p.getCurrentProfile();
@@ -75,25 +76,25 @@ class _TaskListRouteState extends State<TaskListRoute> {
         ),
         actions: [
           TextButton(
-            child: Text('Cancel'),
             onPressed: () {
               Navigator.of(context).pop();
             },
+            child: Text('Cancel'),
           ),
           ElevatedButton(
-            child: Text('Submit'),
             onPressed: () {
               getApplicationDocumentsDirectory().then((dir) {
-                var p = Profiles(dir);
-                p.setAlias(
-                  profile: profile,
-                  alias: controller.text,
-                );
+                var p = Profiles(dir)
+                  ..setAlias(
+                    profile: profile,
+                    alias: controller.text,
+                  );
                 profiles[profile] = p.getAlias(profile);
                 setState(() {});
                 Navigator.of(context).pop();
               });
             },
+            child: Text('Submit'),
           ),
         ],
       ),
@@ -108,20 +109,19 @@ class _TaskListRouteState extends State<TaskListRoute> {
         content: Text('Delete profile?'),
         actions: [
           TextButton(
-            child: Text('Cancel'),
             onPressed: () {
               Navigator.of(context).pop();
             },
+            child: Text('Cancel'),
           ),
           ElevatedButton(
-            child: Text('Confirm'),
             onPressed: () async {
-              getApplicationDocumentsDirectory().then((dir) {
-                var p = Profiles(dir);
-                p.deleteProfile(profile);
+              await getApplicationDocumentsDirectory().then((dir) {
+                var p = Profiles(dir)..deleteProfile(profile);
                 if (p.listProfiles().isEmpty) {
-                  p.addProfile();
-                  p.setCurrentProfile(p.listProfiles().first);
+                  p
+                    ..addProfile()
+                    ..setCurrentProfile(p.listProfiles().first);
                 }
                 profiles = {
                   for (var profile in p.listProfiles())
@@ -136,6 +136,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
               });
               Navigator.of(context).pop();
             },
+            child: Text('Confirm'),
           ),
         ],
       ),
@@ -156,13 +157,12 @@ class _TaskListRouteState extends State<TaskListRoute> {
         ),
         actions: [
           TextButton(
-            child: Text('Cancel'),
             onPressed: () {
               Navigator.of(context).pop();
             },
+            child: Text('Cancel'),
           ),
           ElevatedButton(
-            child: Text('Submit'),
             onPressed: () {
               getApplicationDocumentsDirectory().then((dir) {
                 var now = DateTime.now().toUtc();
@@ -180,6 +180,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                 Navigator.of(context).pop();
               });
             },
+            child: Text('Submit'),
           ),
         ],
       ),
@@ -206,10 +207,11 @@ class _TaskListRouteState extends State<TaskListRoute> {
                           await Profiles(dir).getCurrentStorage().synchronize();
                       tasks = Profiles(dir).getCurrentStorage().next();
                       setState(() {});
+                      // ignore: deprecated_member_use
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text('${header['code']}: ${header['status']}'),
                       ));
-                    } catch (e, trace) {
+                    } on Exception catch (e, trace) {
                       showExceptionDialog(
                         context: context,
                         e: e,
@@ -238,7 +240,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                         onPressed: _addProfile,
                       ),
                     ),
-                    for (var profile in (profiles.keys ?? []))
+                    for (var profile in profiles.keys ?? [])
                       ExpansionTile(
                         key: PageStorageKey<String>('exp-$profile'),
                         leading: Radio<String>(
@@ -318,8 +320,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
                     getApplicationDocumentsDirectory().then((dir) {
                       var p = Profiles(dir);
                       if (p.listProfiles().isEmpty) {
-                        p.addProfile();
-                        p.setCurrentProfile(p.listProfiles().first);
+                        p
+                          ..addProfile()
+                          ..setCurrentProfile(p.listProfiles().first);
                       }
                       tasks = p.getCurrentStorage().next();
                       setState(() {});
@@ -329,7 +332,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                     title: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Text(
-                        '${task.description}',
+                        task.description,
                         style: GoogleFonts.firaMono(),
                       ),
                     ),

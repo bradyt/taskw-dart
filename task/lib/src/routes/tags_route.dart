@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:taskw/taskw.dart';
 
 class TagsRoute extends StatefulWidget {
-  TagsRoute({this.value, this.callback});
+  const TagsRoute({this.value, this.callback});
 
   final List<String> value;
   final void Function(List<String>) callback;
@@ -87,7 +87,6 @@ class TagsRouteState extends State<TagsRoute> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
         onPressed: () {
           var controller = TextEditingController();
           showDialog(
@@ -101,22 +100,23 @@ class TagsRouteState extends State<TagsRoute> {
               ),
               actions: [
                 TextButton(
-                  child: Text('Cancel'),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
+                  child: Text('Cancel'),
                 ),
                 ElevatedButton(
-                  child: Text('Submit'),
                   onPressed: () {
                     _addTag(controller.text);
                     Navigator.of(context).pop();
                   },
+                  child: Text('Submit'),
                 ),
               ],
             ),
           );
         },
+        child: Icon(Icons.add),
       ),
     );
   }

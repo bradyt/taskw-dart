@@ -8,7 +8,7 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class DetailRoute extends StatefulWidget {
-  DetailRoute(this.uuid);
+  const DetailRoute(this.uuid);
 
   final String uuid;
 
@@ -86,7 +86,6 @@ class _DetailRouteState extends State<DetailRoute> {
       floatingActionButton: (modify?.changes?.isEmpty ?? false)
           ? null
           : FloatingActionButton(
-              child: Icon(Icons.save),
               onPressed: () {
                 showDialog(
                   context: context,
@@ -121,13 +120,12 @@ class _DetailRouteState extends State<DetailRoute> {
                       ),
                       actions: [
                         TextButton(
-                          child: Text('Cancel'),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
+                          child: Text('Cancel'),
                         ),
                         ElevatedButton(
-                          child: Text('Submit'),
                           onPressed: () {
                             var now = DateTime.now().toUtc();
                             modify.save(
@@ -136,19 +134,21 @@ class _DetailRouteState extends State<DetailRoute> {
                             setState(() {});
                             Navigator.of(context).pop();
                           },
+                          child: Text('Submit'),
                         ),
                       ],
                     );
                   },
                 );
               },
+              child: Icon(Icons.save),
             ),
     );
   }
 }
 
 class AttributeWidget extends StatelessWidget {
-  AttributeWidget({this.name, this.value, this.callback});
+  const AttributeWidget({this.name, this.value, this.callback});
 
   final String name;
   final dynamic value;
@@ -156,8 +156,7 @@ class AttributeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var localValue =
-        (value is DateTime) ? (value as DateTime).toLocal() : value;
+    var localValue = (value is DateTime) ? value.toLocal() : value;
     switch (name) {
       case 'description':
         return DescriptionWidget(
@@ -214,7 +213,7 @@ class AttributeWidget extends StatelessWidget {
 }
 
 class DescriptionWidget extends StatelessWidget {
-  DescriptionWidget({this.name, this.value, this.callback});
+  const DescriptionWidget({this.name, this.value, this.callback});
 
   final String name;
   final dynamic value;
@@ -251,17 +250,17 @@ class DescriptionWidget extends StatelessWidget {
               ),
               actions: [
                 TextButton(
-                  child: Text('Cancel'),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
+                  child: Text('Cancel'),
                 ),
                 ElevatedButton(
-                  child: Text('Submit'),
                   onPressed: () {
                     callback(controller.text);
                     Navigator.of(context).pop();
                   },
+                  child: Text('Submit'),
                 ),
               ],
             ),
@@ -273,7 +272,7 @@ class DescriptionWidget extends StatelessWidget {
 }
 
 class StatusWidget extends StatelessWidget {
-  StatusWidget({this.name, this.value, this.callback});
+  const StatusWidget({this.name, this.value, this.callback});
 
   final String name;
   final dynamic value;
@@ -313,7 +312,7 @@ class StatusWidget extends StatelessWidget {
 }
 
 class DueWidget extends StatelessWidget {
-  DueWidget({this.name, this.value, this.callback});
+  const DueWidget({this.name, this.value, this.callback});
 
   final String name;
   final dynamic value;
@@ -365,7 +364,7 @@ class DueWidget extends StatelessWidget {
 }
 
 class PriorityWidget extends StatelessWidget {
-  PriorityWidget({this.name, this.value, this.callback});
+  const PriorityWidget({this.name, this.value, this.callback});
 
   final String name;
   final dynamic value;
@@ -404,7 +403,7 @@ class PriorityWidget extends StatelessWidget {
 }
 
 class TagsWidget extends StatelessWidget {
-  TagsWidget({this.name, this.value, this.callback});
+  const TagsWidget({this.name, this.value, this.callback});
 
   final String name;
   final dynamic value;

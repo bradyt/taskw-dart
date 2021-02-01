@@ -17,7 +17,7 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class ConfigureTaskserverRoute extends StatelessWidget {
-  ConfigureTaskserverRoute(this.profile, this.alias);
+  const ConfigureTaskserverRoute(this.profile, this.alias);
 
   final String profile;
   final String alias;
@@ -59,10 +59,12 @@ class ConfigureTaskserverRoute extends StatelessWidget {
                   var server = map['taskd.server'];
                   var address = server.split(':')[0];
                   var port = server.split(':')[1];
-                  var credentials = Credentials.fromString(map['taskd.credentials']);
+                  var credentials =
+                      Credentials.fromString(map['taskd.credentials']);
                   var org = credentials.org;
                   var user = credentials.user;
                   var key = credentials.key;
+                  // ignore: deprecated_member_use
                   Scaffold.of(context).showSnackBar(SnackBar(
                     content: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -87,9 +89,8 @@ class ConfigureTaskserverRoute extends StatelessWidget {
                 getApplicationDocumentsDirectory().then((dir) {
                   Profiles(dir).getStorage(profile).statistics().then(
                     (header) {
-                      var maxKeyLength = header.keys
-                          .map((key) => key.length)
-                          .reduce((a, b) => max(a as int, b as int));
+                      var maxKeyLength =
+                          header.keys.map<int>((key) => key.length).reduce(max);
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
@@ -114,10 +115,10 @@ class ConfigureTaskserverRoute extends StatelessWidget {
                           ),
                           actions: [
                             ElevatedButton(
-                              child: Text('Ok'),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
+                              child: Text('Ok'),
                             ),
                           ],
                         ),
@@ -148,20 +149,20 @@ class ConfigureTaskserverRoute extends StatelessWidget {
               title: Text(key),
               onTap: () async {
                 if (Platform.isMacOS) {
-                  final typeGroup = XTypeGroup(label: 'config', extensions: []);
-                  final file = await openFile(acceptedTypeGroups: [typeGroup]);
+                  var typeGroup = XTypeGroup(label: 'config', extensions: []);
+                  var file = await openFile(acceptedTypeGroups: [typeGroup]);
                   if (file != null) {
                     var contents = await file.readAsString();
-                    getApplicationDocumentsDirectory().then((dir) {
+                    await getApplicationDocumentsDirectory().then((dir) {
                       Profiles(dir)
                           .getStorage(profile)
                           .addFileContents(key: key, contents: contents);
                     });
                   }
                 } else {
-                  FilePickerWritable().openFile((_, file) async {
+                  await FilePickerWritable().openFile((_, file) async {
                     var contents = file.readAsStringSync();
-                    getApplicationDocumentsDirectory().then((dir) {
+                    await getApplicationDocumentsDirectory().then((dir) {
                       Profiles(dir)
                           .getStorage(profile)
                           .addFileContents(key: key, contents: contents);
