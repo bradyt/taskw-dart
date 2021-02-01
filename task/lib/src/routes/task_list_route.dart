@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -254,47 +253,10 @@ class _TaskListRouteState extends State<TaskListRoute> {
       var ascending = selectedSort.endsWith('+');
       pendingData.sort((entryA, entryB) {
         int result;
-        var a = entryA.value;
-        var b = entryB.value;
-        switch (sortColumn) {
-          case 'id':
-            result = entryA.key.compareTo(entryB.key);
-            break;
-          case 'entry':
-            result = a.entry.compareTo(b.entry);
-            break;
-          case 'due':
-            if (a.due == null && b.due == null) {
-              result = 0;
-            } else if (a.due == null) {
-              return 1;
-            } else if (b.due == null) {
-              return -1;
-            } else {
-              result = a.due.compareTo(b.due);
-            }
-            break;
-          case 'priority':
-            var compare = {'H': 2, 'M': 1, 'L': 0};
-            result = (compare[a.priority] ?? -1)
-                .compareTo(compare[b.priority] ?? -1);
-            break;
-          case 'tags':
-            for (var i = 0;
-                i < min(a.tags?.length ?? 0, b.tags?.length ?? 0);
-                i++) {
-              if (result == null || result == 0) {
-                result = a.tags[i].compareTo(b.tags[i]);
-              }
-            }
-            if (result == null || result == 0) {
-              result = (a.tags?.length ?? 0).compareTo(b.tags?.length ?? 0);
-            }
-            break;
-          case 'urgency':
-            result = -urgency(a).compareTo(urgency(b));
-            break;
-          default:
+        if (sortColumn == 'id') {
+          result = entryA.key.compareTo(entryB.key);
+        } else {
+          result = compareTasks(sortColumn)(entryA.value, entryB.value);
         }
         return ascending ? result : -result;
       });
