@@ -309,9 +309,11 @@ class _TaskListRouteState extends State<TaskListRoute> {
             icon: Icon(Icons.sort),
             onPressed: _toggleSortHeader,
           ),
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            onPressed: _togglePendingFilter,
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.filter_list),
+              onPressed: () => Scaffold.of(context).openEndDrawer(),
+            ),
           ),
         ],
       ),
@@ -506,6 +508,16 @@ class _TaskListRouteState extends State<TaskListRoute> {
             child: ListView(
               key: PageStorageKey('tags-filter'),
               children: [
+                Card(
+                  child: ListTile(
+                    title: Text(
+                      'filter:${pendingFilter ? 'status:pending' : ''}',
+                      style: GoogleFonts.firaMono(),
+                    ),
+                    onTap: _togglePendingFilter,
+                  ),
+                ),
+                Divider(),
                 Wrap(
                   spacing: 8,
                   runSpacing: 4,
