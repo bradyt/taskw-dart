@@ -19,7 +19,7 @@ Brief list of planned features:
 Slightly finer grained list of features that might be prioritized
 sooner than later:
 
-- [ ] Sort task list by fields like date created, tags, etc.
+- [x] Sort task list by fields like date created, tags, etc.
 - [ ] Add more Taskwarrior fields to edit view, like wait, until.
 - [x] Add a UI for editings tags, as currently user can only toggle
       the `next` tag.

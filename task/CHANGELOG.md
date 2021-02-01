@@ -1,5 +1,6 @@
 # 0.0.6
 
+- Add sort feature.
 - Add tag filtering UI.
 - Add scrollbar to task list view.
 - Display fields of Taskserver configuration on separate lines.

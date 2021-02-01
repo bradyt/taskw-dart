@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
   Map<String, String> profiles;
   Map<String, int> globalTags;
   Set<String> selectedTags;
+  String selectedSort;
 
   @override
   void initState() {
@@ -204,6 +206,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     try {
       var header = await Profiles(dir).getCurrentStorage().synchronize();
       tasks = Profiles(dir).getCurrentStorage().next();
+      await _sortTasks();
       globalTags = Profiles(dir).getCurrentStorage().tags();
       setState(() {});
       // ignore: deprecated_member_use
@@ -238,6 +241,54 @@ class _TaskListRouteState extends State<TaskListRoute> {
     }
     tasks = p.getCurrentStorage().next();
     globalTags = p.getCurrentStorage().tags();
+    setState(() {});
+  }
+
+  Future<void> _sortTasks() async {
+    var dir = await getApplicationDocumentsDirectory();
+    tasks = Profiles(dir).getCurrentStorage().next();
+    if (selectedSort != null) {
+      var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
+      var ascending = selectedSort.endsWith('+');
+      tasks.sort((a, b) {
+        int result;
+        switch (sortColumn) {
+          case 'entry':
+            result = a.entry.compareTo(b.entry);
+            break;
+          case 'due':
+            if (a.due == null && b.due == null) {
+              result = 0;
+            } else if (a.due == null) {
+              return 1;
+            } else if (b.due == null) {
+              return -1;
+            } else {
+              result = a.due.compareTo(b.due);
+            }
+            break;
+          case 'priority':
+            var compare = {'H': 2, 'M': 1, 'L': 0};
+            result = (compare[a.priority] ?? -1)
+                .compareTo(compare[b.priority] ?? -1);
+            break;
+          case 'tags':
+            for (var i = 0;
+                i < min(a.tags?.length ?? 0, b.tags?.length ?? 0);
+                i++) {
+              if (result == null || result == 0) {
+                result = a.tags[i].compareTo(b.tags[i]);
+              }
+            }
+            if (result == null || result == 0) {
+              result = (a.tags?.length ?? 0).compareTo(b.tags?.length ?? 0);
+            }
+            break;
+          default:
+        }
+        return ascending ? result : -result;
+      });
+    }
     setState(() {});
   }
 
@@ -338,60 +389,104 @@ class _TaskListRouteState extends State<TaskListRoute> {
           ),
         ),
       ),
-      body: Scrollbar(
-        child: ListView(
-          children: [
-            if (tasks != null)
-              for (var task in tasks)
-                if (selectedTags.isEmpty ||
-                    (task.tags != null &&
-                        task.tags
-                            .toSet()
-                            .intersection(selectedTags)
-                            .isNotEmpty))
-                  Card(
-                    child: InkWell(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailRoute(task.uuid),
-                        ),
-                      ).then((_) => _refreshTasks()),
-                      child: ListTile(
-                        title: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Text(
-                            task.description,
-                            style: GoogleFonts.firaMono(),
-                          ),
-                        ),
-                        subtitle: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: SingleChildScrollView(
+      body: Column(
+        children: [
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: Padding(
+              padding: EdgeInsets.all(4),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  for (var sort in [
+                    'entry',
+                    'due',
+                    'priority',
+                    'tags',
+                  ])
+                    ChoiceChip(
+                      label: Text(
+                        (selectedSort?.startsWith(sort) ?? false)
+                            ? selectedSort
+                            : sort,
+                        style: GoogleFonts.firaMono(),
+                      ),
+                      selected: selectedSort?.startsWith(sort) ?? false,
+                      onSelected: (newValue) async {
+                        if (selectedSort == '$sort+') {
+                          selectedSort = '$sort-';
+                        } else if (selectedSort == '$sort-') {
+                          selectedSort = null;
+                        } else {
+                          selectedSort = '$sort+';
+                        }
+                        await _sortTasks();
+                      },
+                    ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Scrollbar(
+              child: ListView(
+                children: [
+                  if (tasks != null)
+                    for (var task in tasks)
+                      if (selectedTags.isEmpty ||
+                          (task.tags != null &&
+                              task.tags
+                                  .toSet()
+                                  .intersection(selectedTags)
+                                  .isNotEmpty))
+                        Card(
+                          child: InkWell(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailRoute(task.uuid),
+                              ),
+                            ).then((_) => _refreshTasks()),
+                            child: ListTile(
+                              title: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Text(
-                                  '${age(task.entry)} '
-                                          '${(task.due != null) ? when(task.due) : ''} '
-                                          '${task?.priority ?? ''} '
-                                          '${task.tags?.join(' ') ?? ''}'
-                                      .replaceAll(RegExp(r' +'), ' '),
+                                  task.description,
                                   style: GoogleFonts.firaMono(),
                                 ),
                               ),
+                              subtitle: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Text(
+                                        '${age(task.entry)} '
+                                                '${(task.due != null) ? when(task.due) : ''} '
+                                                '${task?.priority ?? ''} '
+                                                '${task.tags?.join(' ') ?? ''}'
+                                            .replaceAll(RegExp(r' +'), ' '),
+                                        style: GoogleFonts.firaMono(),
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    '${urgency(task)}',
+                                    style: GoogleFonts.firaMono(),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              '${urgency(task)}',
-                              style: GoogleFonts.firaMono(),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-          ],
-        ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
       endDrawer: Drawer(
         child: SafeArea(
