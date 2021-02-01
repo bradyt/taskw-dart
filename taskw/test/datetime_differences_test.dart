@@ -32,6 +32,9 @@ void main() {
     test('fractional number of years', () {
       expect(difference(Duration(days: (365 * pi).round())), '3.1y');
     });
+    test('check rounding up of fractional number of years', () {
+      expect(difference(Duration(days: (365 * 2 * pi).round())), '6.3y');
+    });
     test('integer number of years', () {
       expect(difference(const Duration(days: 366)), '1y');
     });
