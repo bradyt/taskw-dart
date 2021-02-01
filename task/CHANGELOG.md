@@ -1,11 +1,11 @@
 # 0.0.6
 
-- Fix issue where tag editing page was not scrollable.
-- Add wait and until features.
-- Add toggle button to remove status:pending filter
-- Add id feature similar to cli task's.
 - Add sort feature.
 - Add tag filtering UI.
+- Add toggle button to remove status:pending filter
+- Add wait and until features.
+- Fix issue where tag editing page was not scrollable.
+- Add id feature similar to cli task's.
 - Add scrollbar to task list view.
 - Display fields of Taskserver configuration on separate lines.
 
