@@ -41,9 +41,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var dir = await getApplicationDocumentsDirectory();
     var p = Profiles(dir);
     if (p.listProfiles().isEmpty) {
-      p
-        ..addProfile()
-        ..setCurrentProfile(p.listProfiles().first);
+      p.setCurrentProfile(p.addProfile());
     }
     pendingData = p.getCurrentStorage().pendingData().entries.toList();
     await _sortTasks();
@@ -117,9 +115,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var dir = await getApplicationDocumentsDirectory();
     var p = Profiles(dir)..deleteProfile(profile);
     if (p.listProfiles().isEmpty) {
-      p
-        ..addProfile()
-        ..setCurrentProfile(p.listProfiles().first);
+      p.setCurrentProfile(p.addProfile());
       globalTags = p.getCurrentStorage().tags();
     }
     profiles = {
@@ -242,9 +238,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var dir = await getApplicationDocumentsDirectory();
     var p = Profiles(dir);
     if (p.listProfiles().isEmpty) {
-      p
-        ..addProfile()
-        ..setCurrentProfile(p.listProfiles().first);
+      p.setCurrentProfile(p.addProfile());
     }
     pendingData = p.getCurrentStorage().pendingData().entries.toList();
     globalTags = p.getCurrentStorage().tags();
