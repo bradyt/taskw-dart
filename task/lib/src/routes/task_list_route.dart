@@ -19,14 +19,13 @@ class TaskListRoute extends StatefulWidget {
 
 class _TaskListRouteState extends State<TaskListRoute> {
   List<Task> tasks;
-  List<String> profiles;
   String currentProfile;
-  Map<String, String> aliases;
+  Map<String, String> profiles;
 
   @override
   void initState() {
     super.initState();
-    aliases = {};
+    profiles = {};
     getApplicationDocumentsDirectory().then((dir) {
       var p = Profiles(dir);
       if (p.listProfiles().isEmpty) {
@@ -34,10 +33,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
         p.setCurrentProfile(p.listProfiles().first);
       }
       tasks = p.getCurrentStorage().next();
-      profiles = p.listProfiles();
       currentProfile = p.getCurrentProfile();
-      for (var profile in profiles) {
-        aliases[profile] = p.getAlias(profile);
+      for (var profile in p.listProfiles()) {
+        profiles[profile] = p.getAlias(profile);
       }
       setState(() {});
     });
@@ -46,7 +44,10 @@ class _TaskListRouteState extends State<TaskListRoute> {
   void _addProfile() {
     getApplicationDocumentsDirectory().then((dir) {
       Profiles(dir).addProfile();
-      profiles = Profiles(dir).listProfiles();
+      profiles = {
+        for (var profile in Profiles(dir).listProfiles())
+          profile: Profiles(dir).getAlias(profile),
+      };
       setState(() {});
     });
   }
@@ -62,7 +63,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
 
   void _renameProfile(String profile) {
     var controller = TextEditingController(
-      text: aliases[profile],
+      text: profiles[profile],
     );
     showDialog(
       context: context,
@@ -88,7 +89,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                   profile: profile,
                   alias: controller.text,
                 );
-                aliases[profile] = p.getAlias(profile);
+                profiles[profile] = p.getAlias(profile);
                 setState(() {});
                 Navigator.of(context).pop();
               });
@@ -122,9 +123,12 @@ class _TaskListRouteState extends State<TaskListRoute> {
                   p.addProfile();
                   p.setCurrentProfile(p.listProfiles().first);
                 }
-                profiles = p.listProfiles();
+                profiles = {
+                  for (var profile in p.listProfiles())
+                    profile: p.getAlias(profile),
+                };
                 if (currentProfile == profile) {
-                  p.setCurrentProfile(profiles.first);
+                  p.setCurrentProfile(profiles.keys.first);
                   currentProfile = p.getCurrentProfile();
                   tasks = p.getCurrentStorage().next();
                 }
@@ -184,9 +188,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
 
   @override
   Widget build(BuildContext context) {
-    var listAlias = (aliases[currentProfile]?.isEmpty ?? true)
+    var listAlias = (profiles[currentProfile]?.isEmpty ?? true)
         ? currentProfile
-        : aliases[currentProfile];
+        : profiles[currentProfile];
     return Scaffold(
       appBar: AppBar(
         title: Text(listAlias ?? ''),
@@ -234,7 +238,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                         onPressed: _addProfile,
                       ),
                     ),
-                    for (var profile in (profiles ?? []))
+                    for (var profile in (profiles.keys ?? []))
                       ExpansionTile(
                         key: PageStorageKey<String>('exp-$profile'),
                         leading: Radio<String>(
@@ -246,9 +250,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
                           key: PageStorageKey<String>('scroll-$profile'),
                           scrollDirection: Axis.horizontal,
                           child: Text(
-                            (aliases[profile]?.isEmpty ?? true)
+                            (profiles[profile]?.isEmpty ?? true)
                                 ? profile
-                                : aliases[profile],
+                                : profiles[profile],
                             style: GoogleFonts.firaMono(),
                           ),
                         ),
@@ -271,7 +275,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ConfigureTaskserverRoute(
-                                    profile, aliases[profile]),
+                                    profile, profiles[profile]),
                               ),
                             ).then((_) => setState(() {})),
                           ),
