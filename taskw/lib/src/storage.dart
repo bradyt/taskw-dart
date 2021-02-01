@@ -6,6 +6,8 @@ import 'dart:io';
 import 'package:taskc/taskc.dart' as taskc show statistics, synchronize;
 import 'package:taskc/taskc.dart' hide statistics, synchronize;
 
+import 'package:taskw/taskw.dart';
+
 class Storage {
   const Storage(this.profile);
 
@@ -17,7 +19,16 @@ class Storage {
   File get _key => File('${profile.path}/.task/first_last.key.pem');
 
   List<Task> next() {
-    return listTasks().where((task) => task.status == 'pending').toList();
+    return listTasks().where((task) => task.status == 'pending').toList()
+      ..sort((a, b) {
+        if (urgency(a) < urgency(b)) {
+          return 1;
+        } else if (urgency(a) > urgency(b)) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
   }
 
   List<Task> listTasks() => [
