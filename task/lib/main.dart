@@ -17,7 +17,7 @@ class TaskApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       darkTheme: ThemeData.dark(),
-      home: ProfilesRoute(),
+      home: TaskListRoute(),
     );
   }
 }

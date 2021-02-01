@@ -16,11 +16,15 @@ class Profiles {
   }
 
   String getCurrentProfile() {
-    return File('${base.path}/current-profile').readAsStringSync();
+    if (File('${base.path}/current-profile').existsSync()) {
+      return File('${base.path}/current-profile').readAsStringSync();
+    }
   }
 
   Storage getCurrentStorage() {
-    return Storage(Directory('${base.path}/profiles/${getCurrentProfile()}'));
+    if (getCurrentProfile() != null) {
+      return Storage(Directory('${base.path}/profiles/${getCurrentProfile()}'));
+    }
   }
 
   List<String> listProfiles() {
@@ -45,6 +49,15 @@ class Profiles {
     Directory('${base.path}/profiles/$uuid').createSync(recursive: true);
     File('${base.path}/profiles/$uuid/created')
         .writeAsStringSync('${DateTime.now().toUtc()}');
+    File('${base.path}/profiles/$uuid/alias').createSync();
+  }
+
+  void renameProfile({String profile, String alias}) {
+    File('${base.path}/profiles/$profile/alias').writeAsStringSync(alias);
+  }
+
+  String getAlias(String profile) {
+    return File('${base.path}/profiles/$profile/alias').readAsStringSync();
   }
 
   void deleteProfile(String profile) {
