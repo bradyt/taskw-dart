@@ -1,18 +1,20 @@
 String age(DateTime dt) => difference(DateTime.now().difference(dt));
 
 String difference(Duration difference) {
-  var days = difference.inDays;
+  String result;
+  var days = difference.abs().inDays;
   if (days > 365) {
-    return '${days / 365}y';
+    result = '${days / 365}y';
   } else if (days > 7) {
-    return '${days ~/ 7}w';
+    result = '${days ~/ 7}w';
   } else if (days > 0) {
-    return '${days}d';
-  } else if (difference.inHours > 0) {
-    return '${difference.inHours}h';
-  } else if (difference.inMinutes > 0) {
-    return '${difference.inMinutes}m';
+    result = '${days}d';
+  } else if (difference.abs().inHours > 0) {
+    result = '${difference.abs().inHours}h';
+  } else if (difference.abs().inMinutes > 0) {
+    result = '${difference.abs().inMinutes}m';
   } else {
-    return '${difference.inSeconds}s';
+    result = '${difference.abs().inSeconds}s';
   }
+  return '${(difference.isNegative) ? '-' : ''}$result';
 }
