@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -72,6 +73,9 @@ class ConfigureTaskserverRoute extends StatelessWidget {
                 getApplicationDocumentsDirectory().then((dir) {
                   Profiles(dir).getStorage(profile).statistics().then(
                     (header) {
+                      var maxKeyLength = header.keys
+                          .map((key) => key.length)
+                          .reduce((a, b) => max(a as int, b as int));
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
@@ -86,7 +90,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
                                   children: [
                                     for (var key in header.keys.toList())
                                       Text(
-                                        '$key:\n    ${header[key]}',
+                                        '${'$key:'.padRight(maxKeyLength + 1)} ${header[key]}',
                                         style: GoogleFonts.firaMono(),
                                       ),
                                   ],
