@@ -12,7 +12,7 @@ class TaskApp extends StatelessWidget {
     return MaterialApp(
       title: 'task',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       darkTheme: ThemeData.dark(),
