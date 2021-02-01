@@ -8,4 +8,9 @@ void main() {
       expect(age(DateTime.now().subtract(const Duration(minutes: 42))), '42m');
     });
   });
+  group('Test difference function;', () {
+    test('positive values', () {
+      expect(difference(const Duration(minutes: 42)), '42m');
+    });
+  });
 }
