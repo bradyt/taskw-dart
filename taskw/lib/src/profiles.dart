@@ -25,12 +25,26 @@ class Profiles {
 
   List<String> listProfiles() {
     var dir = Directory('${base.path}/profiles')..createSync();
-    return dir.listSync().map((entity) => entity.path.split('/').last).toList();
+    var dirs = dir.listSync().map((entity) => entity.path).toList()
+      ..sort((a, b) {
+        var aCreated = DateTime.parse(File('$a/created').readAsStringSync());
+        var bCreated = DateTime.parse(File('$b/created').readAsStringSync());
+        if (aCreated.isBefore(bCreated)) {
+          return -1;
+        } else if (aCreated.isAfter(bCreated)) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    return dirs.map((path) => path.split('/').last).toList();
   }
 
   void addProfile() {
-    Directory('${base.path}/profiles/${Uuid().v1()}')
-        .createSync(recursive: true);
+    var uuid = Uuid().v1();
+    Directory('${base.path}/profiles/$uuid').createSync(recursive: true);
+    File('${base.path}/profiles/$uuid/created')
+        .writeAsStringSync('${DateTime.now().toUtc()}');
   }
 
   void deleteProfile(String profile) {
