@@ -4,6 +4,8 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:taskw/taskw.dart';
 
+import 'package:task/task.dart';
+
 class ProfilesRoute extends StatefulWidget {
   @override
   _ProfilesRouteState createState() => _ProfilesRouteState();
@@ -30,10 +32,15 @@ class _ProfilesRouteState extends State<ProfilesRoute> {
     });
   }
 
-  void _setCurrentProfile(String profile) {
+  void _selectProfile(String profile) {
     getApplicationDocumentsDirectory().then((dir) {
       Profiles(dir).setCurrentProfile(profile);
-      setState(() {});
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TaskListRoute(),
+        ),
+      ).then((_) => setState(() {}));
     });
   }
 
@@ -48,7 +55,7 @@ class _ProfilesRouteState extends State<ProfilesRoute> {
           for (var profile in (_profiles ?? []))
             Card(
               child: InkWell(
-                onTap: () => _setCurrentProfile(profile),
+                onTap: () => _selectProfile(profile),
                 child: ListTile(
                   title: Text(profile),
                 ),
