@@ -11,7 +11,26 @@ class _TaskListRouteState extends State<TaskListRoute> {
     super.initState();
   }
 
-  void _addTask() {}
+  void _addTask() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        scrollable: true,
+        title: Text('Add task'),
+        content: TextField(),
+        actions: [
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          ElevatedButton(
+            child: Text('Submit'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
