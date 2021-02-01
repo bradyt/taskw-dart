@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
-  file_picker:
+  file_picker_writable:
   google_fonts:
   path_provider:
   taskw:

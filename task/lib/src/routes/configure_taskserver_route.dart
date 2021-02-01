@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:file_picker_writable/file_picker_writable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -134,16 +134,13 @@ class ConfigureTaskserverRoute extends StatelessWidget {
             ListTile(
               title: Text(key),
               onTap: () {
-                FilePicker.platform.pickFiles().then((result) {
-                  if (result != null) {
-                    getApplicationDocumentsDirectory().then((dir) {
-                      Profiles(dir).getStorage(profile).addFileContents(
-                            key: key,
-                            contents: File(result.files.single.path)
-                                .readAsStringSync(),
-                          );
-                    });
-                  }
+                FilePickerWritable().openFile((_, file) async {
+                  var contents = file.readAsStringSync();
+                  getApplicationDocumentsDirectory().then((dir) {
+                    Profiles(dir)
+                        .getStorage(profile)
+                        .addFileContents(key: key, contents: contents);
+                  });
                 });
               },
             ),
