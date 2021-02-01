@@ -5,6 +5,8 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:taskw/taskw.dart';
 
+import 'package:task/task.dart';
+
 class DetailRoute extends StatefulWidget {
   DetailRoute(this.uuid);
 
@@ -419,20 +421,15 @@ class TagsWidget extends StatelessWidget {
             ],
           ),
         ),
-        onTap: () {
-          if (value == null) {
-            return callback(['next']);
-          } else if (value.contains('next')) {
-            value.remove('next');
-            if (value.isEmpty) {
-              return callback(null);
-            }
-            return callback(value);
-          } else {
-            value.add('next');
-            return callback(value);
-          }
-        },
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TagsRoute(
+              value: value,
+              callback: callback,
+            ),
+          ),
+        ),
       ),
     );
   }

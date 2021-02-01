@@ -18,6 +18,16 @@ class Storage {
   File get _cert => File('${profile.path}/.task/first_last.cert.pem');
   File get _key => File('${profile.path}/.task/first_last.key.pem');
 
+  Map<String, int> tags() {
+    var listOfLists = listTasks().map((task) => task.tags);
+    var listOfTags = listOfLists.expand((tags) => tags ?? []);
+    var setOfTags = listOfTags.toSet() ?? {};
+    return {
+      if (setOfTags.isNotEmpty)
+        for (var tag in setOfTags) tag: 0,
+    };
+  }
+
   List<Task> next() {
     return listTasks().where((task) => task.status == 'pending').toList()
       ..sort((a, b) {

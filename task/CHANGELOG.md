@@ -1,5 +1,6 @@
 # 0.0.3
 
+- Add tag editing UI
 - Add due date and priority to task list view
 
 # 0.0.2
