@@ -1,55 +1,161 @@
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:taskc/taskc.dart';
 
 import 'package:taskw/taskw.dart';
 
 class DetailRoute extends StatefulWidget {
-  DetailRoute(this.task);
+  DetailRoute(this.uuid);
 
-  final Task task;
+  final String uuid;
 
   @override
   _DetailRouteState createState() => _DetailRouteState();
 }
 
 class _DetailRouteState extends State<DetailRoute> {
+  Set<String> changes;
+  Task savedTask;
+  Task draftedTask;
+
+  @override
+  void initState() {
+    super.initState();
+    changes = {};
+    getApplicationDocumentsDirectory().then((dir) {
+      savedTask = Profiles(dir).getCurrentStorage().getTask(widget.uuid);
+      draftedTask = Profiles(dir).getCurrentStorage().getTask(widget.uuid);
+      setState(() {});
+    });
+  }
+
+  void Function(String) callback(String name) {
+    return (newValue) {
+      if (newValue == savedTask.toJson()[name]) {
+        changes.remove(name);
+      } else {
+        changes.add(name);
+      }
+      if (newValue == null) {
+        draftedTask = Task.fromJson(
+          draftedTask.toJson()..remove(name),
+        );
+      } else {
+        draftedTask = Task.fromJson(
+          draftedTask.toJson()
+            ..update(
+              name,
+              (_) => newValue,
+              ifAbsent: () => newValue,
+            ),
+        );
+      }
+      setState(() {});
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.task.uuid.split('-').first),
+        title: Text(widget.uuid.split('-').first),
       ),
       body: ListView(
         children: [
-          for (var attribute in {
-            'description': widget.task.description,
-            'status': widget.task.status,
-            'entry': widget.task.entry,
-            'modified': widget.task.modified,
-            'end': widget.task.end,
-            'due': widget.task.due,
-            'priority': widget.task.priority,
-            'tags': widget.task.tags,
-            'urgency': urgency(widget.task),
-          }.entries)
-            AttributeWidget(
-              name: attribute.key,
-              value: attribute.value,
-            ),
+          if (draftedTask != null)
+            for (var entry in {
+              'description': draftedTask.description,
+              'status': draftedTask.status,
+              'entry': draftedTask.entry,
+              'modified': draftedTask.modified,
+              'end': draftedTask.end,
+              'due': draftedTask.due,
+              'priority': draftedTask.priority,
+              'tags': draftedTask.tags,
+              'urgency': urgency(draftedTask),
+            }.entries)
+              AttributeWidget(
+                name: entry.key,
+                value: entry.value,
+                callback: callback(entry.key),
+              ),
         ],
       ),
+      floatingActionButton: (changes.isEmpty)
+          ? null
+          : FloatingActionButton(
+              child: Icon(Icons.save),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      scrollable: true,
+                      title: Text('Review changes:'),
+                      content: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (draftedTask.toJson()['due'] !=
+                                savedTask.toJson()['due'])
+                              Text(
+                                'due: ${savedTask.due} ==> ${draftedTask.due}',
+                                style: GoogleFonts.firaMono(),
+                              ),
+                          ],
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          child: Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        ElevatedButton(
+                          child: Text('Submit'),
+                          onPressed: () {
+                            getApplicationDocumentsDirectory().then((dir) {
+                              var storage = Profiles(dir).getCurrentStorage();
+                              var now = DateTime.now().toUtc().toIso8601String();
+                              storage.mergeTask(
+                                Task.fromJson(
+                                  draftedTask.toJson()
+                                    ..update(
+                                      'modified',
+                                      (_) => now,
+                                      ifAbsent: () => now,
+                                    ),
+                                ),
+                              );
+                              savedTask = storage.getTask(widget.uuid);
+                              draftedTask = storage.getTask(widget.uuid);
+                              changes = {};
+                              setState(() {});
+                              Navigator.of(context).pop();
+                            });
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
     );
   }
 }
 
 class AttributeWidget extends StatelessWidget {
-  AttributeWidget({this.name, this.value});
+  AttributeWidget({this.name, this.value, this.callback});
 
   final String name;
   final dynamic value;
+  final void Function(String) callback;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +174,13 @@ class AttributeWidget extends StatelessWidget {
             ],
           ),
         ),
+        onTap: (name == 'due')
+            ? () {
+                var dt = DateTime.now().toUtc().toIso8601String();
+                return callback(dt);
+              }
+            : null,
+        onLongPress: (name == 'due') ? () => callback(null) : null,
       ),
     );
   }

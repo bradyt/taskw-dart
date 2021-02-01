@@ -34,7 +34,7 @@ void main() {
       expect(() => storage.listTasks(), returnsNormally);
 
       for (var description in ['foo', 'bar']) {
-        storage.addTask(
+        storage.mergeTask(
           Task(
             status: 'pending',
             uuid: Uuid().v1(),

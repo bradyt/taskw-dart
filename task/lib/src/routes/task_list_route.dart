@@ -156,12 +156,14 @@ class _TaskListRouteState extends State<TaskListRoute> {
             child: Text('Submit'),
             onPressed: () {
               getApplicationDocumentsDirectory().then((dir) {
-                Profiles(dir).getCurrentStorage().addTask(
+                var now = DateTime.now().toUtc();
+                Profiles(dir).getCurrentStorage().mergeTask(
                       Task(
                         status: 'pending',
                         uuid: Uuid().v1(),
-                        entry: DateTime.now().toUtc(),
+                        entry: now,
                         description: addTaskController.text,
+                        modified: now,
                       ),
                     );
                 tasks = Profiles(dir).getCurrentStorage().next();
@@ -285,9 +287,19 @@ class _TaskListRouteState extends State<TaskListRoute> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailRoute(task),
+                      builder: (context) => DetailRoute(task.uuid),
                     ),
-                  ).then((_) => setState(() {})),
+                  ).then((_) {
+                    getApplicationDocumentsDirectory().then((dir) {
+                      var p = Profiles(dir);
+                      if (p.listProfiles().isEmpty) {
+                        p.addProfile();
+                        p.setCurrentProfile(p.listProfiles().first);
+                      }
+                      tasks = p.getCurrentStorage().next();
+                      setState(() {});
+                    });
+                  }),
                   child: ListTile(
                     title: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,

@@ -40,15 +40,28 @@ class Storage {
             if (line.isNotEmpty) Task.fromJson(json.decode(line)),
       ];
 
-  void addTask(Task task) {
-    mergeTasks([task]);
+  void mergeTask(Task task) {
+    _mergeTasks([task]);
     File('${profile.path}/.task/backlog.data').writeAsStringSync(
       '${json.encode(task.toJson())}\n',
       mode: FileMode.append,
     );
   }
 
-  void mergeTasks(List<Task> tasks) {
+  Task getTask(String uuid) {
+    if (File('${profile.path}/.task/all.data').existsSync()) {
+      return File('${profile.path}/.task/all.data')
+          .readAsStringSync()
+          .trim()
+          .split('\n')
+          .where((line) => line.isNotEmpty)
+          .map((line) => Task.fromJson(json.decode(line)))
+          .firstWhere((task) => task.uuid == uuid);
+    }
+    return null;
+  }
+
+  void _mergeTasks(List<Task> tasks) {
     File('${profile.path}/.task/all.data').createSync(recursive: true);
     var lines = File('${profile.path}/.task/all.data')
         .readAsStringSync()
@@ -144,7 +157,7 @@ class Storage {
     var tasks = [
       for (var task in response.payload.tasks) Task.fromJson(json.decode(task)),
     ];
-    mergeTasks(tasks);
+    _mergeTasks(tasks);
     File('${profile.path}/.task/backlog.data')
         .writeAsStringSync('${response.payload.userKey}\n');
     return response.header;
