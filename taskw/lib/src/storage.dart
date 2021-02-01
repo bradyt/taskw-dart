@@ -117,6 +117,11 @@ class Storage {
     var cert = '${profile.path}/.task/first_last.cert.pem';
     var key = '${profile.path}/.task/first_last.key.pem';
     var server = config['taskd.server'].split(':');
+    if (server[0] == 'localhost') {
+      if (Platform.isAndroid) {
+        server[0] = '10.0.2.2';
+      }
+    }
     return Connection(
       address: server[0],
       port: int.parse(server[1]),
