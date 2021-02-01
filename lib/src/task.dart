@@ -35,15 +35,33 @@ class Task {
     var udas = {};
     for (var entry in rawJson.entries.toList()
       ..removeWhere((entry) => entry.value == null)) {
-      if ('entry,start,end,due,until,scheduled,wait,modified'
-          .contains(entry.key)) {
-        json[entry.key] = DateTime.parse(entry.value);
-        // ignore: lines_longer_than_80_chars
-      } else if ('status,uuid,description,recur,mask,imask,parent,project,priority,depends,tags,annotations'
-          .contains(entry.key)) {
-        json[entry.key] = entry.value;
-      } else if ('id,imask'.contains(entry.key)) {
+      if ({'id', 'imask'}.contains(entry.key)) {
         json[entry.key] = entry.value.round();
+      } else if ({
+        'entry',
+        'start',
+        'end',
+        'due',
+        'until',
+        'scheduled',
+        'wait',
+        'modified',
+      }.contains(entry.key)) {
+        json[entry.key] = DateTime.parse(entry.value);
+      } else if ({
+        'status',
+        'uuid',
+        'description',
+        'recur',
+        'mask',
+        'parent',
+        'project',
+        'priority',
+        'depends',
+        'tags',
+        'annotations',
+      }.contains(entry.key)) {
+        json[entry.key] = entry.value;
       } else {
         udas[entry.key] = entry.value;
       }

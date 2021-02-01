@@ -1,3 +1,7 @@
+# 0.0.4
+
+- Fix for imask parse.
+
 # 0.0.3
 
 - Add id field.
