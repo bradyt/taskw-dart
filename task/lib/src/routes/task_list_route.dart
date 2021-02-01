@@ -31,7 +31,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
         p.addProfile();
         p.setCurrentProfile(p.listProfiles().first);
       }
-      tasks = p.getCurrentStorage().listTasks();
+      tasks = p.getCurrentStorage().next();
       profiles = p.listProfiles();
       currentProfile = p.getCurrentProfile();
       for (var profile in profiles) {
@@ -52,7 +52,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
   void _selectProfile(String profile) {
     getApplicationDocumentsDirectory().then((dir) {
       Profiles(dir).setCurrentProfile(profile);
-      tasks = Profiles(dir).getCurrentStorage().listTasks();
+      tasks = Profiles(dir).getCurrentStorage().next();
       currentProfile = Profiles(dir).getCurrentProfile();
       setState(() {});
     });
@@ -80,7 +80,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
             onPressed: () {
               getApplicationDocumentsDirectory().then((dir) {
                 var p = Profiles(dir);
-                p.renameProfile(
+                p.setAlias(
                   profile: profile,
                   alias: controller.text,
                 );
@@ -122,7 +122,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                 if (currentProfile == profile) {
                   p.setCurrentProfile(profiles.first);
                   currentProfile = p.getCurrentProfile();
-                  tasks = p.getCurrentStorage().listTasks();
+                  tasks = p.getCurrentStorage().next();
                 }
                 setState(() {});
               });
@@ -164,7 +164,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                         description: addTaskController.text,
                       ),
                     );
-                tasks = Profiles(dir).getCurrentStorage().listTasks();
+                tasks = Profiles(dir).getCurrentStorage().next();
                 setState(() {});
                 Navigator.of(context).pop();
               });
@@ -177,9 +177,39 @@ class _TaskListRouteState extends State<TaskListRoute> {
 
   @override
   Widget build(BuildContext context) {
+    var listAlias = (aliases[currentProfile]?.isEmpty ?? true)
+        ? currentProfile
+        : aliases[currentProfile];
     return Scaffold(
       appBar: AppBar(
-        title: Text('task list'),
+        title: Text(listAlias ?? ''),
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                getApplicationDocumentsDirectory().then(
+                  (dir) async {
+                    try {
+                      var header =
+                          await Profiles(dir).getCurrentStorage().synchronize();
+                      tasks = Profiles(dir).getCurrentStorage().next();
+                      setState(() {});
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('${header['code']}: ${header['status']}'),
+                      ));
+                    } catch (e) {
+                      showExceptionDialog(
+                        context: context,
+                        e: e,
+                      );
+                    }
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -218,6 +248,19 @@ class _TaskListRouteState extends State<TaskListRoute> {
                     ),
                     title: Text('Rename profile'),
                     onTap: () => _renameProfile(profile),
+                  ),
+                  ListTile(
+                    leading: Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Icon(Icons.link),
+                    ),
+                    title: Text('Configure Taskserver'),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ConfigureTaskserverRoute(profile),
+                      ),
+                    ).then((_) => setState(() {})),
                   ),
                   ListTile(
                     leading: Padding(

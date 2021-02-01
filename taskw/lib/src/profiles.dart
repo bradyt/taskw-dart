@@ -11,22 +11,15 @@ class Profiles {
 
   final Directory base;
 
-  void setCurrentProfile(String profile) {
-    File('${base.path}/current-profile').writeAsStringSync(profile);
-  }
+  String addProfile() {
+    var uuid = Uuid().v1();
 
-  String getCurrentProfile() {
-    if (File('${base.path}/current-profile').existsSync()) {
-      return File('${base.path}/current-profile').readAsStringSync();
-    }
-    return null;
-  }
+    Directory('${base.path}/profiles/$uuid').createSync(recursive: true);
+    File('${base.path}/profiles/$uuid/created')
+        .writeAsStringSync('${DateTime.now().toUtc()}');
+    File('${base.path}/profiles/$uuid/alias').createSync();
 
-  Storage getCurrentStorage() {
-    if (getCurrentProfile() != null) {
-      return Storage(Directory('${base.path}/profiles/${getCurrentProfile()}'));
-    }
-    return null;
+    return uuid;
   }
 
   List<String> listProfiles() {
@@ -46,22 +39,6 @@ class Profiles {
     return dirs.map((path) => path.split('/').last).toList();
   }
 
-  void addProfile() {
-    var uuid = Uuid().v1();
-    Directory('${base.path}/profiles/$uuid').createSync(recursive: true);
-    File('${base.path}/profiles/$uuid/created')
-        .writeAsStringSync('${DateTime.now().toUtc()}');
-    File('${base.path}/profiles/$uuid/alias').createSync();
-  }
-
-  void renameProfile({String profile, String alias}) {
-    File('${base.path}/profiles/$profile/alias').writeAsStringSync(alias);
-  }
-
-  String getAlias(String profile) {
-    return File('${base.path}/profiles/$profile/alias').readAsStringSync();
-  }
-
   void deleteProfile(String profile) {
     Directory('${base.path}/profiles/$profile').deleteSync(recursive: true);
     if (File('${base.path}/current-profile').existsSync()) {
@@ -69,5 +46,38 @@ class Profiles {
         File('${base.path}/current-profile').deleteSync();
       }
     }
+  }
+
+  void setAlias({String profile, String alias}) {
+    File('${base.path}/profiles/$profile/alias').writeAsStringSync(alias);
+  }
+
+  String getAlias(String profile) {
+    var contents =
+        File('${base.path}/profiles/$profile/alias').readAsStringSync();
+    return (contents.isEmpty) ? null : contents;
+  }
+
+  void setCurrentProfile(String profile) {
+    File('${base.path}/current-profile').writeAsStringSync(profile);
+  }
+
+  String getCurrentProfile() {
+    if (File('${base.path}/current-profile').existsSync()) {
+      return File('${base.path}/current-profile').readAsStringSync();
+    }
+    return null;
+  }
+
+  Storage getCurrentStorage() {
+    var currentProfile = getCurrentProfile();
+    if (currentProfile != null) {
+      return getStorage(currentProfile);
+    }
+    return null;
+  }
+
+  Storage getStorage(String profile) {
+    return Storage(Directory('${base.path}/profiles/$profile'));
   }
 }
