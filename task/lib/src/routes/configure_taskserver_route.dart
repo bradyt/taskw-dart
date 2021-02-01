@@ -10,6 +10,8 @@ import 'package:file_selector/file_selector.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:taskc/taskc.dart';
+
 import 'package:taskw/taskw.dart';
 
 import 'package:task/task.dart';
@@ -54,12 +56,22 @@ class ConfigureTaskserverRoute extends StatelessWidget {
               onPressed: () {
                 getApplicationDocumentsDirectory().then((dir) {
                   var map = Profiles(dir).getStorage(profile).getConfig();
+                  var server = map['taskd.server'];
+                  var address = server.split(':')[0];
+                  var port = server.split(':')[1];
+                  var credentials = Credentials.fromString(map['taskd.credentials']);
+                  var org = credentials.org;
+                  var user = credentials.user;
+                  var key = credentials.key;
                   Scaffold.of(context).showSnackBar(SnackBar(
                     content: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Text(
-                        'taskd.server:      ${map['taskd.server']}\n'
-                        'taskd.credentials: ${map['taskd.credentials']}',
+                        'taskd.server.address:   $address\n'
+                        'taskd.server.port:      $port\n'
+                        'taskd.credentials.org:  $org\n'
+                        'taskd.credentials.user: $user\n'
+                        'taskd.credentials.key:  $key',
                         style: GoogleFonts.firaMono(),
                       ),
                     ),

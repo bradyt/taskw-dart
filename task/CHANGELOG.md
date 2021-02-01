@@ -1,3 +1,7 @@
+# 0.0.6
+
+- Display fields of Taskserver configuration on separate lines.
+
 # 0.0.5
 
 - Add privacy policy to Android app, to comply with Play Store.
