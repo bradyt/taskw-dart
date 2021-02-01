@@ -98,12 +98,22 @@ class _DetailRouteState extends State<DetailRoute> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             for (var change in modify.changes.entries)
-                              Text(
-                                '${change.key}:\n'
-                                '  old: ${change.value['old']}\n'
-                                '  new: ${change.value['new']}',
-                                style: GoogleFonts.firaMono(),
-                              ),
+                              (change) {
+                                var _old = change.value['old'];
+                                var _new = change.value['new'];
+                                if (_old is DateTime) {
+                                  _old = _old.toLocal();
+                                }
+                                if (_new is DateTime) {
+                                  _new = _new.toLocal();
+                                }
+                                return Text(
+                                  '${change.key}:\n'
+                                  '  old: $_old\n'
+                                  '  new: $_new',
+                                  style: GoogleFonts.firaMono(),
+                                );
+                              }(change),
                           ],
                         ),
                       ),
@@ -319,8 +329,7 @@ class DueWidget extends StatelessWidget {
           ),
         ),
         onTap: () async {
-          var initialDate =
-              DateTime.tryParse('$value') ?? DateTime.now();
+          var initialDate = DateTime.tryParse('$value') ?? DateTime.now();
           var dueDate = await showDatePicker(
             context: context,
             initialDate: initialDate,
@@ -339,7 +348,7 @@ class DueWidget extends StatelessWidget {
                   minutes: dueTime.minute,
                 ),
               );
-              return callback(due);
+              return callback(due.toUtc());
             }
           }
         },
