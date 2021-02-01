@@ -19,12 +19,14 @@ class Profiles {
     if (File('${base.path}/current-profile').existsSync()) {
       return File('${base.path}/current-profile').readAsStringSync();
     }
+    return null;
   }
 
   Storage getCurrentStorage() {
     if (getCurrentProfile() != null) {
       return Storage(Directory('${base.path}/profiles/${getCurrentProfile()}'));
     }
+    return null;
   }
 
   List<String> listProfiles() {
