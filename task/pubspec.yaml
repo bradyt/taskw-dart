@@ -32,3 +32,4 @@ flutter:
   assets:
     - ../fixture/
     - ../fixture/.task/
+    - google_fonts/
