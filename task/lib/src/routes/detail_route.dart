@@ -8,8 +8,9 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class DetailRoute extends StatefulWidget {
-  const DetailRoute(this.uuid);
+  const DetailRoute({this.id, this.uuid});
 
+  final int id;
   final String uuid;
 
   @override
@@ -68,7 +69,10 @@ class _DetailRouteState extends State<DetailRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('edit'),
+        title: Text(
+          'id: ${widget.id}',
+          style: GoogleFonts.firaMono(),
+        ),
       ),
       body: ListView(
         children: [

@@ -19,7 +19,7 @@ class TaskListRoute extends StatefulWidget {
 }
 
 class _TaskListRouteState extends State<TaskListRoute> {
-  List<Task> tasks;
+  List<MapEntry<int, Task>> pendingData;
   String currentProfile;
   Map<String, String> profiles;
   Map<String, int> globalTags;
@@ -31,6 +31,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     super.initState();
     profiles = {};
     selectedTags = {};
+    selectedSort = 'urgency+';
     _initialize();
   }
 
@@ -42,7 +43,8 @@ class _TaskListRouteState extends State<TaskListRoute> {
         ..addProfile()
         ..setCurrentProfile(p.listProfiles().first);
     }
-    tasks = p.getCurrentStorage().pendingData();
+    pendingData = p.getCurrentStorage().pendingData().entries.toList();
+    await _sortTasks();
     globalTags = p.getCurrentStorage().tags();
     currentProfile = p.getCurrentProfile();
     for (var profile in p.listProfiles()) {
@@ -65,7 +67,8 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var dir = await getApplicationDocumentsDirectory();
     Profiles(dir).setCurrentProfile(profile);
     currentProfile = Profiles(dir).getCurrentProfile();
-    tasks = Profiles(dir).getCurrentStorage().pendingData();
+    pendingData =
+        Profiles(dir).getCurrentStorage().pendingData().entries.toList();
     globalTags = Profiles(dir).getCurrentStorage().tags();
     setState(() {});
   }
@@ -123,7 +126,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     if (currentProfile == profile) {
       p.setCurrentProfile(profiles.keys.first);
       currentProfile = p.getCurrentProfile();
-      tasks = p.getCurrentStorage().pendingData();
+      pendingData = p.getCurrentStorage().pendingData().entries.toList();
       globalTags = p.getCurrentStorage().tags();
     }
     setState(() {});
@@ -166,7 +169,8 @@ class _TaskListRouteState extends State<TaskListRoute> {
             modified: now,
           ),
         );
-    tasks = Profiles(dir).getCurrentStorage().pendingData();
+    pendingData =
+        Profiles(dir).getCurrentStorage().pendingData().entries.toList();
     setState(() {});
   }
 
@@ -205,7 +209,8 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var dir = await getApplicationDocumentsDirectory();
     try {
       var header = await Profiles(dir).getCurrentStorage().synchronize();
-      tasks = Profiles(dir).getCurrentStorage().pendingData();
+      pendingData =
+          Profiles(dir).getCurrentStorage().pendingData().entries.toList();
       await _sortTasks();
       globalTags = Profiles(dir).getCurrentStorage().tags();
       setState(() {});
@@ -239,20 +244,26 @@ class _TaskListRouteState extends State<TaskListRoute> {
         ..addProfile()
         ..setCurrentProfile(p.listProfiles().first);
     }
-    tasks = p.getCurrentStorage().pendingData();
+    pendingData = p.getCurrentStorage().pendingData().entries.toList();
     globalTags = p.getCurrentStorage().tags();
     setState(() {});
   }
 
   Future<void> _sortTasks() async {
     var dir = await getApplicationDocumentsDirectory();
-    tasks = Profiles(dir).getCurrentStorage().pendingData();
+    pendingData =
+        Profiles(dir).getCurrentStorage().pendingData().entries.toList();
     if (selectedSort != null) {
       var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
       var ascending = selectedSort.endsWith('+');
-      tasks.sort((a, b) {
+      pendingData.sort((entryA, entryB) {
         int result;
+        var a = entryA.value;
+        var b = entryB.value;
         switch (sortColumn) {
+          case 'id':
+            result = entryA.key.compareTo(entryB.key);
+            break;
           case 'entry':
             result = a.entry.compareTo(b.entry);
             break;
@@ -283,6 +294,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
             if (result == null || result == 0) {
               result = (a.tags?.length ?? 0).compareTo(b.tags?.length ?? 0);
             }
+            break;
+          case 'urgency':
+            result = -urgency(a).compareTo(urgency(b));
             break;
           default:
         }
@@ -400,10 +414,12 @@ class _TaskListRouteState extends State<TaskListRoute> {
                 runSpacing: 4,
                 children: [
                   for (var sort in [
+                    'id',
                     'entry',
                     'due',
                     'priority',
                     'tags',
+                    'urgency',
                   ])
                     ChoiceChip(
                       label: Text(
@@ -417,7 +433,11 @@ class _TaskListRouteState extends State<TaskListRoute> {
                         if (selectedSort == '$sort+') {
                           selectedSort = '$sort-';
                         } else if (selectedSort == '$sort-') {
-                          selectedSort = null;
+                          if (sort == 'urgency') {
+                            selectedSort = 'id+';
+                          } else {
+                            selectedSort = 'urgency+';
+                          }
                         } else {
                           selectedSort = '$sort+';
                         }
@@ -432,12 +452,12 @@ class _TaskListRouteState extends State<TaskListRoute> {
             child: Scrollbar(
               child: ListView(
                 children: [
-                  if (tasks != null)
-                    for (var task
-                        in tasks.where((task) => task.status == 'pending'))
+                  if (pendingData != null)
+                    for (var task in pendingData
+                        .where((entry) => entry.value.status == 'pending'))
                       if (selectedTags.isEmpty ||
-                          (task.tags != null &&
-                              task.tags
+                          (task.value.tags != null &&
+                              task.value.tags
                                   .toSet()
                                   .intersection(selectedTags)
                                   .isNotEmpty))
@@ -446,14 +466,18 @@ class _TaskListRouteState extends State<TaskListRoute> {
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => DetailRoute(task.uuid),
+                                builder: (context) => DetailRoute(
+                                  id: task.key,
+                                  uuid: task.value.uuid,
+                                ),
                               ),
                             ).then((_) => _refreshTasks()),
                             child: ListTile(
                               title: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Text(
-                                  task.description,
+                                  '${task.key} '
+                                  '${task.value.description}',
                                   style: GoogleFonts.firaMono(),
                                 ),
                               ),
@@ -465,17 +489,17 @@ class _TaskListRouteState extends State<TaskListRoute> {
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
                                       child: Text(
-                                        '${age(task.entry)} '
-                                                '${(task.due != null) ? when(task.due) : ''} '
-                                                '${task?.priority ?? ''} '
-                                                '${task.tags?.join(' ') ?? ''}'
+                                        '${age(task.value.entry)} '
+                                                '${(task.value.due != null) ? when(task.value.due) : ''} '
+                                                '${task.value?.priority ?? ''} '
+                                                '${task.value.tags?.join(' ') ?? ''}'
                                             .replaceAll(RegExp(r' +'), ' '),
                                         style: GoogleFonts.firaMono(),
                                       ),
                                     ),
                                   ),
                                   Text(
-                                    '${urgency(task)}',
+                                    '${urgency(task.value)}',
                                     style: GoogleFonts.firaMono(),
                                   ),
                                 ],

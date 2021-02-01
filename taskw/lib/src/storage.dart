@@ -20,7 +20,7 @@ class Storage {
   File get _key => File('${profile.path}/.task/first_last.key.pem');
 
   Map<String, int> tags() {
-    var listOfLists = pendingData().map((task) => task.tags);
+    var listOfLists = pendingData().values.map((task) => task.tags);
     var listOfTags = listOfLists.expand((tags) => tags ?? []);
     var setOfTags = listOfTags.toSet() ?? {};
     return SplayTreeMap.of({
@@ -53,7 +53,7 @@ class Storage {
     }
   }
 
-  List<Task> pendingData() {
+  Map<int, Task> pendingData() {
     var data = allData().where(
         (task) => task.status != 'completed' && task.status != 'deleted');
     var now = DateTime.now();
@@ -65,7 +65,11 @@ class Storage {
       data = allData().where(
           (task) => task.status != 'completed' && task.status != 'deleted');
     }
-    return data.toList();
+    return SplayTreeMap.of(Map.fromEntries(data
+        .toList()
+        .asMap()
+        .entries
+        .map((entry) => MapEntry(entry.key + 1, entry.value))));
   }
 
   List<Task> allData() => [

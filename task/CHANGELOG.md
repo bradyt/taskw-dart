@@ -2,6 +2,7 @@
 
 - Fix issue where tag editing page was not scrollable.
 - Add wait and until features.
+- Add id feature similar to cli task's.
 - Add sort feature.
 - Add tag filtering UI.
 - Add scrollbar to task list view.

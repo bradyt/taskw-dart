@@ -31,7 +31,7 @@ void main() {
 
       var storage = profiles.getCurrentStorage();
 
-      expect(() => storage.listTasks(), returnsNormally);
+      expect(() => storage.pendingData(), returnsNormally);
 
       for (var description in ['foo', 'bar']) {
         storage.mergeTask(
@@ -47,11 +47,11 @@ void main() {
         );
       }
 
-      var tasks = storage.listTasks();
+      var tasks = storage.pendingData();
 
       expect(tasks.length, 2);
-      expect(tasks.first.description, 'foo');
-      expect(tasks.last.description, 'bar');
+      expect(tasks[1].description, 'foo');
+      expect(tasks[2].description, 'bar');
     });
   });
 }
