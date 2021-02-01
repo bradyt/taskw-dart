@@ -32,28 +32,39 @@ class _DetailRouteState extends State<DetailRoute> {
             'priority': widget.task.priority,
             'tags': widget.task.tags,
           }.entries)
-            ((attribute) {
-              var name = attribute.key;
-              var value = (attribute.value is DateTime)
-                  ? attribute.value.toLocal()
-                  : attribute.value;
-              return Card(
-                child: ListTile(
-                  title: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        Text(
-                          '${'$name:'.padRight(13)}$value',
-                          style: GoogleFonts.firaMono(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            })(attribute),
+            AttributeWidget(
+              name: attribute.key,
+              value: attribute.value,
+            ),
         ],
+      ),
+    );
+  }
+}
+
+class AttributeWidget extends StatelessWidget {
+  AttributeWidget({this.name, this.value});
+
+  final String name;
+  final dynamic value;
+
+  @override
+  Widget build(BuildContext context) {
+    var localValue =
+        (value is DateTime) ? (value as DateTime).toLocal() : value;
+    return Card(
+      child: ListTile(
+        title: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              Text(
+                '${'$name:'.padRight(13)}$localValue',
+                style: GoogleFonts.firaMono(),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
