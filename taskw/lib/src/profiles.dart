@@ -7,6 +7,9 @@ class Profiles {
 
   final Directory base;
 
+  void setCurrentProfile(String profile) =>
+      File('${base.path}/current-profile').writeAsStringSync(profile);
+
   List<String> listProfiles() {
     var dir = Directory('${base.path}/profiles');
     dir.createSync();

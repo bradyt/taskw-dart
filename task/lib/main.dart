@@ -53,6 +53,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _setCurrentProfile(String profile) {
+    getApplicationDocumentsDirectory().then((dir) {
+      Profiles(dir).setCurrentProfile(profile);
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,8 +70,11 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           for (var profile in (_profiles ?? []))
             Card(
-              child: ListTile(
-                title: Text(profile),
+              child: InkWell(
+                onTap: () => _setCurrentProfile(profile),
+                child: ListTile(
+                  title: Text(profile),
+                ),
               ),
             ),
         ],
