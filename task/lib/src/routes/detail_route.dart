@@ -70,7 +70,7 @@ class _DetailRouteState extends State<DetailRoute> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'id: ${widget.id}',
+          'id: ${(widget.id == 0) ? '-' : widget.id}',
           style: GoogleFonts.firaMono(),
         ),
       ),
