@@ -124,7 +124,8 @@ class Storage {
         ..setTrustedCertificates(ca)
         ..useCertificateChain(cert)
         ..usePrivateKey(key),
-      onBadCertificate: (_) => true,
+      onBadCertificate:
+          (Platform.isIOS || Platform.isMacOS) ? (_) => true : null,
     );
   }
 
