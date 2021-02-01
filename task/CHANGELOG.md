@@ -1,3 +1,11 @@
+# 0.0.5
+
+- Make the following display improvements:
+  - 3.1424657534246574y ==> 3.1y
+  - 1.0027397260273974y ==> 1y
+  - 12w ==> 3mo
+  - 42m ==> 42min
+
 # 0.0.4
 
 - Fix internet permission on Android.
