@@ -21,6 +21,18 @@ class Modify {
 
   Map get changes {
     var result = {};
+    if (_draft.status != _saved.status) {
+      result['status'] = {
+        'old': _saved.status,
+        'new': _draft.status,
+      };
+    }
+    if (_draft.end != _saved.end) {
+      result['end'] = {
+        'old': _saved.end,
+        'new': _draft.end,
+      };
+    }
     if (_draft.due != _saved.due) {
       result['due'] = {
         'old': _saved.due,
@@ -40,6 +52,21 @@ class Modify {
       };
     }
     return result;
+  }
+
+  void setStatus(String status) {
+    if (status == 'pending') {
+      _draft = _draft.copyWith(
+        status: () => status,
+        end: () => null,
+      );
+    } else {
+      var now = DateTime.now().toUtc();
+      _draft = _draft.copyWith(
+        status: () => status,
+        end: () => now,
+      );
+    }
   }
 
   void setDue(DateTime due) {

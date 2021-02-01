@@ -32,6 +32,9 @@ class _DetailRouteState extends State<DetailRoute> {
   void Function(dynamic) callback(String name) {
     return (newValue) {
       switch (name) {
+        case 'status':
+          modify.setStatus(newValue);
+          break;
         case 'due':
           modify.setDue(newValue);
           break;
@@ -140,6 +143,12 @@ class AttributeWidget extends StatelessWidget {
     var localValue =
         (value is DateTime) ? (value as DateTime).toLocal() : value;
     switch (name) {
+      case 'status':
+        return StatusWidget(
+          name: name,
+          value: localValue,
+          callback: callback,
+        );
       case 'due':
         return DueWidget(
           name: name,
@@ -175,6 +184,46 @@ class AttributeWidget extends StatelessWidget {
           ),
         );
     }
+  }
+}
+
+class StatusWidget extends StatelessWidget {
+  StatusWidget({this.name, this.value, this.callback});
+
+  final String name;
+  final dynamic value;
+  final void Function(dynamic) callback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              Text(
+                '${'$name:'.padRight(13)}$value',
+                style: GoogleFonts.firaMono(),
+              ),
+            ],
+          ),
+        ),
+        onTap: () {
+          switch (value) {
+            case 'pending':
+              return callback('completed');
+              break;
+            case 'completed':
+              return callback('deleted');
+              break;
+            case 'deleted':
+              return callback('pending');
+              break;
+          }
+        },
+      ),
+    );
   }
 }
 
