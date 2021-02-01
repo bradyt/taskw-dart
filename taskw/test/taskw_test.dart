@@ -38,6 +38,9 @@ void main() {
             uuid: Uuid().v1(),
             entry: DateTime.now().toUtc(),
             description: description,
+            tags: const [],
+            annotations: const [],
+            udas: const {},
           ),
         );
       }
