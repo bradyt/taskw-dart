@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:task/task.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(TaskApp());
 }
 
-class MyApp extends StatelessWidget {
+class TaskApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
