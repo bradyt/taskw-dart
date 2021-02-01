@@ -261,7 +261,8 @@ class _TaskListRouteState extends State<TaskListRoute> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ConfigureTaskserverRoute(profile),
+                        builder: (context) =>
+                            ConfigureTaskserverRoute(profile, aliases[profile]),
                       ),
                     ).then((_) => setState(() {})),
                   ),

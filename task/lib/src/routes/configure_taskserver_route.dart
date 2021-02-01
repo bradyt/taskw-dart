@@ -14,15 +14,16 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class ConfigureTaskserverRoute extends StatelessWidget {
-  ConfigureTaskserverRoute(this.profile);
+  ConfigureTaskserverRoute(this.profile, this.alias);
 
   final String profile;
+  final String alias;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(profile.split('-').first),
+        title: Text(alias ?? profile),
         actions: [
           if (kDebugMode)
             IconButton(
