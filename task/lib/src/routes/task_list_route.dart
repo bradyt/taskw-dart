@@ -198,10 +198,11 @@ class _TaskListRouteState extends State<TaskListRoute> {
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text('${header['code']}: ${header['status']}'),
                       ));
-                    } catch (e) {
+                    } catch (e, trace) {
                       showExceptionDialog(
                         context: context,
                         e: e,
+                        trace: trace,
                       );
                     }
                   },

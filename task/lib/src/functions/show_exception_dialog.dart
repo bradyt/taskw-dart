@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
-void showExceptionDialog({context, e}) {
+void showExceptionDialog({context, e, trace}) {
   print(e);
-  print('${e.stackTrace}');
+  if (trace != null) {
+    print(trace);
+  }
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
       scrollable: true,
       title: SelectableText('${e.runtimeType}'),
-      content: SelectableText('$e\n${e.stackTrace}'),
+      content: SelectableText('$e${(trace != null ? '\n$trace' : '')}'),
       actions: [
         ElevatedButton(
           child: Text('Ok'),
