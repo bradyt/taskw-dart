@@ -141,12 +141,12 @@ class Storage {
       credentials: _getCredentials(config),
       payload: payload,
     );
-    File('${profile.path}/.task/backlog.data')
-        .writeAsStringSync('${response.payload.userKey}\n');
     var tasks = [
       for (var task in response.payload.tasks) Task.fromJson(json.decode(task)),
     ];
     mergeTasks(tasks);
+    File('${profile.path}/.task/backlog.data')
+        .writeAsStringSync('${response.payload.userKey}\n');
     return response.header;
   }
 }
