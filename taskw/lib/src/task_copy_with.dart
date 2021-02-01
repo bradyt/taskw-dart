@@ -4,6 +4,7 @@ import 'package:taskc/taskc.dart';
 
 extension TaskCopyWith on Task {
   Task copyWith({
+    int Function() id,
     String Function() status,
     String Function() uuid,
     DateTime Function() entry,
@@ -27,6 +28,7 @@ extension TaskCopyWith on Task {
     Map Function() udas,
   }) {
     return Task(
+      id: id == null ? this.id : id(),
       status: status == null ? this.status : status(),
       uuid: uuid == null ? this.uuid : uuid(),
       entry: entry == null ? this.entry : entry(),

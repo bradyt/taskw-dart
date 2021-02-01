@@ -18,13 +18,14 @@ class TaskListRoute extends StatefulWidget {
 }
 
 class _TaskListRouteState extends State<TaskListRoute> {
-  List<MapEntry<int, Task>> pendingData;
+  List<Task> taskData;
   String currentProfile;
   Map<String, String> profiles;
   Map<String, int> globalTags;
   Set<String> selectedTags;
   String selectedSort;
   bool sortHeaderVisible;
+  bool pendingFilter;
 
   @override
   void initState() {
@@ -33,34 +34,32 @@ class _TaskListRouteState extends State<TaskListRoute> {
     selectedTags = {};
     selectedSort = 'urgency+';
     sortHeaderVisible = false;
+    pendingFilter = true;
     _initialize();
   }
 
-  Future<void> _sortAndFilterPendingData() async {
+  Future<void> _sortAndFilterTaskData() async {
     var dir = await getApplicationDocumentsDirectory();
-    pendingData = Profiles(dir)
-        .getCurrentStorage()
-        .pendingData()
-        .entries
+    var storage = Profiles(dir).getCurrentStorage();
+    var data = pendingFilter
+        ? storage.pendingData().where((task) => task.status == 'pending')
+        : storage.allData();
+    taskData = data
         .where((task) =>
-            task.value.status == 'pending' &&
-            (selectedTags.isEmpty ||
-                (task.value.tags != null &&
-                    task.value.tags
-                        .toSet()
-                        .intersection(selectedTags)
-                        .isNotEmpty)))
+            selectedTags.isEmpty ||
+            (task.tags != null &&
+                task.tags.toSet().intersection(selectedTags).isNotEmpty))
         .toList();
 
     if (selectedSort != null) {
       var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
       var ascending = selectedSort.endsWith('+');
-      pendingData.sort((entryA, entryB) {
+      taskData.sort((a, b) {
         int result;
         if (sortColumn == 'id') {
-          result = entryA.key.compareTo(entryB.key);
+          result = a.id.compareTo(b.id);
         } else {
-          result = compareTasks(sortColumn)(entryA.value, entryB.value);
+          result = compareTasks(sortColumn)(a, b);
         }
         return ascending ? result : -result;
       });
@@ -75,7 +74,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     if (p.listProfiles().isEmpty) {
       p.setCurrentProfile(p.addProfile());
     }
-    await _sortAndFilterPendingData();
+    await _sortAndFilterTaskData();
     globalTags = p.getCurrentStorage().tags();
     currentProfile = p.getCurrentProfile();
     for (var profile in p.listProfiles()) {
@@ -100,7 +99,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     currentProfile = Profiles(dir).getCurrentProfile();
     selectedSort = 'urgency+';
     selectedTags = {};
-    await _sortAndFilterPendingData();
+    await _sortAndFilterTaskData();
     globalTags = Profiles(dir).getCurrentStorage().tags();
     setState(() {});
   }
@@ -151,7 +150,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
       globalTags = p.getCurrentStorage().tags();
       selectedSort = 'urgency+';
       selectedTags = {};
-      await _sortAndFilterPendingData();
+      await _sortAndFilterTaskData();
     }
     profiles = {
       for (var profile in p.listProfiles()) profile: p.getAlias(profile),
@@ -161,7 +160,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
       currentProfile = p.getCurrentProfile();
       selectedSort = 'urgency+';
       selectedTags = {};
-      await _sortAndFilterPendingData();
+      await _sortAndFilterTaskData();
       globalTags = p.getCurrentStorage().tags();
     }
     setState(() {});
@@ -204,7 +203,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
             modified: now,
           ),
         );
-    await _sortAndFilterPendingData();
+    await _sortAndFilterTaskData();
     setState(() {});
   }
 
@@ -243,7 +242,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var dir = await getApplicationDocumentsDirectory();
     try {
       var header = await Profiles(dir).getCurrentStorage().synchronize();
-      await _sortAndFilterPendingData();
+      await _sortAndFilterTaskData();
       globalTags = Profiles(dir).getCurrentStorage().tags();
       setState(() {});
       // ignore: deprecated_member_use
@@ -265,7 +264,13 @@ class _TaskListRouteState extends State<TaskListRoute> {
     } else {
       selectedTags.add(tag);
     }
-    await _sortAndFilterPendingData();
+    await _sortAndFilterTaskData();
+    setState(() {});
+  }
+
+  Future<void> _togglePendingFilter() async {
+    pendingFilter = !pendingFilter;
+    await _sortAndFilterTaskData();
     setState(() {});
   }
 
@@ -275,7 +280,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     if (p.listProfiles().isEmpty) {
       p.setCurrentProfile(p.addProfile());
     }
-    await _sortAndFilterPendingData();
+    await _sortAndFilterTaskData();
     globalTags = p.getCurrentStorage().tags();
     setState(() {});
   }
@@ -303,6 +308,10 @@ class _TaskListRouteState extends State<TaskListRoute> {
           IconButton(
             icon: Icon(Icons.sort),
             onPressed: _toggleSortHeader,
+          ),
+          IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: _togglePendingFilter,
           ),
         ],
       ),
@@ -425,7 +434,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                           } else {
                             selectedSort = '$sort+';
                           }
-                          await _sortAndFilterPendingData();
+                          await _sortAndFilterTaskData();
                         },
                       ),
                   ],
@@ -436,16 +445,16 @@ class _TaskListRouteState extends State<TaskListRoute> {
             child: Scrollbar(
               child: ListView(
                 children: [
-                  if (pendingData != null)
-                    for (var task in pendingData)
+                  if (taskData != null)
+                    for (var task in taskData)
                       Card(
                         child: InkWell(
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => DetailRoute(
-                                id: task.key,
-                                uuid: task.value.uuid,
+                                id: task.id,
+                                uuid: task.uuid,
                               ),
                             ),
                           ).then((_) => _refreshTasks()),
@@ -453,8 +462,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
                             title: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Text(
-                                '${task.key} '
-                                '${task.value.description}',
+                                '${(task.id == 0) ? '-' : task.id} '
+                                '${pendingFilter ? '' : '${task.status[0].toUpperCase()} '}'
+                                '${task.description}',
                                 style: GoogleFonts.firaMono(),
                               ),
                             ),
@@ -465,17 +475,17 @@ class _TaskListRouteState extends State<TaskListRoute> {
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Text(
-                                      '${age(task.value.entry)} '
-                                              '${(task.value.due != null) ? when(task.value.due) : ''} '
-                                              '${task.value?.priority ?? ''} '
-                                              '${task.value.tags?.join(' ') ?? ''}'
+                                      '${age(task.entry)} '
+                                              '${(task.due != null) ? when(task.due) : ''} '
+                                              '${task?.priority ?? ''} '
+                                              '${task.tags?.join(' ') ?? ''}'
                                           .replaceAll(RegExp(r' +'), ' '),
                                       style: GoogleFonts.firaMono(),
                                     ),
                                   ),
                                 ),
                                 Text(
-                                  '${urgency(task.value)}',
+                                  '${urgency(task)}',
                                   style: GoogleFonts.firaMono(),
                                 ),
                               ],

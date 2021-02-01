@@ -20,7 +20,7 @@ class Storage {
   File get _key => File('${profile.path}/.task/first_last.key.pem');
 
   Map<String, int> tags() {
-    var listOfLists = pendingData().values.map((task) => task.tags);
+    var listOfLists = pendingData().map((task) => task.tags);
     var listOfTags = listOfLists.expand((tags) => tags ?? []);
     var setOfTags = listOfTags.toSet() ?? {};
     return SplayTreeMap.of({
@@ -53,8 +53,8 @@ class Storage {
     }
   }
 
-  Map<int, Task> pendingData() {
-    var data = allData().where(
+  List<Task> pendingData() {
+    var data = _allData().where(
         (task) => task.status != 'completed' && task.status != 'deleted');
     var now = DateTime.now();
     if (data.any((task) =>
@@ -62,17 +62,31 @@ class Storage {
         (task.status == 'waiting' &&
             (task.wait == null || task.wait.isBefore(now))))) {
       updateWaitOrUntil(data);
-      data = allData().where(
+      data = _allData().where(
           (task) => task.status != 'completed' && task.status != 'deleted');
     }
-    return SplayTreeMap.of(Map.fromEntries(data
+    return data
         .toList()
         .asMap()
         .entries
-        .map((entry) => MapEntry(entry.key + 1, entry.value))));
+        .map((entry) => entry.value.copyWith(id: () => entry.key + 1))
+        .toList();
   }
 
-  List<Task> allData() => [
+  List<Task> _completedData() {
+    var data = _allData().where(
+        (task) => task.status == 'completed' || task.status == 'deleted');
+    return [
+      for (var task in data) task.copyWith(id: () => 0),
+    ];
+  }
+
+  List<Task> allData() {
+    var data = pendingData()..addAll(_completedData());
+    return data;
+  }
+
+  List<Task> _allData() => [
         if (File('${profile.path}/.task/all.data').existsSync())
           for (var line in File('${profile.path}/.task/all.data')
               .readAsStringSync()

@@ -2,6 +2,7 @@
 
 - Fix issue where tag editing page was not scrollable.
 - Add wait and until features.
+- Add toggle button to remove status:pending filter
 - Add id feature similar to cli task's.
 - Add sort feature.
 - Add tag filtering UI.
