@@ -1,3 +1,8 @@
+# 0.0.1
+
+- Fix bug: save due date in UTC timezone, not local time.
+- Switch to `file_picker_writable`, may reduce app size.
+
 # 0.0.0
 
 First versioning of app, with the following features:
