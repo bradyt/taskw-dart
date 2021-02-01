@@ -1,0 +1,23 @@
+name: simplest tests
+
+defaults:
+  run:
+    working-directory: taskw
+
+on:
+  pull_request:
+  schedule:
+    - cron: 0 0 1 * *
+  workflow_dispatch:
+
+jobs:
+  simple:
+    runs-on: ubuntu-latest
+    container:
+      image: cirrusci/flutter:stable
+    steps:
+    - uses: actions/checkout@v2
+    - run: flutter config --no-analytics
+    - run: dart --disable-analytics
+    - run: dart pub get
+    - run: dart test test/datetime_differences_test.dart
