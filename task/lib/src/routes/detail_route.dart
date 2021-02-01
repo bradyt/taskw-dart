@@ -23,14 +23,14 @@ class _DetailRouteState extends State<DetailRoute> {
       body: ListView(
         children: [
           for (var attribute in {
-            'description:': widget.task.description,
-            'status:     ': widget.task.status,
-            'entry:      ': widget.task.entry,
-            'modified:   ': widget.task.modified,
-            'end:        ': widget.task.end,
-            'due:        ': widget.task.due,
-            'priority:   ': widget.task.priority,
-            'tags:       ': widget.task.tags,
+            'description': widget.task.description,
+            'status': widget.task.status,
+            'entry': widget.task.entry,
+            'modified': widget.task.modified,
+            'end': widget.task.end,
+            'due': widget.task.due,
+            'priority': widget.task.priority,
+            'tags': widget.task.tags,
           }.entries)
             ((attribute) {
               var name = attribute.key;
@@ -41,9 +41,13 @@ class _DetailRouteState extends State<DetailRoute> {
                 child: ListTile(
                   title: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Text(
-                      '$name $value',
-                      style: GoogleFonts.firaMono(),
+                    child: Row(
+                      children: [
+                        Text(
+                          '${'$name:'.padRight(13)}$value',
+                          style: GoogleFonts.firaMono(),
+                        ),
+                      ],
                     ),
                   ),
                 ),
