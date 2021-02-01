@@ -1,3 +1,7 @@
+# 0.0.2
+
+- Fix bug: do not fetch fonts after installing.
+
 # 0.0.1
 
 - Fix bug: save due date in UTC timezone, not local time.
