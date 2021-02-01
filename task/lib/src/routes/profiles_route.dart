@@ -44,6 +44,35 @@ class _ProfilesRouteState extends State<ProfilesRoute> {
     });
   }
 
+  void _deleteProfile(String profile) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        scrollable: true,
+        content: Text('Delete profile?'),
+        actions: [
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          ElevatedButton(
+            child: Text('Confirm'),
+            onPressed: () async {
+              getApplicationDocumentsDirectory().then((dir) {
+                Profiles(dir).deleteProfile(profile);
+                _profiles = Profiles(dir).listProfiles();
+                setState(() {});
+              });
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +84,7 @@ class _ProfilesRouteState extends State<ProfilesRoute> {
           for (var profile in (_profiles ?? []))
             Card(
               child: InkWell(
+                onLongPress: () => _deleteProfile(profile),
                 onTap: () => _selectProfile(profile),
                 child: ListTile(
                   title: Text(profile),

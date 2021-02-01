@@ -18,4 +18,11 @@ class Profiles {
 
   void addProfile() =>
       Directory('${base.path}/profiles/${Uuid().v1()}').createSync();
+
+  void deleteProfile(profile) {
+    Directory('${base.path}/profiles/$profile').deleteSync(recursive: true);
+    if (profile == File('${base.path}/current-profile').readAsStringSync()) {
+      File('${base.path}/current-profile').deleteSync();
+    }
+  }
 }
