@@ -121,7 +121,8 @@ class _DetailRouteState extends State<DetailRoute> {
                           onPressed: () {
                             getApplicationDocumentsDirectory().then((dir) {
                               var storage = Profiles(dir).getCurrentStorage();
-                              var now = DateTime.now().toUtc().toIso8601String();
+                              var now =
+                                  DateTime.now().toUtc().toIso8601String();
                               storage.mergeTask(
                                 Task.fromJson(
                                   draftedTask.toJson()
@@ -161,6 +162,42 @@ class AttributeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var localValue =
         (value is DateTime) ? (value as DateTime).toLocal() : value;
+    switch (name) {
+      case 'due':
+        return DueWidget(
+          name: name,
+          value: localValue,
+          callback: callback,
+        );
+      default:
+        return Card(
+          child: ListTile(
+            title: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Text(
+                    '${'$name:'.padRight(13)}$localValue',
+                    style: GoogleFonts.firaMono(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+    }
+  }
+}
+
+class DueWidget extends StatelessWidget {
+  DueWidget({this.name, this.value, this.callback});
+
+  final String name;
+  final dynamic value;
+  final void Function(String) callback;
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       child: ListTile(
         title: SingleChildScrollView(
@@ -168,7 +205,7 @@ class AttributeWidget extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                '${'$name:'.padRight(13)}$localValue',
+                '${'$name:'.padRight(13)}$value',
                 style: GoogleFonts.firaMono(),
               ),
             ],
