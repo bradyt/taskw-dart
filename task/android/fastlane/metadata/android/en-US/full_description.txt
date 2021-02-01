@@ -1,0 +1,5 @@
+Todo app inspired by Taskwarrior and TaskwarriorC2.
+
+Add, edit, list, sync tasks.
+
+Future version may have option to import/export tasks/profile.
