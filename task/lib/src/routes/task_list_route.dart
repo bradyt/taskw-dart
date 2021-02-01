@@ -317,9 +317,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
                             scrollDirection: Axis.horizontal,
                             child: Text(
                               '${age(task.entry)} '
-                              '${(task.due != null) ? when(task.due) : ''} '
-                              '${task?.priority ?? ''} '
-                              '${task.tags?.join(' ') ?? ''}'
+                                      '${(task.due != null) ? when(task.due) : ''} '
+                                      '${task?.priority ?? ''} '
+                                      '${task.tags?.join(' ') ?? ''}'
                                   .replaceAll(RegExp(r' +'), ' '),
                               style: GoogleFonts.firaMono(),
                             ),
