@@ -36,14 +36,46 @@ class _TaskListRouteState extends State<TaskListRoute> {
     _initialize();
   }
 
+  Future<void> _sortAndFilterPendingData() async {
+    var dir = await getApplicationDocumentsDirectory();
+    pendingData = Profiles(dir)
+        .getCurrentStorage()
+        .pendingData()
+        .entries
+        .where((task) =>
+            task.value.status == 'pending' &&
+            (selectedTags.isEmpty ||
+                (task.value.tags != null &&
+                    task.value.tags
+                        .toSet()
+                        .intersection(selectedTags)
+                        .isNotEmpty)))
+        .toList();
+
+    if (selectedSort != null) {
+      var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
+      var ascending = selectedSort.endsWith('+');
+      pendingData.sort((entryA, entryB) {
+        int result;
+        if (sortColumn == 'id') {
+          result = entryA.key.compareTo(entryB.key);
+        } else {
+          result = compareTasks(sortColumn)(entryA.value, entryB.value);
+        }
+        return ascending ? result : -result;
+      });
+    }
+
+    setState(() {});
+  }
+
   Future<void> _initialize() async {
     var dir = await getApplicationDocumentsDirectory();
     var p = Profiles(dir);
     if (p.listProfiles().isEmpty) {
       p.setCurrentProfile(p.addProfile());
     }
-    pendingData = p.getCurrentStorage().pendingData().entries.toList();
-    await _sortTasks();
+    await _sortAndFilterPendingData();
     globalTags = p.getCurrentStorage().tags();
     currentProfile = p.getCurrentProfile();
     for (var profile in p.listProfiles()) {
@@ -66,8 +98,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var dir = await getApplicationDocumentsDirectory();
     Profiles(dir).setCurrentProfile(profile);
     currentProfile = Profiles(dir).getCurrentProfile();
-    pendingData =
-        Profiles(dir).getCurrentStorage().pendingData().entries.toList();
+    selectedSort = 'urgency+';
+    selectedTags = {};
+    await _sortAndFilterPendingData();
     globalTags = Profiles(dir).getCurrentStorage().tags();
     setState(() {});
   }
@@ -116,6 +149,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
     if (p.listProfiles().isEmpty) {
       p.setCurrentProfile(p.addProfile());
       globalTags = p.getCurrentStorage().tags();
+      selectedSort = 'urgency+';
+      selectedTags = {};
+      await _sortAndFilterPendingData();
     }
     profiles = {
       for (var profile in p.listProfiles()) profile: p.getAlias(profile),
@@ -123,7 +159,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
     if (currentProfile == profile) {
       p.setCurrentProfile(profiles.keys.first);
       currentProfile = p.getCurrentProfile();
-      pendingData = p.getCurrentStorage().pendingData().entries.toList();
+      selectedSort = 'urgency+';
+      selectedTags = {};
+      await _sortAndFilterPendingData();
       globalTags = p.getCurrentStorage().tags();
     }
     setState(() {});
@@ -166,8 +204,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
             modified: now,
           ),
         );
-    pendingData =
-        Profiles(dir).getCurrentStorage().pendingData().entries.toList();
+    await _sortAndFilterPendingData();
     setState(() {});
   }
 
@@ -206,9 +243,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var dir = await getApplicationDocumentsDirectory();
     try {
       var header = await Profiles(dir).getCurrentStorage().synchronize();
-      pendingData =
-          Profiles(dir).getCurrentStorage().pendingData().entries.toList();
-      await _sortTasks();
+      await _sortAndFilterPendingData();
       globalTags = Profiles(dir).getCurrentStorage().tags();
       setState(() {});
       // ignore: deprecated_member_use
@@ -224,12 +259,13 @@ class _TaskListRouteState extends State<TaskListRoute> {
     }
   }
 
-  void _toggleTagFilter(String tag) {
+  Future<void> _toggleTagFilter(String tag) async {
     if (selectedTags.contains(tag)) {
       selectedTags.remove(tag);
     } else {
       selectedTags.add(tag);
     }
+    await _sortAndFilterPendingData();
     setState(() {});
   }
 
@@ -239,32 +275,12 @@ class _TaskListRouteState extends State<TaskListRoute> {
     if (p.listProfiles().isEmpty) {
       p.setCurrentProfile(p.addProfile());
     }
-    pendingData = p.getCurrentStorage().pendingData().entries.toList();
+    await _sortAndFilterPendingData();
     globalTags = p.getCurrentStorage().tags();
     setState(() {});
   }
 
-  Future<void> _sortTasks() async {
-    var dir = await getApplicationDocumentsDirectory();
-    pendingData =
-        Profiles(dir).getCurrentStorage().pendingData().entries.toList();
-    if (selectedSort != null) {
-      var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
-      var ascending = selectedSort.endsWith('+');
-      pendingData.sort((entryA, entryB) {
-        int result;
-        if (sortColumn == 'id') {
-          result = entryA.key.compareTo(entryB.key);
-        } else {
-          result = compareTasks(sortColumn)(entryA.value, entryB.value);
-        }
-        return ascending ? result : -result;
-      });
-    }
-    setState(() {});
-  }
-
-  _toggleSortHeader() {
+  void _toggleSortHeader() {
     sortHeaderVisible = !sortHeaderVisible;
     setState(() {});
   }
@@ -409,7 +425,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                           } else {
                             selectedSort = '$sort+';
                           }
-                          await _sortTasks();
+                          await _sortAndFilterPendingData();
                         },
                       ),
                   ],
@@ -421,60 +437,52 @@ class _TaskListRouteState extends State<TaskListRoute> {
               child: ListView(
                 children: [
                   if (pendingData != null)
-                    for (var task in pendingData
-                        .where((entry) => entry.value.status == 'pending'))
-                      if (selectedTags.isEmpty ||
-                          (task.value.tags != null &&
-                              task.value.tags
-                                  .toSet()
-                                  .intersection(selectedTags)
-                                  .isNotEmpty))
-                        Card(
-                          child: InkWell(
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DetailRoute(
-                                  id: task.key,
-                                  uuid: task.value.uuid,
-                                ),
+                    for (var task in pendingData)
+                      Card(
+                        child: InkWell(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailRoute(
+                                id: task.key,
+                                uuid: task.value.uuid,
                               ),
-                            ).then((_) => _refreshTasks()),
-                            child: ListTile(
-                              title: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Text(
-                                  '${task.key} '
-                                  '${task.value.description}',
-                                  style: GoogleFonts.firaMono(),
-                                ),
+                            ),
+                          ).then((_) => _refreshTasks()),
+                          child: ListTile(
+                            title: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Text(
+                                '${task.key} '
+                                '${task.value.description}',
+                                style: GoogleFonts.firaMono(),
                               ),
-                              subtitle: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Text(
-                                        '${age(task.value.entry)} '
-                                                '${(task.value.due != null) ? when(task.value.due) : ''} '
-                                                '${task.value?.priority ?? ''} '
-                                                '${task.value.tags?.join(' ') ?? ''}'
-                                            .replaceAll(RegExp(r' +'), ' '),
-                                        style: GoogleFonts.firaMono(),
-                                      ),
+                            ),
+                            subtitle: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Text(
+                                      '${age(task.value.entry)} '
+                                              '${(task.value.due != null) ? when(task.value.due) : ''} '
+                                              '${task.value?.priority ?? ''} '
+                                              '${task.value.tags?.join(' ') ?? ''}'
+                                          .replaceAll(RegExp(r' +'), ' '),
+                                      style: GoogleFonts.firaMono(),
                                     ),
                                   ),
-                                  Text(
-                                    '${urgency(task.value)}',
-                                    style: GoogleFonts.firaMono(),
-                                  ),
-                                ],
-                              ),
+                                ),
+                                Text(
+                                  '${urgency(task.value)}',
+                                  style: GoogleFonts.firaMono(),
+                                ),
+                              ],
                             ),
                           ),
                         ),
+                      ),
                 ],
               ),
             ),
