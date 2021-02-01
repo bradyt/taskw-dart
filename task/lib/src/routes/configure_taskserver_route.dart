@@ -119,20 +119,18 @@ class ConfigureTaskserverRoute extends StatelessWidget {
       var file = await openFile(acceptedTypeGroups: [typeGroup]);
       if (file != null) {
         var contents = await file.readAsString();
-        await getApplicationDocumentsDirectory().then((dir) {
-          Profiles(dir)
-              .getStorage(profile)
-              .addFileContents(key: key, contents: contents);
-        });
+        var dir = await getApplicationDocumentsDirectory();
+        Profiles(dir)
+            .getStorage(profile)
+            .addFileContents(key: key, contents: contents);
       }
     } else {
       await FilePickerWritable().openFile((_, file) async {
         var contents = file.readAsStringSync();
-        await getApplicationDocumentsDirectory().then((dir) {
-          Profiles(dir)
-              .getStorage(profile)
-              .addFileContents(key: key, contents: contents);
-        });
+        var dir = await getApplicationDocumentsDirectory();
+        Profiles(dir)
+            .getStorage(profile)
+            .addFileContents(key: key, contents: contents);
       });
     }
   }

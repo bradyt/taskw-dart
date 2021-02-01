@@ -26,40 +26,41 @@ class _TaskListRouteState extends State<TaskListRoute> {
   void initState() {
     super.initState();
     profiles = {};
-    getApplicationDocumentsDirectory().then((dir) {
-      var p = Profiles(dir);
-      if (p.listProfiles().isEmpty) {
-        p
-          ..addProfile()
-          ..setCurrentProfile(p.listProfiles().first);
-      }
-      tasks = p.getCurrentStorage().next();
-      currentProfile = p.getCurrentProfile();
-      for (var profile in p.listProfiles()) {
-        profiles[profile] = p.getAlias(profile);
-      }
-      setState(() {});
-    });
+    _initialize();
   }
 
-  void _addProfile() {
-    getApplicationDocumentsDirectory().then((dir) {
-      Profiles(dir).addProfile();
-      profiles = {
-        for (var profile in Profiles(dir).listProfiles())
-          profile: Profiles(dir).getAlias(profile),
-      };
-      setState(() {});
-    });
+  Future<void> _initialize() async {
+    var dir = await getApplicationDocumentsDirectory();
+    var p = Profiles(dir);
+    if (p.listProfiles().isEmpty) {
+      p
+        ..addProfile()
+        ..setCurrentProfile(p.listProfiles().first);
+    }
+    tasks = p.getCurrentStorage().next();
+    currentProfile = p.getCurrentProfile();
+    for (var profile in p.listProfiles()) {
+      profiles[profile] = p.getAlias(profile);
+    }
+    setState(() {});
   }
 
-  void _selectProfile(String profile) {
-    getApplicationDocumentsDirectory().then((dir) {
-      Profiles(dir).setCurrentProfile(profile);
-      tasks = Profiles(dir).getCurrentStorage().next();
-      currentProfile = Profiles(dir).getCurrentProfile();
-      setState(() {});
-    });
+  Future<void> _addProfile() async {
+    var dir = await getApplicationDocumentsDirectory();
+    Profiles(dir).addProfile();
+    profiles = {
+      for (var profile in Profiles(dir).listProfiles())
+        profile: Profiles(dir).getAlias(profile),
+    };
+    setState(() {});
+  }
+
+  Future<void> _selectProfile(String profile) async {
+    var dir = await getApplicationDocumentsDirectory();
+    Profiles(dir).setCurrentProfile(profile);
+    tasks = Profiles(dir).getCurrentStorage().next();
+    currentProfile = Profiles(dir).getCurrentProfile();
+    setState(() {});
   }
 
   Future<void> _setAlias({String profile, String alias}) async {

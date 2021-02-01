@@ -39,14 +39,17 @@ class TagsRouteState extends State<TagsRoute> {
   void initState() {
     super.initState();
     draftTags = widget.value;
-    getApplicationDocumentsDirectory().then((dir) {
-      globalTags = Profiles(dir).getCurrentStorage().tags()
-        ..putIfAbsent(
-          'next',
-          () => 0,
-        );
-      setState(() {});
-    });
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    var dir = await getApplicationDocumentsDirectory();
+    globalTags = Profiles(dir).getCurrentStorage().tags()
+      ..putIfAbsent(
+        'next',
+        () => 0,
+      );
+    setState(() {});
   }
 
   @override

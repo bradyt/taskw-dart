@@ -22,13 +22,16 @@ class _DetailRouteState extends State<DetailRoute> {
   @override
   void initState() {
     super.initState();
-    getApplicationDocumentsDirectory().then((dir) {
-      modify = Modify(
-        storage: Profiles(dir).getCurrentStorage(),
-        uuid: widget.uuid,
-      );
-      setState(() {});
-    });
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    var dir = await getApplicationDocumentsDirectory();
+    modify = Modify(
+      storage: Profiles(dir).getCurrentStorage(),
+      uuid: widget.uuid,
+    );
+    setState(() {});
   }
 
   void Function(dynamic) callback(String name) {
