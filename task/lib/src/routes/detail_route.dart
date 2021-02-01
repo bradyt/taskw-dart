@@ -236,7 +236,9 @@ class DescriptionWidget extends StatelessWidget {
           ),
         ),
         onTap: () {
-          var controller = TextEditingController();
+          var controller = TextEditingController(
+            text: value,
+          );
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -256,7 +258,8 @@ class DescriptionWidget extends StatelessWidget {
                 ElevatedButton(
                   child: Text('Submit'),
                   onPressed: () {
-                    return callback(controller.text);
+                    callback(controller.text);
+                    Navigator.of(context).pop();
                   },
                 ),
               ],

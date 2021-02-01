@@ -59,7 +59,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
   }
 
   void _renameProfile(String profile) {
-    var controller = TextEditingController();
+    var controller = TextEditingController(
+      text: aliases[profile],
+    );
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

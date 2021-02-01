@@ -1,6 +1,7 @@
 # 0.0.4
 
 - Sort unused tags alphabetically in tag editing UI.
+- Text editing starts with current value, instead of blank.
 
 # 0.0.3
 
