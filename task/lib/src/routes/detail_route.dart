@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:taskc/taskc.dart';
-
 import 'package:taskw/taskw.dart';
 
 class DetailRoute extends StatefulWidget {
@@ -17,31 +15,28 @@ class DetailRoute extends StatefulWidget {
 }
 
 class _DetailRouteState extends State<DetailRoute> {
-  Set<String> changes;
-  Task savedTask;
-  Task draftedTask;
+  Modify modify;
 
   @override
   void initState() {
     super.initState();
-    changes = {};
     getApplicationDocumentsDirectory().then((dir) {
-      savedTask = Profiles(dir).getCurrentStorage().getTask(widget.uuid);
-      draftedTask = Profiles(dir).getCurrentStorage().getTask(widget.uuid);
+      modify = Modify(
+        storage: Profiles(dir).getCurrentStorage(),
+        uuid: widget.uuid,
+      );
       setState(() {});
     });
   }
 
   void Function(dynamic) callback(String name) {
     return (newValue) {
-      if (newValue == savedTask.toJson()[name]) {
-        changes.remove(name);
-      } else {
-        changes.add(name);
+      switch (name) {
+        case 'due':
+          modify.setDue(newValue);
+          break;
+        default:
       }
-      draftedTask = draftedTask.copyWith(
-        due: (name == 'due') ? () => newValue : null,
-      );
       setState(() {});
     };
   }
@@ -54,17 +49,17 @@ class _DetailRouteState extends State<DetailRoute> {
       ),
       body: ListView(
         children: [
-          if (draftedTask != null)
+          if (modify?.draft != null)
             for (var entry in {
-              'description': draftedTask.description,
-              'status': draftedTask.status,
-              'entry': draftedTask.entry,
-              'modified': draftedTask.modified,
-              'end': draftedTask.end,
-              'due': draftedTask.due,
-              'priority': draftedTask.priority,
-              'tags': draftedTask.tags,
-              'urgency': urgency(draftedTask),
+              'description': modify.draft.description,
+              'status': modify.draft.status,
+              'entry': modify.draft.entry,
+              'modified': modify.draft.modified,
+              'end': modify.draft.end,
+              'due': modify.draft.due,
+              'priority': modify.draft.priority,
+              'tags': modify.draft.tags,
+              'urgency': urgency(modify.draft),
             }.entries)
               AttributeWidget(
                 name: entry.key,
@@ -73,7 +68,7 @@ class _DetailRouteState extends State<DetailRoute> {
               ),
         ],
       ),
-      floatingActionButton: (changes.isEmpty)
+      floatingActionButton: (modify?.changes?.isEmpty ?? false)
           ? null
           : FloatingActionButton(
               child: Icon(Icons.save),
@@ -89,12 +84,11 @@ class _DetailRouteState extends State<DetailRoute> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (draftedTask.toJson()['due'] !=
-                                savedTask.toJson()['due'])
+                            for (var change in modify.changes.entries)
                               Text(
-                                'due:\n'
-                                '  old: ${savedTask.due}\n'
-                                '  new: ${draftedTask.due}',
+                                '${change.key}:\n'
+                                '  old: ${change.value['old']}\n'
+                                '  new: ${change.value['new']}',
                                 style: GoogleFonts.firaMono(),
                               ),
                           ],
@@ -110,20 +104,12 @@ class _DetailRouteState extends State<DetailRoute> {
                         ElevatedButton(
                           child: Text('Submit'),
                           onPressed: () {
-                            getApplicationDocumentsDirectory().then((dir) {
-                              var storage = Profiles(dir).getCurrentStorage();
-                              var now = DateTime.now().toUtc();
-                              storage.mergeTask(
-                                draftedTask.copyWith(
-                                  modified: () => now,
-                                ),
-                              );
-                              savedTask = storage.getTask(widget.uuid);
-                              draftedTask = storage.getTask(widget.uuid);
-                              changes = {};
-                              setState(() {});
-                              Navigator.of(context).pop();
-                            });
+                            var now = DateTime.now().toUtc();
+                            modify.save(
+                              modified: () => now,
+                            );
+                            setState(() {});
+                            Navigator.of(context).pop();
                           },
                         ),
                       ],
