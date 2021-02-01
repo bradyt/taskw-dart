@@ -169,6 +169,8 @@ class AttributeWidget extends StatelessWidget {
         );
       default:
         return Card(
+          color: Color(0x00000000),
+          elevation: 0,
           child: ListTile(
             title: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -176,7 +178,9 @@ class AttributeWidget extends StatelessWidget {
                 children: [
                   Text(
                     '${'$name:'.padRight(13)}$localValue',
-                    style: GoogleFonts.firaMono(),
+                    style: GoogleFonts.firaMono(
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ],
               ),
