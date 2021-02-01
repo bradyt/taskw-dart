@@ -4,6 +4,7 @@ import 'package:taskc/taskc.dart';
 
 import 'package:taskw/taskw.dart';
 
+// ignore: prefer_expression_function_bodies
 int Function(Task, Task) compareTasks(String column) {
   return (a, b) {
     int result;
