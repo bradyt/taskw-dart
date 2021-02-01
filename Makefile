@@ -6,3 +6,10 @@ taskw/pubspec.lock:
 
 task/.packages:
 	cd task && dart pub get
+
+format:
+	dart format . \
+		--fix \
+		--output none \
+		--set-exit-if-changed \
+		--summary none
