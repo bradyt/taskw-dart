@@ -45,6 +45,18 @@ class Modify {
         'new': _draft.due,
       };
     }
+    if (_draft.wait != _saved.wait) {
+      result['wait'] = {
+        'old': _saved.wait,
+        'new': _draft.wait,
+      };
+    }
+    if (_draft.until != _saved.until) {
+      result['until'] = {
+        'old': _saved.until,
+        'new': _draft.until,
+      };
+    }
     if (_draft.priority != _saved.priority) {
       result['priority'] = {
         'old': _saved.priority,
@@ -84,7 +96,7 @@ class Modify {
   }
 
   void setWait(DateTime wait) {
-    _draft = _draft.copyWith(status: 'waiting', wait: () => wait);
+    _draft = _draft.copyWith(status: () => 'waiting', wait: () => wait);
   }
 
   void setUntil(DateTime until) {

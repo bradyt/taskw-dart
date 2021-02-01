@@ -20,9 +20,7 @@ class Storage {
   File get _key => File('${profile.path}/.task/first_last.key.pem');
 
   Map<String, int> tags() {
-    var listOfLists = listTasks()
-        .where((task) => task.status == 'pending')
-        .map((task) => task.tags);
+    var listOfLists = pendingData().map((task) => task.tags);
     var listOfTags = listOfLists.expand((tags) => tags ?? []);
     var setOfTags = listOfTags.toSet() ?? {};
     return SplayTreeMap.of({
@@ -31,20 +29,46 @@ class Storage {
     });
   }
 
-  List<Task> next() {
-    return listTasks().where((task) => task.status == 'pending').toList()
-      ..sort((a, b) {
-        if (urgency(a) < urgency(b)) {
-          return 1;
-        } else if (urgency(a) > urgency(b)) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
+  void updateWaitOrUntil(Iterable<Task> pendingData) {
+    var now = DateTime.now();
+    for (var task in pendingData) {
+      if (task.until != null && task.until.isBefore(now)) {
+        mergeTask(
+          task.copyWith(
+            status: () => 'deleted',
+            end: () => now,
+          ),
+        );
+      } else if (task.status == 'waiting' &&
+          (task.wait == null || task.wait.isBefore(now))) {
+        _mergeTasks(
+          [
+            task.copyWith(
+              status: () => 'pending',
+              wait: () => null,
+            ),
+          ],
+        );
+      }
+    }
   }
 
-  List<Task> listTasks() => [
+  List<Task> pendingData() {
+    var data = allData().where(
+        (task) => task.status != 'completed' && task.status != 'deleted');
+    var now = DateTime.now();
+    if (data.any((task) =>
+        (task.until != null && task.until.isBefore(now)) ||
+        (task.status == 'waiting' &&
+            (task.wait == null || task.wait.isBefore(now))))) {
+      updateWaitOrUntil(data);
+      data = allData().where(
+          (task) => task.status != 'completed' && task.status != 'deleted');
+    }
+    return data.toList();
+  }
+
+  List<Task> allData() => [
         if (File('${profile.path}/.task/all.data').existsSync())
           for (var line in File('${profile.path}/.task/all.data')
               .readAsStringSync()

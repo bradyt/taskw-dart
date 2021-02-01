@@ -42,7 +42,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
         ..addProfile()
         ..setCurrentProfile(p.listProfiles().first);
     }
-    tasks = p.getCurrentStorage().next();
+    tasks = p.getCurrentStorage().pendingData();
     globalTags = p.getCurrentStorage().tags();
     currentProfile = p.getCurrentProfile();
     for (var profile in p.listProfiles()) {
@@ -65,7 +65,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var dir = await getApplicationDocumentsDirectory();
     Profiles(dir).setCurrentProfile(profile);
     currentProfile = Profiles(dir).getCurrentProfile();
-    tasks = Profiles(dir).getCurrentStorage().next();
+    tasks = Profiles(dir).getCurrentStorage().pendingData();
     globalTags = Profiles(dir).getCurrentStorage().tags();
     setState(() {});
   }
@@ -123,7 +123,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     if (currentProfile == profile) {
       p.setCurrentProfile(profiles.keys.first);
       currentProfile = p.getCurrentProfile();
-      tasks = p.getCurrentStorage().next();
+      tasks = p.getCurrentStorage().pendingData();
       globalTags = p.getCurrentStorage().tags();
     }
     setState(() {});
@@ -166,7 +166,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
             modified: now,
           ),
         );
-    tasks = Profiles(dir).getCurrentStorage().next();
+    tasks = Profiles(dir).getCurrentStorage().pendingData();
     setState(() {});
   }
 
@@ -205,7 +205,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var dir = await getApplicationDocumentsDirectory();
     try {
       var header = await Profiles(dir).getCurrentStorage().synchronize();
-      tasks = Profiles(dir).getCurrentStorage().next();
+      tasks = Profiles(dir).getCurrentStorage().pendingData();
       await _sortTasks();
       globalTags = Profiles(dir).getCurrentStorage().tags();
       setState(() {});
@@ -239,14 +239,14 @@ class _TaskListRouteState extends State<TaskListRoute> {
         ..addProfile()
         ..setCurrentProfile(p.listProfiles().first);
     }
-    tasks = p.getCurrentStorage().next();
+    tasks = p.getCurrentStorage().pendingData();
     globalTags = p.getCurrentStorage().tags();
     setState(() {});
   }
 
   Future<void> _sortTasks() async {
     var dir = await getApplicationDocumentsDirectory();
-    tasks = Profiles(dir).getCurrentStorage().next();
+    tasks = Profiles(dir).getCurrentStorage().pendingData();
     if (selectedSort != null) {
       var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
       var ascending = selectedSort.endsWith('+');
@@ -433,7 +433,8 @@ class _TaskListRouteState extends State<TaskListRoute> {
               child: ListView(
                 children: [
                   if (tasks != null)
-                    for (var task in tasks)
+                    for (var task
+                        in tasks.where((task) => task.status == 'pending'))
                       if (selectedTags.isEmpty ||
                           (task.tags != null &&
                               task.tags

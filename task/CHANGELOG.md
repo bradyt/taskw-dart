@@ -1,6 +1,7 @@
 # 0.0.6
 
 - Fix issue where tag editing page was not scrollable.
+- Add wait and until features.
 - Add sort feature.
 - Add tag filtering UI.
 - Add scrollbar to task list view.
