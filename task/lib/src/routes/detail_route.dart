@@ -339,8 +339,8 @@ class DueWidget extends StatelessWidget {
           var dueDate = await showDatePicker(
             context: context,
             initialDate: initialDate,
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2037),
+            firstDate: DateTime(1990), // >= 1980-01-01T00:00:00.000Z
+            lastDate: DateTime(2037, 12, 31), // < 2038-01-19T03:14:08.000Z
           );
           if (dueDate != null) {
             var dueTime = await showTimePicker(

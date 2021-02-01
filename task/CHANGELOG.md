@@ -5,6 +5,9 @@
   - 1.0027397260273974y ==> 1y
   - 12w ==> 3mo
   - 42m ==> 42min
+- Extend upper and lower bounds in datetime picker.
+  - Old: 2000-01-01--2037-01-01
+  - New: 1990-01-01--2037-12-31
 
 # 0.0.4
 
