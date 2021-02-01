@@ -21,8 +21,10 @@ class Profiles {
 
   void deleteProfile(profile) {
     Directory('${base.path}/profiles/$profile').deleteSync(recursive: true);
-    if (profile == File('${base.path}/current-profile').readAsStringSync()) {
-      File('${base.path}/current-profile').deleteSync();
+    if (File('${base.path}/current-profile').existsSync()) {
+      if (profile == File('${base.path}/current-profile').readAsStringSync()) {
+        File('${base.path}/current-profile').deleteSync();
+      }
     }
   }
 }
