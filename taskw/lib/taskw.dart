@@ -1,5 +1,6 @@
 library taskw;
 
+export 'src/datetime_differences.dart';
 export 'src/modify.dart';
 export 'src/profiles.dart';
 export 'src/storage.dart';
