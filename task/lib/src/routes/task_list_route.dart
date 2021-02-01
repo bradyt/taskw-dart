@@ -24,12 +24,15 @@ class _TaskListRouteState extends State<TaskListRoute> {
   }
 
   void _addTask() {
+    var controller = TextEditingController();
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         scrollable: true,
         title: Text('Add task'),
-        content: TextField(),
+        content: TextField(
+          controller: controller,
+        ),
         actions: [
           TextButton(
             child: Text('Cancel'),
@@ -37,7 +40,16 @@ class _TaskListRouteState extends State<TaskListRoute> {
           ),
           ElevatedButton(
             child: Text('Submit'),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              getApplicationDocumentsDirectory().then((dir) {
+                Storage(dir).addTask(
+                  Task(description: controller.text),
+                );
+                tasks = Storage(dir).listTasks();
+                setState(() {});
+                Navigator.of(context).pop();
+              });
+            },
           ),
         ],
       ),

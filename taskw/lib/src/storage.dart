@@ -31,5 +31,7 @@ class Storage {
     ];
   }
 
-  void addTask(Task task) {}
+  void addTask(Task task) {
+    print(task);
+  }
 }
