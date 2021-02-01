@@ -22,6 +22,121 @@ class ConfigureTaskserverRoute extends StatelessWidget {
   final String profile;
   final String alias;
 
+  Future<void> _setConfigurationFromFixtureForDebugging() async {
+    var dir = await getApplicationDocumentsDirectory();
+    var storage = Profiles(dir).getStorage(profile);
+    for (var entry in {
+      '.taskrc': '.taskrc',
+      'taskd.ca': '.task/ca.cert.pem',
+      'taskd.cert': '.task/first_last.cert.pem',
+      'taskd.key': '.task/first_last.key.pem',
+    }.entries) {
+      var contents = await rootBundle.loadString('../fixture/${entry.value}');
+      storage.addFileContents(
+        key: entry.key,
+        contents: contents,
+      );
+    }
+  }
+
+  Future<void> _showConfigurationFromTaskrc(BuildContext context) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var map = Profiles(dir).getStorage(profile).getConfig();
+    var server = map['taskd.server'];
+    var address = server.split(':')[0];
+    var port = server.split(':')[1];
+    var credentials = Credentials.fromString(map['taskd.credentials']);
+    var org = credentials.org;
+    var user = credentials.user;
+    var key = credentials.key;
+    // ignore: deprecated_member_use
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Text(
+          'taskd.server.address:   $address\n'
+          'taskd.server.port:      $port\n'
+          'taskd.credentials.org:  $org\n'
+          'taskd.credentials.user: $user\n'
+          'taskd.credentials.key:  $key',
+          style: GoogleFonts.firaMono(),
+        ),
+      ),
+    ));
+  }
+
+  Future<void> _showStatistics(BuildContext context) async {
+    var dir = await getApplicationDocumentsDirectory();
+    await Profiles(dir).getStorage(profile).statistics().then(
+      (header) {
+        var maxKeyLength =
+            header.keys.map<int>((key) => key.length).reduce(max);
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            scrollable: true,
+            title: Text('Statistics:'),
+            content: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (var key in header.keys.toList())
+                        Text(
+                          '${'$key:'.padRight(maxKeyLength + 1)} ${header[key]}',
+                          style: GoogleFonts.firaMono(),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Ok'),
+              ),
+            ],
+          ),
+        );
+      },
+      onError: (e) {
+        showExceptionDialog(
+          context: context,
+          e: e,
+        );
+      },
+    );
+  }
+
+  Future<void> _setConfig(String key) async {
+    if (Platform.isMacOS) {
+      var typeGroup = XTypeGroup(label: 'config', extensions: []);
+      var file = await openFile(acceptedTypeGroups: [typeGroup]);
+      if (file != null) {
+        var contents = await file.readAsString();
+        await getApplicationDocumentsDirectory().then((dir) {
+          Profiles(dir)
+              .getStorage(profile)
+              .addFileContents(key: key, contents: contents);
+        });
+      }
+    } else {
+      await FilePickerWritable().openFile((_, file) async {
+        var contents = file.readAsStringSync();
+        await getApplicationDocumentsDirectory().then((dir) {
+          Profiles(dir)
+              .getStorage(profile)
+              .addFileContents(key: key, contents: contents);
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,108 +146,18 @@ class ConfigureTaskserverRoute extends StatelessWidget {
           if (kDebugMode)
             IconButton(
               icon: Icon(Icons.bug_report),
-              onPressed: () {
-                getApplicationDocumentsDirectory().then((dir) async {
-                  var storage = Profiles(dir).getStorage(profile);
-                  for (var entry in {
-                    '.taskrc': '.taskrc',
-                    'taskd.ca': '.task/ca.cert.pem',
-                    'taskd.cert': '.task/first_last.cert.pem',
-                    'taskd.key': '.task/first_last.key.pem',
-                  }.entries) {
-                    var contents = await rootBundle
-                        .loadString('../fixture/${entry.value}');
-                    storage.addFileContents(
-                      key: entry.key,
-                      contents: contents,
-                    );
-                  }
-                });
-              },
+              onPressed: _setConfigurationFromFixtureForDebugging,
             ),
           Builder(
             builder: (context) => IconButton(
               icon: Icon(Icons.info),
-              onPressed: () {
-                getApplicationDocumentsDirectory().then((dir) {
-                  var map = Profiles(dir).getStorage(profile).getConfig();
-                  var server = map['taskd.server'];
-                  var address = server.split(':')[0];
-                  var port = server.split(':')[1];
-                  var credentials =
-                      Credentials.fromString(map['taskd.credentials']);
-                  var org = credentials.org;
-                  var user = credentials.user;
-                  var key = credentials.key;
-                  // ignore: deprecated_member_use
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(
-                        'taskd.server.address:   $address\n'
-                        'taskd.server.port:      $port\n'
-                        'taskd.credentials.org:  $org\n'
-                        'taskd.credentials.user: $user\n'
-                        'taskd.credentials.key:  $key',
-                        style: GoogleFonts.firaMono(),
-                      ),
-                    ),
-                  ));
-                });
-              },
+              onPressed: () => _showConfigurationFromTaskrc(context),
             ),
           ),
           Builder(
             builder: (context) => IconButton(
               icon: Icon(Icons.show_chart),
-              onPressed: () {
-                getApplicationDocumentsDirectory().then((dir) {
-                  Profiles(dir).getStorage(profile).statistics().then(
-                    (header) {
-                      var maxKeyLength =
-                          header.keys.map<int>((key) => key.length).reduce(max);
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          scrollable: true,
-                          title: Text('Statistics:'),
-                          content: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    for (var key in header.keys.toList())
-                                      Text(
-                                        '${'$key:'.padRight(maxKeyLength + 1)} ${header[key]}',
-                                        style: GoogleFonts.firaMono(),
-                                      ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Ok'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    onError: (e) {
-                      showExceptionDialog(
-                        context: context,
-                        e: e,
-                      );
-                    },
-                  );
-                });
-              },
+              onPressed: () => _showStatistics(context),
             ),
           ),
         ],
@@ -147,29 +172,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
           ])
             ListTile(
               title: Text(key),
-              onTap: () async {
-                if (Platform.isMacOS) {
-                  var typeGroup = XTypeGroup(label: 'config', extensions: []);
-                  var file = await openFile(acceptedTypeGroups: [typeGroup]);
-                  if (file != null) {
-                    var contents = await file.readAsString();
-                    await getApplicationDocumentsDirectory().then((dir) {
-                      Profiles(dir)
-                          .getStorage(profile)
-                          .addFileContents(key: key, contents: contents);
-                    });
-                  }
-                } else {
-                  await FilePickerWritable().openFile((_, file) async {
-                    var contents = file.readAsStringSync();
-                    await getApplicationDocumentsDirectory().then((dir) {
-                      Profiles(dir)
-                          .getStorage(profile)
-                          .addFileContents(key: key, contents: contents);
-                    });
-                  });
-                }
-              },
+              onTap: () => _setConfig(key),
             ),
         ],
       ),

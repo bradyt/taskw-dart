@@ -62,6 +62,13 @@ class _TaskListRouteState extends State<TaskListRoute> {
     });
   }
 
+  Future<void> _setAlias({String profile, String alias}) async {
+    var dir = await getApplicationDocumentsDirectory();
+    Profiles(dir).setAlias(profile: profile, alias: alias);
+    profiles[profile] = Profiles(dir).getAlias(profile);
+    setState(() {});
+  }
+
   void _renameProfile(String profile) {
     var controller = TextEditingController(
       text: profiles[profile],
@@ -83,16 +90,8 @@ class _TaskListRouteState extends State<TaskListRoute> {
           ),
           ElevatedButton(
             onPressed: () {
-              getApplicationDocumentsDirectory().then((dir) {
-                var p = Profiles(dir)
-                  ..setAlias(
-                    profile: profile,
-                    alias: controller.text,
-                  );
-                profiles[profile] = p.getAlias(profile);
-                setState(() {});
-                Navigator.of(context).pop();
-              });
+              _setAlias(profile: profile, alias: controller.text);
+              Navigator.of(context).pop();
             },
             child: Text('Submit'),
           ),
@@ -101,7 +100,26 @@ class _TaskListRouteState extends State<TaskListRoute> {
     );
   }
 
-  void _deleteProfile(String profile) {
+  Future<void> _deleteProfile(String profile) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var p = Profiles(dir)..deleteProfile(profile);
+    if (p.listProfiles().isEmpty) {
+      p
+        ..addProfile()
+        ..setCurrentProfile(p.listProfiles().first);
+    }
+    profiles = {
+      for (var profile in p.listProfiles()) profile: p.getAlias(profile),
+    };
+    if (currentProfile == profile) {
+      p.setCurrentProfile(profiles.keys.first);
+      currentProfile = p.getCurrentProfile();
+      tasks = p.getCurrentStorage().next();
+    }
+    setState(() {});
+  }
+
+  void _deleteProfileDialog(String profile) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -116,24 +134,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
           ),
           ElevatedButton(
             onPressed: () async {
-              await getApplicationDocumentsDirectory().then((dir) {
-                var p = Profiles(dir)..deleteProfile(profile);
-                if (p.listProfiles().isEmpty) {
-                  p
-                    ..addProfile()
-                    ..setCurrentProfile(p.listProfiles().first);
-                }
-                profiles = {
-                  for (var profile in p.listProfiles())
-                    profile: p.getAlias(profile),
-                };
-                if (currentProfile == profile) {
-                  p.setCurrentProfile(profiles.keys.first);
-                  currentProfile = p.getCurrentProfile();
-                  tasks = p.getCurrentStorage().next();
-                }
-                setState(() {});
-              });
+              await _deleteProfile(profile);
               Navigator.of(context).pop();
             },
             child: Text('Confirm'),
@@ -143,7 +144,23 @@ class _TaskListRouteState extends State<TaskListRoute> {
     );
   }
 
-  void _addTask() {
+  Future<void> _addTask(String description) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var now = DateTime.now().toUtc();
+    Profiles(dir).getCurrentStorage().mergeTask(
+          Task(
+            status: 'pending',
+            uuid: Uuid().v1(),
+            entry: now,
+            description: description,
+            modified: now,
+          ),
+        );
+    tasks = Profiles(dir).getCurrentStorage().next();
+    setState(() {});
+  }
+
+  void _addTaskDialog() {
     var addTaskController = TextEditingController();
     showDialog(
       context: context,
@@ -163,28 +180,46 @@ class _TaskListRouteState extends State<TaskListRoute> {
             child: Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
-              getApplicationDocumentsDirectory().then((dir) {
-                var now = DateTime.now().toUtc();
-                Profiles(dir).getCurrentStorage().mergeTask(
-                      Task(
-                        status: 'pending',
-                        uuid: Uuid().v1(),
-                        entry: now,
-                        description: addTaskController.text,
-                        modified: now,
-                      ),
-                    );
-                tasks = Profiles(dir).getCurrentStorage().next();
-                setState(() {});
-                Navigator.of(context).pop();
-              });
+            onPressed: () async {
+              await _addTask(addTaskController.text);
+              Navigator.of(context).pop();
             },
             child: Text('Submit'),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _synchronize(BuildContext context) async {
+    var dir = await getApplicationDocumentsDirectory();
+    try {
+      var header = await Profiles(dir).getCurrentStorage().synchronize();
+      tasks = Profiles(dir).getCurrentStorage().next();
+      setState(() {});
+      // ignore: deprecated_member_use
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('${header['code']}: ${header['status']}'),
+      ));
+    } on Exception catch (e, trace) {
+      showExceptionDialog(
+        context: context,
+        e: e,
+        trace: trace,
+      );
+    }
+  }
+
+  Future<void> _refreshTasks() async {
+    var dir = await getApplicationDocumentsDirectory();
+    var p = Profiles(dir);
+    if (p.listProfiles().isEmpty) {
+      p
+        ..addProfile()
+        ..setCurrentProfile(p.listProfiles().first);
+    }
+    tasks = p.getCurrentStorage().next();
+    setState(() {});
   }
 
   @override
@@ -199,28 +234,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
           Builder(
             builder: (context) => IconButton(
               icon: Icon(Icons.refresh),
-              onPressed: () {
-                getApplicationDocumentsDirectory().then(
-                  (dir) async {
-                    try {
-                      var header =
-                          await Profiles(dir).getCurrentStorage().synchronize();
-                      tasks = Profiles(dir).getCurrentStorage().next();
-                      setState(() {});
-                      // ignore: deprecated_member_use
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text('${header['code']}: ${header['status']}'),
-                      ));
-                    } on Exception catch (e, trace) {
-                      showExceptionDialog(
-                        context: context,
-                        e: e,
-                        trace: trace,
-                      );
-                    }
-                  },
-                );
-              },
+              onPressed: () => _synchronize(context),
             ),
           ),
         ],
@@ -287,7 +301,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                               child: Icon(Icons.delete),
                             ),
                             title: Text('Delete profile'),
-                            onTap: () => _deleteProfile(profile),
+                            onTap: () => _deleteProfileDialog(profile),
                           ),
                         ],
                       ),
@@ -316,18 +330,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                     MaterialPageRoute(
                       builder: (context) => DetailRoute(task.uuid),
                     ),
-                  ).then((_) {
-                    getApplicationDocumentsDirectory().then((dir) {
-                      var p = Profiles(dir);
-                      if (p.listProfiles().isEmpty) {
-                        p
-                          ..addProfile()
-                          ..setCurrentProfile(p.listProfiles().first);
-                      }
-                      tasks = p.getCurrentStorage().next();
-                      setState(() {});
-                    });
-                  }),
+                  ).then((_) => _refreshTasks()),
                   child: ListTile(
                     title: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -364,7 +367,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addTask,
+        onPressed: _addTaskDialog,
         tooltip: 'Add task',
         child: Icon(Icons.add),
       ),
