@@ -1,3 +1,7 @@
+# 0.0.3
+
+- Add due date to task list view
+
 # 0.0.2
 
 - Fix bug: do not fetch fonts after installing.
