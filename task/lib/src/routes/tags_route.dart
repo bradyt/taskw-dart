@@ -55,33 +55,35 @@ class TagsRouteState extends State<TagsRoute> {
       appBar: AppBar(
         title: Text('tags'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(4),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 4,
-          children: [
-            if (draftTags != null)
-              for (var tag in draftTags)
-                FilterChip(
-                  onSelected: (_) => _removeTag(tag),
-                  label: Text(
-                    '+$tag',
-                    style: GoogleFonts.firaMono(),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              if (draftTags != null)
+                for (var tag in draftTags)
+                  FilterChip(
+                    onSelected: (_) => _removeTag(tag),
+                    label: Text(
+                      '+$tag',
+                      style: GoogleFonts.firaMono(),
+                    ),
                   ),
-                ),
-            Divider(),
-            if (globalTags != null)
-              for (var tag in globalTags.entries
-                  .where((tag) => !(draftTags?.contains(tag.key) ?? false)))
-                FilterChip(
-                  onSelected: (_) => _addTag(tag.key),
-                  label: Text(
-                    '-${tag.key}',
-                    style: GoogleFonts.firaMono(),
+              Divider(),
+              if (globalTags != null)
+                for (var tag in globalTags.entries
+                    .where((tag) => !(draftTags?.contains(tag.key) ?? false)))
+                  FilterChip(
+                    onSelected: (_) => _addTag(tag.key),
+                    label: Text(
+                      '-${tag.key}',
+                      style: GoogleFonts.firaMono(),
+                    ),
                   ),
-                ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
