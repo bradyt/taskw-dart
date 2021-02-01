@@ -9,9 +9,9 @@ environment:
 dependencies:
   intl: ^0.16.1
   meta: ^1.2.4
-  uuid: ^2.2.2
 
 dev_dependencies:
   pedantic:
   test:
   test_coverage:
+  uuid:
