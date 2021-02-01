@@ -31,6 +31,7 @@ class _DetailRouteState extends State<DetailRoute> {
             'due': widget.task.due,
             'priority': widget.task.priority,
             'tags': widget.task.tags,
+            'urgency': urgency(widget.task),
           }.entries)
             AttributeWidget(
               name: attribute.key,
