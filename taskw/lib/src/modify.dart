@@ -21,6 +21,12 @@ class Modify {
 
   Map get changes {
     var result = {};
+    if (_draft.description != _saved.description) {
+      result['description'] = {
+        'old': _saved.description,
+        'new': _draft.description,
+      };
+    }
     if (_draft.status != _saved.status) {
       result['status'] = {
         'old': _saved.status,
@@ -52,6 +58,10 @@ class Modify {
       };
     }
     return result;
+  }
+
+  void setDescription(String description) {
+    _draft = _draft.copyWith(description: () => description);
   }
 
   void setStatus(String status) {

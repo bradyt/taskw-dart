@@ -32,6 +32,9 @@ class _DetailRouteState extends State<DetailRoute> {
   void Function(dynamic) callback(String name) {
     return (newValue) {
       switch (name) {
+        case 'description':
+          modify.setDescription(newValue);
+          break;
         case 'status':
           modify.setStatus(newValue);
           break;
@@ -144,6 +147,12 @@ class AttributeWidget extends StatelessWidget {
     var localValue =
         (value is DateTime) ? (value as DateTime).toLocal() : value;
     switch (name) {
+      case 'description':
+        return DescriptionWidget(
+          name: name,
+          value: localValue,
+          callback: callback,
+        );
       case 'status':
         return StatusWidget(
           name: name,
@@ -189,6 +198,61 @@ class AttributeWidget extends StatelessWidget {
           ),
         );
     }
+  }
+}
+
+class DescriptionWidget extends StatelessWidget {
+  DescriptionWidget({this.name, this.value, this.callback});
+
+  final String name;
+  final dynamic value;
+  final void Function(dynamic) callback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              Text(
+                '${'$name:'.padRight(13)}$value',
+                style: GoogleFonts.firaMono(),
+              ),
+            ],
+          ),
+        ),
+        onTap: () {
+          var controller = TextEditingController();
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              scrollable: true,
+              title: Text('Edit description'),
+              content: TextField(
+                autofocus: true,
+                controller: controller,
+              ),
+              actions: [
+                TextButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ElevatedButton(
+                  child: Text('Submit'),
+                  onPressed: () {
+                    return callback(controller.text);
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
