@@ -212,6 +212,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0-nullsafety.1"
+  taskc:
+    dependency: transitive
+    description:
+      path: "."
+      ref: "v0.0.0"
+      resolved-ref: "925c9305bc1be916ab2ee4ab91d83a0bfb8891b4"
+      url: "git://github.com/bradyt/taskd-client-dart.git"
+    source: git
+    version: "0.0.0"
   taskw:
     dependency: "direct main"
     description:
@@ -269,5 +278,5 @@ packages:
     source: hosted
     version: "0.1.2"
 sdks:
-  dart: ">=2.10.0-110 <2.11.0"
+  dart: ">=2.10.0 <2.11.0"
   flutter: ">=1.12.13+hotfix.5 <2.0.0"
