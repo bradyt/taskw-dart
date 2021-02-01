@@ -83,6 +83,14 @@ class Modify {
     _draft = _draft.copyWith(due: () => due);
   }
 
+  void setWait(DateTime wait) {
+    _draft = _draft.copyWith(status: 'waiting', wait: () => wait);
+  }
+
+  void setUntil(DateTime until) {
+    _draft = _draft.copyWith(until: () => until);
+  }
+
   void setPriority(String priority) {
     _draft = _draft.copyWith(priority: () => priority);
   }

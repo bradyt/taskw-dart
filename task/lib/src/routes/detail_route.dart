@@ -46,6 +46,12 @@ class _DetailRouteState extends State<DetailRoute> {
         case 'due':
           modify.setDue(newValue);
           break;
+        case 'wait':
+          modify.setWait(newValue);
+          break;
+        case 'until':
+          modify.setUntil(newValue);
+          break;
         case 'priority':
           modify.setPriority(newValue);
           break;
@@ -74,6 +80,8 @@ class _DetailRouteState extends State<DetailRoute> {
               'modified': modify.draft.modified,
               'end': modify.draft.end,
               'due': modify.draft.due,
+              'wait': modify.draft.wait,
+              'until': modify.draft.until,
               'priority': modify.draft.priority,
               'tags': modify.draft.tags,
               'urgency': urgency(modify.draft),
@@ -174,7 +182,19 @@ class AttributeWidget extends StatelessWidget {
           callback: callback,
         );
       case 'due':
-        return DueWidget(
+        return DateTimeWidget(
+          name: name,
+          value: localValue,
+          callback: callback,
+        );
+      case 'wait':
+        return DateTimeWidget(
+          name: name,
+          value: localValue,
+          callback: callback,
+        );
+      case 'until':
+        return DateTimeWidget(
           name: name,
           value: localValue,
           callback: callback,
@@ -314,8 +334,8 @@ class StatusWidget extends StatelessWidget {
   }
 }
 
-class DueWidget extends StatelessWidget {
-  const DueWidget({this.name, this.value, this.callback});
+class DateTimeWidget extends StatelessWidget {
+  const DateTimeWidget({this.name, this.value, this.callback});
 
   final String name;
   final dynamic value;
@@ -338,25 +358,25 @@ class DueWidget extends StatelessWidget {
         ),
         onTap: () async {
           var initialDate = DateTime.tryParse('$value') ?? DateTime.now();
-          var dueDate = await showDatePicker(
+          var date = await showDatePicker(
             context: context,
             initialDate: initialDate,
             firstDate: DateTime(1990), // >= 1980-01-01T00:00:00.000Z
             lastDate: DateTime(2037, 12, 31), // < 2038-01-19T03:14:08.000Z
           );
-          if (dueDate != null) {
-            var dueTime = await showTimePicker(
+          if (date != null) {
+            var time = await showTimePicker(
               context: context,
               initialTime: TimeOfDay.fromDateTime(initialDate),
             );
-            if (dueTime != null) {
-              var due = dueDate.add(
+            if (time != null) {
+              var dateTime = date.add(
                 Duration(
-                  hours: dueTime.hour,
-                  minutes: dueTime.minute,
+                  hours: time.hour,
+                  minutes: time.minute,
                 ),
               );
-              return callback(due.toUtc());
+              return callback(dateTime.toUtc());
             }
           }
         },
