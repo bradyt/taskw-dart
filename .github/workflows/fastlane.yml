@@ -1,0 +1,24 @@
+name: test fastlane setup
+
+defaults:
+  run:
+    working-directory: task
+
+on:
+  pull_request:
+  schedule:
+    - cron: 0 0 1 * *
+  workflow_dispatch:
+
+jobs:
+  simple:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: gem install --user-install bundler
+    - run: bundle config set path 'vendor/bundle'
+    - run: bundle install
+    - run: bundle exec fastlane --version
+      working-directory: task/android
+    - run: bundle exec fastlane --version
+      working-directory: task/ios
