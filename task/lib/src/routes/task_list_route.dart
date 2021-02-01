@@ -527,7 +527,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                         FilterChip(
                           onSelected: (_) => _toggleTagFilter(tag.key),
                           label: Text(
-                            '${selectedTags.contains(tag.key) ? '+' : '-'}'
+                            '${selectedTags.contains(tag.key) ? '+' : ''}'
                             '${tag.key}',
                             style: GoogleFonts.firaMono(),
                           ),
