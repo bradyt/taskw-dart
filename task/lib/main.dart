@@ -44,19 +44,15 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: ListView(
+        children: [
+          for (var profile in _profiles)
+            Card(
+              child: ListTile(
+                title: Text(profile),
+              ),
             ),
-            Text(
-              '$_profiles',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
