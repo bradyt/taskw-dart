@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -218,68 +220,83 @@ class _TaskListRouteState extends State<TaskListRoute> {
         ],
       ),
       drawer: Drawer(
-        child: ListView(
-          key: PageStorageKey('task-list'),
-          children: [
-            ListTile(
-              title: Text('Profiles'),
-              trailing: IconButton(
-                icon: Icon(Icons.add),
-                onPressed: _addProfile,
-              ),
-            ),
-            for (var profile in (profiles ?? []))
-              ExpansionTile(
-                key: PageStorageKey<String>('exp-$profile'),
-                leading: Radio<String>(
-                  value: profile,
-                  groupValue: currentProfile,
-                  onChanged: _selectProfile,
-                ),
-                title: SingleChildScrollView(
-                  key: PageStorageKey<String>('scroll-$profile'),
-                  scrollDirection: Axis.horizontal,
-                  child: Text(
-                    (aliases[profile]?.isEmpty ?? true)
-                        ? profile
-                        : aliases[profile],
-                    style: GoogleFonts.firaMono(),
-                  ),
-                ),
-                children: [
-                  ListTile(
-                    leading: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Icon(Icons.edit),
-                    ),
-                    title: Text('Rename profile'),
-                    onTap: () => _renameProfile(profile),
-                  ),
-                  ListTile(
-                    leading: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Icon(Icons.link),
-                    ),
-                    title: Text('Configure Taskserver'),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ConfigureTaskserverRoute(profile, aliases[profile]),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  key: PageStorageKey('task-list'),
+                  children: [
+                    ListTile(
+                      title: Text('Profiles'),
+                      trailing: IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: _addProfile,
                       ),
-                    ).then((_) => setState(() {})),
-                  ),
-                  ListTile(
-                    leading: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Icon(Icons.delete),
                     ),
-                    title: Text('Delete profile'),
-                    onTap: () => _deleteProfile(profile),
-                  ),
-                ],
+                    for (var profile in (profiles ?? []))
+                      ExpansionTile(
+                        key: PageStorageKey<String>('exp-$profile'),
+                        leading: Radio<String>(
+                          value: profile,
+                          groupValue: currentProfile,
+                          onChanged: _selectProfile,
+                        ),
+                        title: SingleChildScrollView(
+                          key: PageStorageKey<String>('scroll-$profile'),
+                          scrollDirection: Axis.horizontal,
+                          child: Text(
+                            (aliases[profile]?.isEmpty ?? true)
+                                ? profile
+                                : aliases[profile],
+                            style: GoogleFonts.firaMono(),
+                          ),
+                        ),
+                        children: [
+                          ListTile(
+                            leading: Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Icon(Icons.edit),
+                            ),
+                            title: Text('Rename profile'),
+                            onTap: () => _renameProfile(profile),
+                          ),
+                          ListTile(
+                            leading: Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Icon(Icons.link),
+                            ),
+                            title: Text('Configure Taskserver'),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ConfigureTaskserverRoute(
+                                    profile, aliases[profile]),
+                              ),
+                            ).then((_) => setState(() {})),
+                          ),
+                          ListTile(
+                            leading: Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Icon(Icons.delete),
+                            ),
+                            title: Text('Delete profile'),
+                            onTap: () => _deleteProfile(profile),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
               ),
-          ],
+              if (Platform.isAndroid) ...[
+                Divider(),
+                ListTile(
+                  title: Text('Privacy policy:'),
+                  subtitle: Text('This app does not collect data.'),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
       body: ListView(
