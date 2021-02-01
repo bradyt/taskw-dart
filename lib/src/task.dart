@@ -10,6 +10,7 @@ class Task {
     @required this.uuid,
     @required this.entry,
     @required this.description,
+    this.id,
     this.start,
     this.end,
     this.due,
@@ -37,12 +38,12 @@ class Task {
       if ('entry,start,end,due,until,scheduled,wait,modified'
           .contains(entry.key)) {
         json[entry.key] = DateTime.parse(entry.value);
-      } else if (entry.key == 'imask') {
-        json[entry.key] = entry.value.round();
         // ignore: lines_longer_than_80_chars
-      } else if ('status,uuid,description,recur,mask,parent,project,priority,depends,tags,annotations'
+      } else if ('status,uuid,description,recur,mask,imask,parent,project,priority,depends,tags,annotations'
           .contains(entry.key)) {
         json[entry.key] = entry.value;
+      } else if ('id,imask'.contains(entry.key)) {
+        json[entry.key] = entry.value.round();
       } else {
         udas[entry.key] = entry.value;
       }
@@ -50,6 +51,7 @@ class Task {
     udas = (udas.isEmpty) ? null : udas;
 
     return Task(
+      id: json['id'],
       status: json['status'],
       uuid: json['uuid'],
       entry: json['entry'],
@@ -76,6 +78,7 @@ class Task {
     );
   }
 
+  final int id;
   final String status;
   final String uuid;
   final DateTime entry;
@@ -99,6 +102,7 @@ class Task {
   final Map udas;
 
   Map toJson() => {
+        'id': id,
         'status': status,
         'uuid': uuid,
         'entry': entry,
@@ -134,6 +138,7 @@ class Task {
   @override
   bool operator ==(Object other) =>
       other is Task &&
+      id == other.id &&
       status == other.status &&
       uuid == other.uuid &&
       entry == other.entry &&

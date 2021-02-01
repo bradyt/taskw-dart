@@ -1,3 +1,7 @@
+# 0.0.3
+
+- Add id field.
+
 # 0.0.2
 
 - Relax dependencies to avoid conflicts with apps on flutter channel
