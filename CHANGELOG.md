@@ -1,3 +1,9 @@
+# 0.0.2
+
+- Relax dependencies to avoid conflicts with apps on flutter channel
+  dev.
+
+
 # 0.0.1
 
 - Fix issue with imask, of recurring tasks, by rounding the double of
