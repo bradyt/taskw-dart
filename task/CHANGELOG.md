@@ -1,5 +1,6 @@
 # 0.0.4
 
+- Fix internet permission on Android.
 - Sort unused tags alphabetically in tag editing UI.
 - Text editing starts with current value, instead of blank.
 - Avoid OS notches overlap of tag editing UI.
