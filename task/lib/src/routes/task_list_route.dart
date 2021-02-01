@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
+
+import 'package:taskc/taskc.dart';
 
 import 'package:taskw/taskw.dart';
 
-import 'package:taskc/taskc.dart';
+import 'package:task/task.dart';
 
 class TaskListRoute extends StatefulWidget {
   @override
@@ -43,7 +46,12 @@ class _TaskListRouteState extends State<TaskListRoute> {
             onPressed: () {
               getApplicationDocumentsDirectory().then((dir) {
                 Profiles(dir).getCurrentStorage().addTask(
-                      Task(description: controller.text),
+                      Task(
+                        status: 'pending',
+                        uuid: Uuid().v1(),
+                        entry: DateTime.now().toUtc(),
+                        description: controller.text,
+                      ),
                     );
                 tasks = Profiles(dir).getCurrentStorage().listTasks();
                 setState(() {});
@@ -67,8 +75,16 @@ class _TaskListRouteState extends State<TaskListRoute> {
           if (tasks != null)
             for (var task in tasks)
               Card(
-                child: ListTile(
-                  title: Text('${task.description}'),
+                child: InkWell(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailRoute(task),
+                    ),
+                  ).then((_) => setState(() {})),
+                  child: ListTile(
+                    title: Text('${task.description}'),
+                  ),
                 ),
               ),
         ],
