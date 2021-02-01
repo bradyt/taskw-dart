@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:taskw/taskw.dart';
@@ -87,7 +88,13 @@ class _ProfilesRouteState extends State<ProfilesRoute> {
                 onLongPress: () => _deleteProfile(profile),
                 onTap: () => _selectProfile(profile),
                 child: ListTile(
-                  title: Text(profile),
+                  title: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      profile,
+                      style: GoogleFonts.firaMono(),
+                    ),
+                  ),
                 ),
               ),
             ),
