@@ -1,5 +1,5 @@
-watch:
-	find . -name '*.dart' -o -name '*.yaml' | entr -cs 'make analyze'
+watch: pub_get
+	flutter analyze --watch
 
 analyze: pub_get
 	dart analyze
