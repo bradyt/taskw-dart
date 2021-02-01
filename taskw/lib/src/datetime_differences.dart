@@ -1,5 +1,8 @@
 String age(DateTime dt) {
-  var difference = DateTime.now().difference(dt);
+  return difference(DateTime.now().difference(dt));
+}
+
+String difference(Duration difference) {
   var days = difference.inDays;
   if (days > 365) {
     return '${days / 365}y';
