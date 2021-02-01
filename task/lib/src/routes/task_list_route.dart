@@ -320,52 +320,54 @@ class _TaskListRouteState extends State<TaskListRoute> {
           ),
         ),
       ),
-      body: ListView(
-        children: [
-          if (tasks != null)
-            for (var task in tasks)
-              Card(
-                child: InkWell(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetailRoute(task.uuid),
-                    ),
-                  ).then((_) => _refreshTasks()),
-                  child: ListTile(
-                    title: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(
-                        task.description,
-                        style: GoogleFonts.firaMono(),
+      body: Scrollbar(
+        child: ListView(
+          children: [
+            if (tasks != null)
+              for (var task in tasks)
+                Card(
+                  child: InkWell(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailRoute(task.uuid),
                       ),
-                    ),
-                    subtitle: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              '${age(task.entry)} '
-                                      '${(task.due != null) ? when(task.due) : ''} '
-                                      '${task?.priority ?? ''} '
-                                      '${task.tags?.join(' ') ?? ''}'
-                                  .replaceAll(RegExp(r' +'), ' '),
-                              style: GoogleFonts.firaMono(),
-                            ),
-                          ),
-                        ),
-                        Text(
-                          '${urgency(task)}',
+                    ).then((_) => _refreshTasks()),
+                    child: ListTile(
+                      title: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          task.description,
                           style: GoogleFonts.firaMono(),
                         ),
-                      ],
+                      ),
+                      subtitle: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Text(
+                                '${age(task.entry)} '
+                                        '${(task.due != null) ? when(task.due) : ''} '
+                                        '${task?.priority ?? ''} '
+                                        '${task.tags?.join(' ') ?? ''}'
+                                    .replaceAll(RegExp(r' +'), ' '),
+                                style: GoogleFonts.firaMono(),
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '${urgency(task)}',
+                            style: GoogleFonts.firaMono(),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addTaskDialog,
