@@ -15,7 +15,7 @@ void main() {
 
     setUp(() {
       base = Directory(
-        'test/profiles-testing/taskw',
+        'test/profile-testing/taskw',
       )..createSync(recursive: true);
       profiles = Profiles(base);
     });
