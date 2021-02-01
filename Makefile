@@ -1,5 +1,10 @@
-analyze: taskw/pubspec.lock task/.packages
-	find . -name '*.dart' -o -name '*.yaml' | entr -cs 'dart analyze'
+watch:
+	find . -name '*.dart' -o -name '*.yaml' | entr -cs 'make analyze'
+
+analyze: pub_get
+	dart analyze
+
+pub_get: taskw/pubspec.lock task/.packages
 
 taskw/pubspec.lock:
 	cd taskw && dart pub get

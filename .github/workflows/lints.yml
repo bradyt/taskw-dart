@@ -1,0 +1,17 @@
+name: linting
+
+on:
+  pull_request:
+  schedule:
+    - cron: 0 0 1 * *
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: cirrusci/flutter:stable
+    steps:
+    - uses: actions/checkout@v2
+    - run: make format
+    - run: make analyze
