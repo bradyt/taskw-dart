@@ -37,8 +37,10 @@ class Task {
       if ('entry,start,end,due,until,scheduled,wait,modified'
           .contains(entry.key)) {
         json[entry.key] = DateTime.parse(entry.value);
+      } else if (entry.key == 'imask') {
+        json[entry.key] = entry.value.round();
         // ignore: lines_longer_than_80_chars
-      } else if ('status,uuid,description,recur,mask,imask,parent,project,priority,depends,tags,annotations'
+      } else if ('status,uuid,description,recur,mask,parent,project,priority,depends,tags,annotations'
           .contains(entry.key)) {
         json[entry.key] = entry.value;
       } else {
