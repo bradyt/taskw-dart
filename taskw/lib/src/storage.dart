@@ -1,6 +1,5 @@
+import 'dart:convert';
 import 'dart:io';
-
-import 'package:uuid/uuid.dart';
 
 import 'package:taskc/taskc.dart';
 
@@ -10,31 +9,19 @@ class Storage {
   Directory profile;
 
   List<Task> listTasks() => [
-        for (var description in [
-          'foo',
-          'bar',
-          'baz',
-          'qux',
-          'quux',
-          'quuz',
-          'corge',
-          'grault',
-          'garply',
-          'waldo',
-          'fred',
-          'plugh',
-          'xyzzy',
-          'thud'
-        ])
-          Task(
-            status: 'pending',
-            uuid: Uuid().v1(),
-            entry: DateTime.now().toUtc(),
-            description: description,
-          ),
+        if (File('${profile.path}/.task/pending.data').existsSync())
+          for (var line in File('${profile.path}/.task/pending.data')
+              .readAsStringSync()
+              .trim()
+              .split('\n'))
+            Task.fromJson(json.decode(line)),
       ];
 
   void addTask(Task task) {
-    stdout.writeln(task);
+    Directory('${profile.path}/.task').createSync(recursive: true);
+    File('${profile.path}/.task/pending.data').writeAsStringSync(
+      '${json.encode(task.toJson())}\n',
+      mode: FileMode.append,
+    );
   }
 }

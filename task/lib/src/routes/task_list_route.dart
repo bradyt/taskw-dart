@@ -18,7 +18,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
   void initState() {
     super.initState();
     getApplicationDocumentsDirectory().then((dir) {
-      tasks = Storage(dir).listTasks();
+      tasks = Profiles(dir).getCurrentStorage().listTasks();
       setState(() {});
     });
   }
@@ -42,10 +42,10 @@ class _TaskListRouteState extends State<TaskListRoute> {
             child: Text('Submit'),
             onPressed: () {
               getApplicationDocumentsDirectory().then((dir) {
-                Storage(dir).addTask(
-                  Task(description: controller.text),
-                );
-                tasks = Storage(dir).listTasks();
+                Profiles(dir).getCurrentStorage().addTask(
+                      Task(description: controller.text),
+                    );
+                tasks = Profiles(dir).getCurrentStorage().listTasks();
                 setState(() {});
                 Navigator.of(context).pop();
               });
