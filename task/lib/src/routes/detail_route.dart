@@ -249,13 +249,32 @@ class DueWidget extends StatelessWidget {
             ],
           ),
         ),
-        onTap: (name == 'due')
-            ? () {
-                var dt = DateTime.now().toUtc();
-                return callback(dt);
-              }
-            : null,
-        onLongPress: (name == 'due') ? () => callback(null) : null,
+        onTap: () async {
+          var initialDate =
+              DateTime.tryParse('$value') ?? DateTime.now();
+          var dueDate = await showDatePicker(
+            context: context,
+            initialDate: initialDate,
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2037),
+          );
+          if (dueDate != null) {
+            var dueTime = await showTimePicker(
+              context: context,
+              initialTime: TimeOfDay.fromDateTime(initialDate),
+            );
+            if (dueTime != null) {
+              var due = dueDate.add(
+                Duration(
+                  hours: dueTime.hour,
+                  minutes: dueTime.minute,
+                ),
+              );
+              return callback(due);
+            }
+          }
+        },
+        onLongPress: () => callback(null),
       ),
     );
   }
