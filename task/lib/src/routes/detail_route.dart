@@ -103,7 +103,9 @@ class _DetailRouteState extends State<DetailRoute> {
                             if (draftedTask.toJson()['due'] !=
                                 savedTask.toJson()['due'])
                               Text(
-                                'due: ${savedTask.due} ==> ${draftedTask.due}',
+                                'due:\n'
+                                '  old: ${savedTask.due}\n'
+                                '  new: ${draftedTask.due}',
                                 style: GoogleFonts.firaMono(),
                               ),
                           ],
