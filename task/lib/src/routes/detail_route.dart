@@ -32,27 +32,16 @@ class _DetailRouteState extends State<DetailRoute> {
     });
   }
 
-  void Function(String) callback(String name) {
+  void Function(dynamic) callback(String name) {
     return (newValue) {
       if (newValue == savedTask.toJson()[name]) {
         changes.remove(name);
       } else {
         changes.add(name);
       }
-      if (newValue == null) {
-        draftedTask = Task.fromJson(
-          draftedTask.toJson()..remove(name),
-        );
-      } else {
-        draftedTask = Task.fromJson(
-          draftedTask.toJson()
-            ..update(
-              name,
-              (_) => newValue,
-              ifAbsent: () => newValue,
-            ),
-        );
-      }
+      draftedTask = draftedTask.copyWith(
+        due: (name == 'due') ? () => newValue : null,
+      );
       setState(() {});
     };
   }
@@ -123,16 +112,10 @@ class _DetailRouteState extends State<DetailRoute> {
                           onPressed: () {
                             getApplicationDocumentsDirectory().then((dir) {
                               var storage = Profiles(dir).getCurrentStorage();
-                              var now =
-                                  DateTime.now().toUtc().toIso8601String();
+                              var now = DateTime.now().toUtc();
                               storage.mergeTask(
-                                Task.fromJson(
-                                  draftedTask.toJson()
-                                    ..update(
-                                      'modified',
-                                      (_) => now,
-                                      ifAbsent: () => now,
-                                    ),
+                                draftedTask.copyWith(
+                                  modified: () => now,
                                 ),
                               );
                               savedTask = storage.getTask(widget.uuid);
@@ -158,7 +141,7 @@ class AttributeWidget extends StatelessWidget {
 
   final String name;
   final dynamic value;
-  final void Function(String) callback;
+  final void Function(dynamic) callback;
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +179,7 @@ class DueWidget extends StatelessWidget {
 
   final String name;
   final dynamic value;
-  final void Function(String) callback;
+  final void Function(dynamic) callback;
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +198,7 @@ class DueWidget extends StatelessWidget {
         ),
         onTap: (name == 'due')
             ? () {
-                var dt = DateTime.now().toUtc().toIso8601String();
+                var dt = DateTime.now().toUtc();
                 return callback(dt);
               }
             : null,
