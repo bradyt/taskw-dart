@@ -3,6 +3,7 @@
 - Sort unused tags alphabetically in tag editing UI.
 - Text editing starts with current value, instead of blank.
 - Avoid OS notches overlap of tag editing UI.
+- Wrap line when editing long descriptions
 
 # 0.0.3
 

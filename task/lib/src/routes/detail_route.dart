@@ -246,6 +246,7 @@ class DescriptionWidget extends StatelessWidget {
               title: Text('Edit description'),
               content: TextField(
                 autofocus: true,
+                maxLines: null,
                 controller: controller,
               ),
               actions: [

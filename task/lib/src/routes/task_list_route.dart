@@ -145,6 +145,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
         title: Text('Add task'),
         content: TextField(
           autofocus: true,
+          maxLines: null,
           controller: addTaskController,
         ),
         actions: [
