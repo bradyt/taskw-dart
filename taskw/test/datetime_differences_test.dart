@@ -16,4 +16,13 @@ void main() {
       expect(difference(const Duration(minutes: -42)), '-42m');
     });
   });
+  group('Test when function;', () {
+    test('how long until a due date?', () {
+      expect(when(DateTime.now().add(const Duration(minutes: 42))), '41m');
+    });
+    test('what if the due date passed?', () {
+      expect(
+          when(DateTime.now().subtract(const Duration(minutes: 42))), '-42m');
+    });
+  });
 }

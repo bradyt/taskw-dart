@@ -1,5 +1,7 @@
 String age(DateTime dt) => difference(DateTime.now().difference(dt));
 
+String when(DateTime dt) => difference(dt.difference(DateTime.now()));
+
 String difference(Duration difference) {
   String result;
   var days = difference.abs().inDays;
