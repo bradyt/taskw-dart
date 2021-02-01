@@ -7,13 +7,23 @@ iOS<sup>[2](#ios)</sup>, inspired by
 
 Brief list of planned features:
 
-- List tasks.
-- Add tasks.
-- Edit tasks.
-- Sync task list with a
-  [Taskserver](https://taskwarrior.org/docs/taskserver/why.html).
-- Import and export tasks to a format compatible with cli
-  [task](https://taskwarrior.org/docs/commands/export.html).
+- [x] List tasks.
+- [x] Add tasks.
+- [x] Edit tasks.
+- [x] Sync task list with a
+      [Taskserver](https://taskwarrior.org/docs/taskserver/why.html).
+- [ ] Import and export tasks to a format compatible with cli
+      [task](https://taskwarrior.org/docs/commands/export.html).
+
+Slightly finer grained list of features that might be prioritized
+sooner than later:
+
+- [ ] Sort task list by fields like date created, tags, etc.
+- [ ] Add more Taskwarrior fields to edit view, like wait, until.
+- [ ] Add a UI for editings tags, as currently user can only toggle
+      the `next` tag.
+- [ ] Add some feature to effectively remove the `status:pending`
+      filter, for example add an `all` report.
 
 # Project structure
 
