@@ -1,3 +1,7 @@
+# 0.0.4
+
+- Sort unused tags alphabetically in tag editing UI.
+
 # 0.0.3
 
 - Add tag editing UI.

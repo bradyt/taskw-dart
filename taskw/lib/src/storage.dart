@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_expression_function_bodies
 
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
@@ -22,10 +23,10 @@ class Storage {
     var listOfLists = listTasks().map((task) => task.tags);
     var listOfTags = listOfLists.expand((tags) => tags ?? []);
     var setOfTags = listOfTags.toSet() ?? {};
-    return {
+    return SplayTreeMap.of({
       if (setOfTags.isNotEmpty)
         for (var tag in setOfTags) tag: 0,
-    };
+    });
   }
 
   List<Task> next() {
