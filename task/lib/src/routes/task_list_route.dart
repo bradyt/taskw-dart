@@ -25,6 +25,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
   Map<String, int> globalTags;
   Set<String> selectedTags;
   String selectedSort;
+  bool sortHeaderVisible;
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     profiles = {};
     selectedTags = {};
     selectedSort = 'urgency+';
+    sortHeaderVisible = false;
     _initialize();
   }
 
@@ -306,6 +308,11 @@ class _TaskListRouteState extends State<TaskListRoute> {
     setState(() {});
   }
 
+  _toggleSortHeader() {
+    sortHeaderVisible = !sortHeaderVisible;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var listAlias = (profiles[currentProfile]?.isEmpty ?? true)
@@ -320,6 +327,10 @@ class _TaskListRouteState extends State<TaskListRoute> {
               icon: Icon(Icons.refresh),
               onPressed: () => _synchronize(context),
             ),
+          ),
+          IconButton(
+            icon: Icon(Icons.sort),
+            onPressed: _toggleSortHeader,
           ),
         ],
       ),
@@ -405,49 +416,50 @@ class _TaskListRouteState extends State<TaskListRoute> {
       ),
       body: Column(
         children: [
-          Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 4,
-                children: [
-                  for (var sort in [
-                    'id',
-                    'entry',
-                    'due',
-                    'priority',
-                    'tags',
-                    'urgency',
-                  ])
-                    ChoiceChip(
-                      label: Text(
-                        (selectedSort?.startsWith(sort) ?? false)
-                            ? selectedSort
-                            : sort,
-                        style: GoogleFonts.firaMono(),
-                      ),
-                      selected: selectedSort?.startsWith(sort) ?? false,
-                      onSelected: (newValue) async {
-                        if (selectedSort == '$sort+') {
-                          selectedSort = '$sort-';
-                        } else if (selectedSort == '$sort-') {
-                          if (sort == 'urgency') {
-                            selectedSort = 'id+';
+          if (sortHeaderVisible)
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: [
+                    for (var sort in [
+                      'id',
+                      'entry',
+                      'due',
+                      'priority',
+                      'tags',
+                      'urgency',
+                    ])
+                      ChoiceChip(
+                        label: Text(
+                          (selectedSort?.startsWith(sort) ?? false)
+                              ? selectedSort
+                              : sort,
+                          style: GoogleFonts.firaMono(),
+                        ),
+                        selected: selectedSort?.startsWith(sort) ?? false,
+                        onSelected: (newValue) async {
+                          if (selectedSort == '$sort+') {
+                            selectedSort = '$sort-';
+                          } else if (selectedSort == '$sort-') {
+                            if (sort == 'urgency') {
+                              selectedSort = 'id+';
+                            } else {
+                              selectedSort = 'urgency+';
+                            }
                           } else {
-                            selectedSort = 'urgency+';
+                            selectedSort = '$sort+';
                           }
-                        } else {
-                          selectedSort = '$sort+';
-                        }
-                        await _sortTasks();
-                      },
-                    ),
-                ],
+                          await _sortTasks();
+                        },
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
           Expanded(
             child: Scrollbar(
               child: ListView(
