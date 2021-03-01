@@ -50,9 +50,6 @@ jobs:
       - name: Run tests
         run: dart test
 
-      - name: test coverage
-        run: dart pub run test_coverage --min-coverage 95
-
       - name: run pub publish --dry-run
         run: dart pub publish --dry-run
 
