@@ -1,3 +1,7 @@
+# 0.0.8
+
+- Fix bugs in tags and taskserver pages.
+
 # 0.0.7
 
 - Potential quick fix for short ids breaking sync.
