@@ -2,7 +2,7 @@
 
 - Add sort feature.
 - Add tag filtering UI.
-- Add toggle button to remove status:pending filter
+- Add toggle button to remove status:pending filter.
 - Add wait and until features.
 - Fix issue where tag editing page was not scrollable.
 - Add id feature similar to cli task's.
@@ -27,7 +27,7 @@
 - Sort unused tags alphabetically in tag editing UI.
 - Text editing starts with current value, instead of blank.
 - Avoid OS notches overlap of tag editing UI.
-- Wrap line when editing long descriptions
+- Wrap line when editing long descriptions.
 
 # 0.0.3
 
