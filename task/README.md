@@ -1,7 +1,8 @@
 # Install or run app from source code
 
 Make sure you have Flutter
-[installed](https://flutter.dev/docs/get-started/install).
+[installed](https://flutter.dev/docs/get-started/install), and check
+`flutter doctor`.
 
 To run the app in an open emulator or connected device, try `flutter
 run`.
@@ -9,6 +10,5 @@ run`.
 To install to your Android or iOS device, run `flutter build apk` or
 `flutter build ios`, then `flutter install`.
 
-To run the app on macOS, switch to `flutter channel dev` (I am
-currently using symlinks for this), check `flutter config`, and try
-`flutter run`.
+To run the app on Linux or macOS, check `flutter config`, `flutter
+ doctor` and try `flutter run`.

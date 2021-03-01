@@ -17,5 +17,5 @@ might be compatible with Taskwarrior.
 - iOS
   - [App Store](https://apps.apple.com/app/task-add/id1553253179)
 
-To install or run from source code, on Android, iOS or macOS, please
-see [task/README.md](task/README.md).
+To install or run from source code, see
+[task/README.md](task/README.md).
