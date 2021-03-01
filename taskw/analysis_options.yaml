@@ -4,8 +4,8 @@
 include: package:pedantic/analysis_options.yaml
 
 analyzer:
-#   exclude:
-#     - path/to/excluded/files/**
+  exclude:
+    - test/.test_coverage.dart
 
 # For lint rules and documentation, see http://dart-lang.github.io/linter/lints.
 # Uncomment to specify additional rules.
@@ -119,7 +119,7 @@ linter:
     - prefer_contains
     # - prefer_double_quotes # inconsistent with pedantic
     - prefer_equal_for_default_values
-    - prefer_expression_function_bodies
+    # - prefer_expression_function_bodies
     - prefer_final_fields
     # - prefer_final_in_for_each # https://pub.dev/packages/pedantic#unused-lints
     # - prefer_final_locals # https://pub.dev/packages/pedantic#unused-lints

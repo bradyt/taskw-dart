@@ -155,10 +155,6 @@ class Storage {
     fileByKey(key).writeAsStringSync(contents);
   }
 
-  void readFileContents(String key) {
-    fileByKey(key).readAsStringSync();
-  }
-
   Connection _getConnection(Map config) {
     var ca = '${profile.path}/.task/ca.cert.pem';
     var cert = '${profile.path}/.task/first_last.cert.pem';

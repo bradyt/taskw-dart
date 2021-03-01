@@ -41,5 +41,17 @@ void main() {
     test('90 days', () {
       expect(difference(const Duration(days: 90)), '3mo');
     });
+    test('42 seconds', () {
+      expect(difference(const Duration(seconds: 42)), '42s');
+    });
+    test('10 hours', () {
+      expect(difference(const Duration(hours: 10)), '10h');
+    });
+    test('3 days', () {
+      expect(difference(const Duration(days: 3)), '3d');
+    });
+    test('3 weeks', () {
+      expect(difference(const Duration(days: 21)), '3w');
+    });
   });
 }
