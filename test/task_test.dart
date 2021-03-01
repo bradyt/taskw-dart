@@ -76,11 +76,18 @@ void main() {
       );
     });
     test('test parsing json string task with tags', () {
+      var uuid = Uuid().v1();
       expect(
-        Task.fromJson(json.decode('{"tags":["+foo"]}')),
+        Task.fromJson(json.decode('{'
+            '"status":"pending",'
+            '"uuid":"$uuid",'
+            '"entry":"1970-01-01T00:00:00.000Z",'
+            '"description":"test",'
+            '"tags":["+foo"]'
+            '}')),
         Task(
           status: 'pending',
-          uuid: Uuid().v1(),
+          uuid: uuid,
           entry: unixEpoch,
           description: 'test',
           tags: const ['+foo'],
