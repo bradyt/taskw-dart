@@ -41,7 +41,7 @@ void main() {
         scheduled: unixEpoch,
         recur: 'yearly',
         mask: '--',
-        imask: Random().nextInt(pow(2, 32)),
+        imask: Random().nextInt(pow(2, 32) as int),
         parent: Uuid().v1(),
         project: 'some_project',
         priority: 'H',

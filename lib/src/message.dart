@@ -3,8 +3,8 @@ import 'package:meta/meta.dart';
 import 'package:taskc/taskc.dart';
 
 Future<Response> statistics({
-  @required Connection connection,
-  @required Credentials credentials,
+  required Connection connection,
+  required Credentials credentials,
 }) =>
     message(
       connection: connection,
@@ -13,9 +13,9 @@ Future<Response> statistics({
     );
 
 Future<Response> synchronize({
-  @required Connection connection,
-  @required Credentials credentials,
-  @required String payload,
+  required Connection connection,
+  required Credentials credentials,
+  required String payload,
 }) =>
     message(
       connection: connection,
@@ -25,10 +25,10 @@ Future<Response> synchronize({
     );
 
 Future<Response> message({
-  @required Connection connection,
-  @required Credentials credentials,
-  @required String type,
-  String payload,
+  required Connection connection,
+  required Credentials credentials,
+  required String type,
+  String? payload,
 }) async {
   var message = '''
 type: $type

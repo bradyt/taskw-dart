@@ -24,7 +24,7 @@ void main() {
 
     test('test integer representation', () async {
       for (var i = 0; i < 10; i++) {
-        expect(Codec.fold(Codec.unfold(pow(10, i))), pow(10, i));
+        expect(Codec.fold(Codec.unfold(pow(10, i) as int)), pow(10, i));
       }
     });
   });

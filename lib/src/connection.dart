@@ -7,16 +7,16 @@ typedef Handler = bool Function(X509Certificate);
 
 class Connection {
   Connection({
-    @required this.address,
-    @required this.port,
-    @required this.context,
+    required this.address,
+    required this.port,
+    required this.context,
     this.onBadCertificate,
   });
 
-  final String /*!*/ address;
+  final String address;
   final int port;
   final SecurityContext context;
-  final Handler onBadCertificate;
+  final Handler? onBadCertificate;
 
   Future<Uint8List> send(Uint8List bytes) async {
     Uint8List response;

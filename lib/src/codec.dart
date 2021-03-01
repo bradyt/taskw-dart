@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 class Codec {
   static int fold(Iterable<int> bytes) =>
-      bytes.reduce((x, y) => x * pow(2, 8) + y);
+      bytes.reduce((x, y) => x * pow(2, 8) + y as int);
 
   static Iterable<int> unfold(int n) => [
         for (var i in [3, 2, 1, 0]) (n ~/ pow(256, i)) % 256

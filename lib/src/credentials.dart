@@ -2,9 +2,9 @@ import 'package:meta/meta.dart';
 
 class Credentials {
   const Credentials({
-    @required this.org,
-    @required this.user,
-    @required this.key,
+    required this.org,
+    required this.user,
+    required this.key,
   });
 
   factory Credentials.fromString(String credentials) => Credentials(

@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:taskc/src/payload.dart';
 
 class Response {
-  Response({@required this.header, @required this.payload});
+  Response({required this.header, required this.payload});
 
   factory Response.fromString(String string) {
     var firstPart = string.split('\n\n').first;

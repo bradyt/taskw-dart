@@ -4,7 +4,7 @@ repository: https://github.com/bradyt/taskd-client-dart
 version: 0.0.4
 
 environment:
-  sdk: '>=2.10.0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   intl: ^0.17.0

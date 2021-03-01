@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 class Payload {
-  Payload({@required this.tasks, this.userKey});
+  Payload({required this.tasks, this.userKey});
 
   factory Payload.fromString(String string) {
     var lines = string.trim().split('\n');
@@ -13,7 +13,7 @@ class Payload {
   }
 
   final List<String> tasks;
-  final String userKey;
+  final String? userKey;
 
   @override
   String toString() => tasks.followedBy([userKey ?? '']).join('\n').trim();
