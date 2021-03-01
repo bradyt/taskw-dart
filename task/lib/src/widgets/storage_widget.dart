@@ -110,7 +110,11 @@ class _StorageWidgetState extends State<StorageWidget> {
     setState(() {});
   }
 
-  void addTask(Task task) {
+  Task getTask(String uuid) {
+    return storage.getTask(uuid);
+  }
+
+  void mergeTask(Task task) {
     storage.mergeTask(task);
     _refreshTasks();
     setState(() {});
@@ -142,7 +146,8 @@ class _StorageWidgetState extends State<StorageWidget> {
       globalTags: globalTags,
       pendingFilter: pendingFilter,
       selectedSort: selectedSort,
-      addTask: addTask,
+      getTask: getTask,
+      mergeTask: mergeTask,
       synchronize: synchronize,
       togglePendingFilter: togglePendingFilter,
       selectSort: selectSort,
@@ -160,7 +165,8 @@ class _InheritedStorage extends InheritedModel<String> {
     required this.pendingFilter,
     required this.selectedSort,
     required this.selectedTags,
-    required this.addTask,
+    required this.getTask,
+    required this.mergeTask,
     required this.synchronize,
     required this.togglePendingFilter,
     required this.toggleTagFilter,
@@ -173,7 +179,8 @@ class _InheritedStorage extends InheritedModel<String> {
   final bool pendingFilter;
   final String selectedSort;
   final Set<String> selectedTags;
-  final void Function(Task) addTask;
+  final Task Function(String) getTask;
+  final void Function(Task) mergeTask;
   final void Function(BuildContext) synchronize;
   final void Function() togglePendingFilter;
   final void Function(String) selectSort;

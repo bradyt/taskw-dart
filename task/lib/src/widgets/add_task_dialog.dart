@@ -29,7 +29,7 @@ class AddTaskDialog extends StatelessWidget {
         ElevatedButton(
           onPressed: () async {
             var now = DateTime.now().toUtc();
-            StorageWidget.of(context).addTask(
+            StorageWidget.of(context).mergeTask(
               Task(
                 status: 'pending',
                 uuid: Uuid().v1(),

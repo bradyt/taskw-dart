@@ -104,13 +104,7 @@ class Storage {
   }
 
   Task getTask(String uuid) {
-    return File('${profile.path}/.task/all.data')
-        .readAsStringSync()
-        .trim()
-        .split('\n')
-        .where((line) => line.isNotEmpty)
-        .map((line) => Task.fromJson(json.decode(line)))
-        .firstWhere((task) => task.uuid == uuid);
+    return allData().firstWhere((task) => task.uuid == uuid);
   }
 
   void _mergeTasks(List<Task> tasks) {

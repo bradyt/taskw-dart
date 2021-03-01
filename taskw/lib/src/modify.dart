@@ -5,19 +5,25 @@ import 'package:taskc/taskc.dart';
 import 'package:taskw/taskw.dart';
 
 class Modify {
-  Modify({required Storage storage, required String uuid})
-      : _storage = storage,
+  Modify({
+    required Task Function(String) getTask,
+    required void Function(Task) mergeTask,
+    required String uuid,
+  })   : _getTask = getTask,
+        _mergeTask = mergeTask,
         _uuid = uuid {
-    _draft = storage.getTask(_uuid);
-    _saved = storage.getTask(_uuid);
+    _draft = _getTask(_uuid);
+    _saved = _getTask(_uuid);
   }
 
-  final Storage _storage;
+  final Task Function(String) _getTask;
+  final void Function(Task) _mergeTask;
   final String _uuid;
   late Task _draft;
   late Task _saved;
 
   Task get draft => _draft;
+  int get id => _saved.id!;
 
   Map get changes {
     var result = {};
@@ -112,11 +118,11 @@ class Modify {
   }
 
   void save({required DateTime Function() modified}) {
-    _storage.mergeTask(
+    _mergeTask(
       _draft.copyWith(modified: modified),
     );
-    _saved = _storage.getTask(_uuid);
-    _draft = _storage.getTask(_uuid);
+    _saved = _getTask(_uuid);
+    _draft = _getTask(_uuid);
   }
 
   // copied from 'package:flutter/foundation.dart'

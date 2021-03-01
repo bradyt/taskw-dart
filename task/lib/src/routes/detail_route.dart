@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'package:taskw/taskw.dart';
 
 import 'package:task/task.dart';
 
 class DetailRoute extends StatefulWidget {
-  const DetailRoute({required this.id, required this.uuid});
+  const DetailRoute(this.uuid);
 
-  final int id;
   final String uuid;
 
   @override
@@ -18,46 +16,42 @@ class DetailRoute extends StatefulWidget {
 }
 
 class _DetailRouteState extends State<DetailRoute> {
-  Modify? modify;
+  late Modify modify;
 
   @override
-  void initState() {
-    super.initState();
-    _initialize();
-  }
-
-  Future<void> _initialize() async {
-    var dir = await getApplicationDocumentsDirectory();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    var storageWidget = StorageWidget.of(context);
     modify = Modify(
-      storage: Profiles(dir).getCurrentStorage()!,
+      getTask: storageWidget.getTask,
+      mergeTask: storageWidget.mergeTask,
       uuid: widget.uuid,
     );
-    setState(() {});
   }
 
   void Function(dynamic) callback(String name) {
     return (newValue) {
       switch (name) {
         case 'description':
-          modify!.setDescription(newValue);
+          modify.setDescription(newValue);
           break;
         case 'status':
-          modify!.setStatus(newValue);
+          modify.setStatus(newValue);
           break;
         case 'due':
-          modify!.setDue(newValue);
+          modify.setDue(newValue);
           break;
         case 'wait':
-          modify!.setWait(newValue);
+          modify.setWait(newValue);
           break;
         case 'until':
-          modify!.setUntil(newValue);
+          modify.setUntil(newValue);
           break;
         case 'priority':
-          modify!.setPriority(newValue);
+          modify.setPriority(newValue);
           break;
         case 'tags':
-          modify!.setTags(newValue);
+          modify.setTags(newValue);
           break;
         default:
       }
@@ -70,35 +64,34 @@ class _DetailRouteState extends State<DetailRoute> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'id: ${(widget.id == 0) ? '-' : widget.id}',
+          'id: ${(modify.id == 0) ? '-' : modify.id}',
           style: GoogleFonts.firaMono(),
         ),
       ),
       body: ListView(
         children: [
-          if (modify?.draft != null)
-            for (var entry in {
-              'description': modify!.draft.description,
-              'status': modify!.draft.status,
-              'entry': modify!.draft.entry,
-              'modified': modify!.draft.modified,
-              'end': modify!.draft.end,
-              'due': modify!.draft.due,
-              'wait': modify!.draft.wait,
-              'until': modify!.draft.until,
-              'priority': modify!.draft.priority,
-              'tags': modify!.draft.tags,
-              'urgency': urgency(modify!.draft),
-              'uuid': modify!.draft.uuid,
-            }.entries)
-              AttributeWidget(
-                name: entry.key,
-                value: entry.value,
-                callback: callback(entry.key),
-              ),
+          for (var entry in {
+            'description': modify.draft.description,
+            'status': modify.draft.status,
+            'entry': modify.draft.entry,
+            'modified': modify.draft.modified,
+            'end': modify.draft.end,
+            'due': modify.draft.due,
+            'wait': modify.draft.wait,
+            'until': modify.draft.until,
+            'priority': modify.draft.priority,
+            'tags': modify.draft.tags,
+            'urgency': urgency(modify.draft),
+            'uuid': modify.draft.uuid,
+          }.entries)
+            AttributeWidget(
+              name: entry.key,
+              value: entry.value,
+              callback: callback(entry.key),
+            ),
         ],
       ),
-      floatingActionButton: (modify?.changes.isEmpty ?? false)
+      floatingActionButton: (modify.changes.isEmpty)
           ? null
           : FloatingActionButton(
               onPressed: () {
@@ -113,7 +106,7 @@ class _DetailRouteState extends State<DetailRoute> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            for (var change in modify!.changes.entries)
+                            for (var change in modify.changes.entries)
                               (change) {
                                 var _old = change.value['old'];
                                 var _new = change.value['new'];
@@ -143,7 +136,7 @@ class _DetailRouteState extends State<DetailRoute> {
                         ElevatedButton(
                           onPressed: () {
                             var now = DateTime.now().toUtc();
-                            modify!.save(
+                            modify.save(
                               modified: () => now,
                             );
                             setState(() {});

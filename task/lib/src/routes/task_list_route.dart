@@ -189,10 +189,7 @@ class TaskListRoute extends StatelessWidget {
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DetailRoute(
-                                id: task.id!,
-                                uuid: task.uuid,
-                              ),
+                              builder: (context) => DetailRoute(task.uuid),
                             ),
                           ),
                           child: ListTile(
