@@ -44,12 +44,10 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var data = pendingFilter
         ? storage.pendingData().where((task) => task.status == 'pending')
         : storage.allData();
-    taskData = data
-        .where((task) =>
-            selectedTags.isEmpty ||
-            (task.tags != null &&
-                task.tags.toSet().intersection(selectedTags).isNotEmpty))
-        .toList();
+    taskData = data.where((task) {
+      var tags = task.tags?.toSet() ?? {};
+      return selectedTags.every((tag) => tags.contains(tag));
+    }).toList();
 
     if (selectedSort != null) {
       var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
