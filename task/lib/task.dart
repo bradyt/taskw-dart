@@ -9,3 +9,4 @@ export 'package:task/src/widgets/delete_profile_dialog.dart';
 export 'package:task/src/widgets/profiles_widget.dart';
 export 'package:task/src/widgets/rename_profile_dialog.dart';
 export 'package:task/src/widgets/storage_widget.dart';
+export 'package:task/src/widgets/task_list_view.dart';
