@@ -1,5 +1,6 @@
 # 0.0.7
 
+- Improve UI for configuration of Taskserver.
 - Add negative tag filtering, e.g. -next means hide tasks that have
   the next tag.
 - Remove `android.permission.READ_EXTERNAL_STORAGE`.

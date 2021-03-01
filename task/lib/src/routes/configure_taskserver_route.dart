@@ -5,8 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:file_picker_writable/file_picker_writable.dart';
-import 'package:file_selector/file_selector.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -17,10 +15,9 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class ConfigureTaskserverRoute extends StatelessWidget {
-  const ConfigureTaskserverRoute(this.profile, this.alias);
+  const ConfigureTaskserverRoute(this.profile);
 
   final String profile;
-  final String? alias;
 
   Future<void> _setConfigurationFromFixtureForDebugging() async {
     var dir = await getApplicationDocumentsDirectory();
@@ -37,32 +34,6 @@ class ConfigureTaskserverRoute extends StatelessWidget {
         contents: contents,
       );
     }
-  }
-
-  Future<void> _showConfigurationFromTaskrc(BuildContext context) async {
-    var dir = await getApplicationDocumentsDirectory();
-    var map = Profiles(dir).getStorage(profile).getConfig();
-    var server = map['taskd.server'];
-    var address = server.split(':')[0];
-    var port = server.split(':')[1];
-    var credentials = Credentials.fromString(map['taskd.credentials']);
-    var org = credentials.org;
-    var user = credentials.user;
-    var key = credentials.key;
-    // ignore: deprecated_member_use
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Text(
-          'taskd.server.address:   $address\n'
-          'taskd.server.port:      $port\n'
-          'taskd.credentials.org:  $org\n'
-          'taskd.credentials.user: $user\n'
-          'taskd.credentials.key:  $key',
-          style: GoogleFonts.firaMono(),
-        ),
-      ),
-    ));
   }
 
   Future<void> _showStatistics(BuildContext context) async {
@@ -113,30 +84,10 @@ class ConfigureTaskserverRoute extends StatelessWidget {
     );
   }
 
-  Future<void> _setConfig(String key) async {
-    if (Platform.isMacOS) {
-      var typeGroup = XTypeGroup(label: 'config', extensions: []);
-      var file = await openFile(acceptedTypeGroups: [typeGroup]);
-      if (file != null) {
-        var contents = await file.readAsString();
-        var dir = await getApplicationDocumentsDirectory();
-        Profiles(dir)
-            .getStorage(profile)
-            .addFileContents(key: key, contents: contents);
-      }
-    } else {
-      await FilePickerWritable().openFile((_, file) async {
-        var contents = file.readAsStringSync();
-        var dir = await getApplicationDocumentsDirectory();
-        Profiles(dir)
-            .getStorage(profile)
-            .addFileContents(key: key, contents: contents);
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    var alias = ProfilesWidget.of(context).profilesMap[profile];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(alias ?? profile),
@@ -148,12 +99,6 @@ class ConfigureTaskserverRoute extends StatelessWidget {
             ),
           Builder(
             builder: (context) => IconButton(
-              icon: Icon(Icons.info),
-              onPressed: () => _showConfigurationFromTaskrc(context),
-            ),
-          ),
-          Builder(
-            builder: (context) => IconButton(
               icon: Icon(Icons.show_chart),
               onPressed: () => _showStatistics(context),
             ),
@@ -162,18 +107,121 @@ class ConfigureTaskserverRoute extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          TaskrcWidget(profile),
           for (var key in [
-            '.taskrc',
             'taskd.ca',
             'taskd.cert',
             'taskd.key',
           ])
             ListTile(
               title: Text(key),
-              onTap: () => _setConfig(key),
+              onTap: () => setConfig(profile: profile, key: key),
             ),
         ],
       ),
+    );
+  }
+}
+
+class TaskrcWidget extends StatefulWidget {
+  const TaskrcWidget(this.profile);
+
+  final String profile;
+
+  @override
+  _TaskrcWidgetState createState() => _TaskrcWidgetState();
+}
+
+class _TaskrcWidgetState extends State<TaskrcWidget> {
+  String? server;
+  String? address;
+  String? port;
+  Credentials? credentials;
+  bool hideKey = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getConfig().catchError(
+      (_) {
+        server = '';
+        setState(() {});
+      },
+      test: (e) => e is FileSystemException,
+    );
+  }
+
+  Future<void> _getConfig() async {
+    var dir = await getApplicationDocumentsDirectory();
+    var config = Profiles(dir).getStorage(widget.profile).getConfig();
+    server = config['taskd.server'];
+    credentials = Credentials.fromString(config['taskd.credentials']);
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var credentialsString = '';
+    if (credentials != null) {
+      String key;
+      if (hideKey) {
+        key = credentials!.key.replaceAll(RegExp(r'[0-9a-f]'), '*');
+      } else {
+        key = credentials!.key;
+      }
+
+      credentialsString = '${credentials!.org}/${credentials!.user}/$key';
+    }
+
+    return ExpansionTile(
+      title: Text('.taskrc'),
+      children: [
+        ListTile(
+            title: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                'taskd.server=$server',
+                style: GoogleFonts.firaMono(),
+              ),
+            ),
+            onTap: (server == null || server!.isEmpty)
+                ? null
+                : () async {
+                    var parts = server!.split(':').first.split('.');
+                    var length = parts.length;
+                    var mainDomain =
+                        parts.sublist(length - 2, length).join('.');
+
+                    ProfilesWidget.of(context).renameProfile(
+                      profile: widget.profile,
+                      alias: mainDomain,
+                    );
+                  }),
+        ListTile(
+          title: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text(
+              'taskd.credentials=$credentialsString',
+              style: GoogleFonts.firaMono(),
+            ),
+          ),
+          trailing: (credentials == null)
+              ? null
+              : IconButton(
+                  icon: Icon(hideKey ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () {
+                    hideKey = !hideKey;
+                    setState(() {});
+                  },
+                ),
+        ),
+        ListTile(
+            title: Text('Select .taskrc'),
+            onTap: () async {
+              await setConfig(profile: widget.profile, key: '.taskrc');
+              await _getConfig();
+            }),
+      ],
     );
   }
 }

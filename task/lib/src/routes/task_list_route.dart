@@ -97,8 +97,8 @@ class TaskListRoute extends StatelessWidget {
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ConfigureTaskserverRoute(
-                                    entry.key, entry.value),
+                                builder: (context) =>
+                                    ConfigureTaskserverRoute(entry.key),
                               ),
                             ),
                           ),
