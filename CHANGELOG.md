@@ -1,3 +1,7 @@
+# 0.1.0
+
+- Update to sound null safety for Dart 2.12.0 and Flutter 2.0.
+
 # 0.0.4
 
 - Fix for imask parse.
