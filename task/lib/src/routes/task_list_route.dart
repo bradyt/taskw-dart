@@ -421,7 +421,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                               : sort,
                           style: GoogleFonts.firaMono(),
                         ),
-                        selected: selectedSort?.startsWith(sort) ?? false,
+                        selected: false,
                         onSelected: (newValue) async {
                           if (selectedSort == '$sort+') {
                             selectedSort = '$sort-';
