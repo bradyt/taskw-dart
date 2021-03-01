@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:meta/meta.dart';
-
 typedef Handler = bool Function(X509Certificate);
 
 class Connection {

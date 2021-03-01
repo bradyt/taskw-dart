@@ -11,7 +11,7 @@ void main() {
   var config = parseTaskrc(
     File('fixture/.taskrc').readAsStringSync(),
   );
-  var server = config['taskd.server'].split(':');
+  var server = (config['taskd.server'] as String).split(':');
   var connection = Connection(
     address: server[0],
     port: int.parse(server[1]),

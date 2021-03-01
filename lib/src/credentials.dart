@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 class Credentials {
   const Credentials({
     required this.org,

@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 import 'package:taskc/src/payload.dart';
 
 class Response {

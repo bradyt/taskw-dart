@@ -78,8 +78,13 @@ void main() {
     test('test parsing json string task with tags', () {
       expect(
         Task.fromJson(json.decode('{"tags":["+foo"]}')),
-        // ignore: missing_required_param
-        const Task(tags: ['+foo']),
+        Task(
+          status: 'pending',
+          uuid: Uuid().v1(),
+          entry: unixEpoch,
+          description: 'test',
+          tags: const ['+foo'],
+        ),
       );
     });
   });

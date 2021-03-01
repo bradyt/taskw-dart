@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 class Payload {
   Payload({required this.tasks, this.userKey});
 

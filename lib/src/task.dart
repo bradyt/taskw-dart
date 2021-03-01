@@ -36,7 +36,7 @@ class Task {
     for (var entry in rawJson.entries.toList()
       ..removeWhere((entry) => entry.value == null)) {
       if ({'id', 'imask'}.contains(entry.key)) {
-        json[entry.key] = entry.value.round();
+        json[entry.key] = (entry.value as num).round();
       } else if ({
         'entry',
         'start',
@@ -88,10 +88,10 @@ class Task {
       project: json['project'],
       priority: json['priority'],
       depends: json['depends'],
-      tags: json['tags']?.cast<String>(),
-      annotations: json['annotations']
+      tags: (json['tags'] as List?)?.cast<String>(),
+      annotations: (json['annotations'] as List?)
           ?.map<Annotation>((annotation) => Annotation.fromJson(annotation))
-          ?.toList(),
+          .toList(),
       udas: udas,
     );
   }
@@ -136,7 +136,7 @@ class Task {
         'imask': imask,
         'parent': parent,
         'annotations':
-            annotations?.map((annotation) => annotation.toJson())?.toList(),
+            annotations?.map((annotation) => annotation.toJson()).toList(),
         'project': project,
         'tags': tags,
         'priority': priority,
