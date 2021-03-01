@@ -159,15 +159,9 @@ class TaskListRoute extends StatelessWidget {
                           style: GoogleFonts.firaMono(),
                         ),
                         selected: false,
-                        onSelected: (newValue) async {
+                        onSelected: (_) {
                           if (storageWidget.selectedSort == '$sort+') {
                             storageWidget.selectSort('$sort-');
-                          } else if (storageWidget.selectedSort == '$sort-') {
-                            if (sort == 'urgency') {
-                              storageWidget.selectSort('id+');
-                            } else {
-                              storageWidget.selectSort('urgency+');
-                            }
                           } else {
                             storageWidget.selectSort('$sort+');
                           }
