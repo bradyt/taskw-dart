@@ -478,7 +478,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                                       '${age(task.entry)} '
                                               '${(task.due != null) ? when(task.due) : ''} '
                                               '${task?.priority ?? ''} '
-                                              '${task.tags?.join(' ') ?? ''}'
+                                              '[${task.tags?.join(',') ?? ''}]'
                                           .replaceAll(RegExp(r' +'), ' '),
                                       style: GoogleFonts.firaMono(),
                                     ),
