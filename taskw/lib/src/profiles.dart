@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_expression_function_bodies
 
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:uuid/uuid.dart';
@@ -25,19 +26,32 @@ class Profiles {
 
   List<String> listProfiles() {
     var dir = Directory('${base.path}/profiles')..createSync();
-    var dirs = dir.listSync().map((entity) => entity.path).toList()
-      ..sort((a, b) {
-        var aCreated = DateTime.parse(File('$a/created').readAsStringSync());
-        var bCreated = DateTime.parse(File('$b/created').readAsStringSync());
-        if (aCreated.isBefore(bCreated)) {
-          return -1;
-        } else if (aCreated.isAfter(bCreated)) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-    return dirs.map((path) => path.split('/').last).toList();
+    var dirs = dir
+        .listSync()
+        .map((entity) => entity.path.split('/').last)
+        .toList()
+          ..sort(comparator);
+    return dirs;
+  }
+
+  int comparator(String a, String b) {
+    DateTime created(String profile) => DateTime.parse(
+        File('${base.path}/profiles/$profile/created').readAsStringSync());
+    var aCreated = created(a);
+    var bCreated = created(b);
+    if (aCreated.isBefore(bCreated)) {
+      return -1;
+    } else if (aCreated.isAfter(bCreated)) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
+  Map<String, String?> profilesMap() {
+    return SplayTreeMap.of({
+      for (var profile in listProfiles()) profile: getAlias(profile),
+    }, comparator);
   }
 
   void deleteProfile(String profile) {
