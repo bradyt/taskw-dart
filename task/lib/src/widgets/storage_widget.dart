@@ -29,6 +29,7 @@ class _StorageWidgetState extends State<StorageWidget> {
   late Set<String> selectedTags;
   late List<Task> tasks;
   late Map<String, int> globalTags;
+  bool sortHeaderVisible = false;
 
   @override
   void initState() {
@@ -139,6 +140,11 @@ class _StorageWidgetState extends State<StorageWidget> {
     }
   }
 
+  void toggleSortHeader() {
+    sortHeaderVisible = !sortHeaderVisible;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return _InheritedStorage(
@@ -153,6 +159,8 @@ class _StorageWidgetState extends State<StorageWidget> {
       selectSort: selectSort,
       toggleTagFilter: toggleTagFilter,
       selectedTags: selectedTags,
+      sortHeaderVisible: sortHeaderVisible,
+      toggleSortHeader: toggleSortHeader,
       child: widget.child,
     );
   }
@@ -171,6 +179,8 @@ class _InheritedStorage extends InheritedModel<String> {
     required this.togglePendingFilter,
     required this.toggleTagFilter,
     required this.selectSort,
+    required this.sortHeaderVisible,
+    required this.toggleSortHeader,
     required Widget child,
   }) : super(child: child);
 
@@ -185,6 +195,8 @@ class _InheritedStorage extends InheritedModel<String> {
   final void Function() togglePendingFilter;
   final void Function(String) selectSort;
   final void Function(String) toggleTagFilter;
+  final bool sortHeaderVisible;
+  final Function() toggleSortHeader;
 
   @override
   bool updateShouldNotify(_InheritedStorage oldWidget) {

@@ -31,7 +31,7 @@ class TaskListRoute extends StatelessWidget {
           ),
           IconButton(
             icon: Icon(Icons.sort),
-            onPressed: profilesWidget.toggleSortHeader,
+            onPressed: storageWidget.toggleSortHeader,
           ),
           Builder(
             builder: (context) => IconButton(
@@ -134,7 +134,7 @@ class TaskListRoute extends StatelessWidget {
       ),
       body: Column(
         children: [
-          if (profilesWidget.sortHeaderVisible)
+          if (storageWidget.sortHeaderVisible)
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: Padding(

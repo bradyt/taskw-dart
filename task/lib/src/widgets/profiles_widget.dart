@@ -23,7 +23,6 @@ class ProfilesWidget extends StatefulWidget {
 class _ProfilesWidgetState extends State<ProfilesWidget> {
   late Map<String, String?> profilesMap;
   late String currentProfile;
-  bool sortHeaderVisible = false;
 
   Profiles get _profiles => Profiles(widget.baseDirectory);
 
@@ -72,11 +71,6 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
     setState(() {});
   }
 
-  void toggleSortHeader() {
-    sortHeaderVisible = !sortHeaderVisible;
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return _InheritedProfiles(
@@ -86,8 +80,6 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
       selectProfile: selectProfile,
       currentProfile: currentProfile,
       profilesMap: profilesMap,
-      sortHeaderVisible: sortHeaderVisible,
-      toggleSortHeader: toggleSortHeader,
       child: StorageWidget(
         profile: Directory(
           '${widget.baseDirectory.path}/profiles/$currentProfile',
@@ -106,8 +98,6 @@ class _InheritedProfiles extends InheritedModel<String> {
     required this.selectProfile,
     required this.currentProfile,
     required this.profilesMap,
-    required this.sortHeaderVisible,
-    required this.toggleSortHeader,
     required Widget child,
   }) : super(child: child);
 
@@ -119,8 +109,6 @@ class _InheritedProfiles extends InheritedModel<String> {
   }) renameProfile;
   final Function(String) selectProfile;
   final String currentProfile;
-  final bool sortHeaderVisible;
-  final Function() toggleSortHeader;
   final Map<String, String?> profilesMap;
 
   @override
