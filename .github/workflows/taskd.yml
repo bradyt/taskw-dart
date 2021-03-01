@@ -29,4 +29,4 @@ jobs:
     - run: sleep 2
 
     - run: dart pub get
-    - run: dart run test_coverage --no-badge --min-coverage=98
+    - run: dart test
