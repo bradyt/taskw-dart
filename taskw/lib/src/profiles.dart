@@ -35,6 +35,9 @@ class Profiles {
   }
 
   int comparator(String a, String b) {
+    if (a.isEmpty || b.isEmpty) {
+      return 0;
+    }
     DateTime created(String profile) => DateTime.parse(
         File('${base.path}/profiles/$profile/created').readAsStringSync());
     var aCreated = created(a);
@@ -73,8 +76,8 @@ class Profiles {
     return (contents.isEmpty) ? null : contents;
   }
 
-  void setCurrentProfile(String profile) {
-    File('${base.path}/current-profile').writeAsStringSync(profile);
+  void setCurrentProfile(String? profile) {
+    File('${base.path}/current-profile').writeAsStringSync(profile ?? '');
   }
 
   String? getCurrentProfile() {

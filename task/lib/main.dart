@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:path_provider/path_provider.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,7 +18,19 @@ void main() {
     yield LicenseEntryWithLineBreaks(['google_fonts'], license);
   });
 
-  runApp(TaskApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(
+    FutureBuilder<Directory>(
+      future: getApplicationDocumentsDirectory(),
+      builder: (context, snapshot) => (snapshot.hasData)
+          ? ProfilesWidget(
+              baseDirectory: snapshot.data!,
+              child: TaskApp(),
+            )
+          : Placeholder(),
+    ),
+  );
 }
 
 class TaskApp extends StatelessWidget {
