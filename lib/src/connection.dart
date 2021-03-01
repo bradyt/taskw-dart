@@ -13,7 +13,7 @@ class Connection {
     this.onBadCertificate,
   });
 
-  final String address;
+  final String /*!*/ address;
   final int port;
   final SecurityContext context;
   final Handler onBadCertificate;

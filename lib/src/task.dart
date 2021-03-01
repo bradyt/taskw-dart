@@ -32,7 +32,7 @@ class Task {
 
   factory Task.fromJson(Map rawJson) {
     var json = {};
-    var udas = {};
+    Map /*?*/ udas = {};
     for (var entry in rawJson.entries.toList()
       ..removeWhere((entry) => entry.value == null)) {
       if ({'id', 'imask'}.contains(entry.key)) {
@@ -97,10 +97,10 @@ class Task {
   }
 
   final int id;
-  final String status;
-  final String uuid;
-  final DateTime entry;
-  final String description;
+  final String /*!*/ status;
+  final String /*!*/ uuid;
+  final DateTime /*!*/ entry;
+  final String /*!*/ description;
   final DateTime start;
   final DateTime end;
   final DateTime due;
@@ -214,7 +214,7 @@ class Annotation {
       );
 
   final DateTime entry;
-  final String description;
+  final String /*!*/ description;
 
   Map toJson() => {
         'entry': iso8601Basic.format(entry),
