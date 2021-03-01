@@ -1,16 +1,14 @@
-# task
+# Install or run app from source code
 
-A new Flutter project.
+Make sure you have Flutter
+[installed](https://flutter.dev/docs/get-started/install).
 
-## Getting Started
+To run the app in an open emulator or connected device, try `flutter
+run`.
 
-This project is a starting point for a Flutter application.
+To install to your Android or iOS device, run `flutter build apk` or
+`flutter build ios`, then `flutter install`.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+To run the app on macOS, switch to `flutter channel dev` (I am
+currently using symlinks for this), check `flutter config`, and try
+`flutter run`.
