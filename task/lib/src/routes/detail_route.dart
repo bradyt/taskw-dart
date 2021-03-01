@@ -386,6 +386,11 @@ class DateTimeWidget extends StatelessWidget {
                   minutes: time.minute,
                 ),
               );
+              dateTime = dateTime.add(
+                Duration(
+                  hours: time.hour - dateTime.hour,
+                ),
+              );
               return callback(dateTime.toUtc());
             }
           }
