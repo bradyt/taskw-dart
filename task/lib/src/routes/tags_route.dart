@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
 
-import 'package:taskw/taskw.dart';
+import 'package:task/task.dart';
 
 class TagsRoute extends StatefulWidget {
   const TagsRoute({required this.value, required this.callback});
@@ -43,8 +42,7 @@ class TagsRouteState extends State<TagsRoute> {
   }
 
   Future<void> _initialize() async {
-    var dir = await getApplicationDocumentsDirectory();
-    globalTags = Profiles(dir).getCurrentStorage()!.tags()
+    globalTags = StorageWidget.of(context).globalTags
       ..putIfAbsent(
         'next',
         () => 0,

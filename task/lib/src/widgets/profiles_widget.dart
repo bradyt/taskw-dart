@@ -71,6 +71,10 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
     setState(() {});
   }
 
+  Storage getStorage(String profile) {
+    return _profiles.getStorage(profile);
+  }
+
   @override
   Widget build(BuildContext context) {
     return _InheritedProfiles(
@@ -80,6 +84,7 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
       selectProfile: selectProfile,
       currentProfile: currentProfile,
       profilesMap: profilesMap,
+      getStorage: getStorage,
       child: StorageWidget(
         profile: Directory(
           '${widget.baseDirectory.path}/profiles/$currentProfile',
@@ -98,6 +103,7 @@ class _InheritedProfiles extends InheritedModel<String> {
     required this.selectProfile,
     required this.currentProfile,
     required this.profilesMap,
+    required this.getStorage,
     required Widget child,
   }) : super(child: child);
 
@@ -110,6 +116,7 @@ class _InheritedProfiles extends InheritedModel<String> {
   final Function(String) selectProfile;
   final String currentProfile;
   final Map<String, String?> profilesMap;
+  final Storage Function(String) getStorage;
 
   @override
   bool updateShouldNotify(_InheritedProfiles oldWidget) {

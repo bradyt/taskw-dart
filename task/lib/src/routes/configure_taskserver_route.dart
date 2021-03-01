@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'package:taskc/taskc.dart';
 
@@ -15,13 +14,11 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class ConfigureTaskserverRoute extends StatelessWidget {
-  const ConfigureTaskserverRoute(this.profile);
+  const ConfigureTaskserverRoute(this.storage);
 
-  final String profile;
+  final Storage storage;
 
   Future<void> _setConfigurationFromFixtureForDebugging() async {
-    var dir = await getApplicationDocumentsDirectory();
-    var storage = Profiles(dir).getStorage(profile);
     for (var entry in {
       '.taskrc': '.taskrc',
       'taskd.ca': '.task/ca.cert.pem',
@@ -37,8 +34,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
   }
 
   Future<void> _showStatistics(BuildContext context) async {
-    var dir = await getApplicationDocumentsDirectory();
-    await Profiles(dir).getStorage(profile).statistics().then(
+    await storage.statistics().then(
       (header) {
         var maxKeyLength =
             header.keys.map<int>((key) => key.length).reduce(max);
@@ -86,6 +82,9 @@ class ConfigureTaskserverRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var profile = storage.profile.uri.pathSegments.lastWhere(
+      (segment) => segment.isNotEmpty,
+    );
     var alias = ProfilesWidget.of(context).profilesMap[profile];
 
     return Scaffold(
@@ -115,7 +114,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
           ])
             ListTile(
               title: Text(key),
-              onTap: () => setConfig(profile: profile, key: key),
+              onTap: () => setConfig(storage: storage, key: key),
             ),
         ],
       ),
@@ -152,8 +151,8 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
   }
 
   Future<void> _getConfig() async {
-    var dir = await getApplicationDocumentsDirectory();
-    var config = Profiles(dir).getStorage(widget.profile).getConfig();
+    var config =
+        ProfilesWidget.of(context).getStorage(widget.profile).getConfig();
     server = config['taskd.server'];
     credentials = Credentials.fromString(config['taskd.credentials']);
     setState(() {});
@@ -218,7 +217,11 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
         ListTile(
             title: Text('Select .taskrc'),
             onTap: () async {
-              await setConfig(profile: widget.profile, key: '.taskrc');
+              await setConfig(
+                storage: ProfilesWidget.of(context).getStorage(widget.profile),
+                key: '.taskrc',
+              );
+
               await _getConfig();
             }),
       ],
