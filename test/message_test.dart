@@ -35,7 +35,7 @@ void main() {
   String newTask() => json.encode(
         Task(
           status: 'pending',
-          uuid: Uuid().v1(),
+          uuid: const Uuid().v1(),
           entry: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
           description: 'test',
         ).toJson(),
