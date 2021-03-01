@@ -1,0 +1,32 @@
+name: beginning of CI that requires taskd on localhost
+
+defaults:
+  run:
+    working-directory: taskw
+
+on:
+  pull_request:
+  schedule:
+    - cron: 0 0 1 * *
+  workflow_dispatch:
+
+jobs:
+  taskd:
+    runs-on: ubuntu-latest
+    container:
+      image: bradyt/dart-task
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: dart --disable-analytics
+
+    - run: dart pub global activate --source git https://github.com/bradyt/taskd-setup-dart.git
+    - run: |
+        export "PATH=$HOME/.pub-cache/bin:$PATH"
+        taskd-setup --TASKDDATA '/var/taskd'
+      working-directory: fixture
+    - run: TASKDDATA='/var/taskd' taskdctl start
+    - run: sleep 2
+
+    - run: dart pub get
+    - run: dart run test_coverage --no-badge --min-coverage=98
