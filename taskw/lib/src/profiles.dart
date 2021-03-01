@@ -13,8 +13,7 @@ class Profiles {
   final Directory base;
 
   String addProfile() {
-    // ignore: prefer_const_constructors
-    var uuid = Uuid().v1();
+    var uuid = const Uuid().v1();
 
     Directory('${base.path}/profiles/$uuid').createSync(recursive: true);
     File('${base.path}/profiles/$uuid/created')

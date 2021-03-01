@@ -127,8 +127,7 @@ class _StorageWidgetState extends State<StorageWidget> {
       _refreshTasks();
       globalTags = storage.tags();
       setState(() {});
-      // ignore: deprecated_member_use
-      Scaffold.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('${header['code']}: ${header['status']}'),
       ));
     } on Exception catch (e, trace) {

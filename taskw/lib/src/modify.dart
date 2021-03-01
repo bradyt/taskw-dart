@@ -1,4 +1,4 @@
-// ignore_for_file: always_put_control_body_on_new_line
+import 'package:collection/collection.dart';
 
 import 'package:taskc/taskc.dart';
 
@@ -69,7 +69,7 @@ class Modify {
         'new': _draft.priority,
       };
     }
-    if (!_listEquals(_draft.tags, _saved.tags)) {
+    if (!(const ListEquality()).equals(_draft.tags, _saved.tags)) {
       result['tags'] = {
         'old': _saved.tags,
         'new': _draft.tags,
@@ -123,16 +123,5 @@ class Modify {
     );
     _saved = _getTask(_uuid);
     _draft = _getTask(_uuid);
-  }
-
-  // copied from 'package:flutter/foundation.dart'
-  bool _listEquals<T>(List<T>? a, List<T>? b) {
-    if (a == null) return b == null;
-    if (b == null || a.length != b.length) return false;
-    if (identical(a, b)) return true;
-    for (var index = 0; index < a.length; index += 1) {
-      if (a[index] != b[index]) return false;
-    }
-    return true;
   }
 }
