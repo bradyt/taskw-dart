@@ -1,4 +1,4 @@
-name: simplest tests
+name: dart-only CI for taskw
 
 defaults:
   run:
@@ -11,13 +11,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  simple:
+  taskw:
     runs-on: ubuntu-latest
     container:
-      image: cirrusci/flutter:stable
+      image: google/dart
     steps:
     - uses: actions/checkout@v2
-    - run: flutter config --no-analytics
     - run: dart --disable-analytics
     - run: dart pub get
+    - run: dart format . --fix --output none --set-exit-if-changed --summary none
+    - run: dart analyze --fatal-infos
     - run: dart test test/datetime_differences_test.dart

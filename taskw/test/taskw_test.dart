@@ -37,6 +37,7 @@ void main() {
         storage.mergeTask(
           Task(
             status: 'pending',
+            // ignore: prefer_const_constructors
             uuid: Uuid().v1(),
             entry: DateTime.now().toUtc(),
             description: description,
