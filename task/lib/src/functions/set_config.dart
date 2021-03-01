@@ -7,7 +7,7 @@ import 'package:taskw/taskw.dart';
 
 Future<void> setConfig({required Storage storage, required String key}) async {
   if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
-    var typeGroup = XTypeGroup(label: 'config', extensions: []);
+    var typeGroup = XTypeGroup(label: key, extensions: []);
     var file = await openFile(acceptedTypeGroups: [typeGroup]);
     if (file != null) {
       var contents = await file.readAsString();
