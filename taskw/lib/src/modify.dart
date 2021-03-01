@@ -91,23 +91,23 @@ class Modify {
     }
   }
 
-  void setDue(DateTime due) {
+  void setDue(DateTime? due) {
     _draft = _draft.copyWith(due: () => due);
   }
 
-  void setWait(DateTime wait) {
+  void setWait(DateTime? wait) {
     _draft = _draft.copyWith(status: () => 'waiting', wait: () => wait);
   }
 
-  void setUntil(DateTime until) {
+  void setUntil(DateTime? until) {
     _draft = _draft.copyWith(until: () => until);
   }
 
-  void setPriority(String priority) {
+  void setPriority(String? priority) {
     _draft = _draft.copyWith(priority: () => priority);
   }
 
-  void setTags(List<String> tags) {
+  void setTags(List<String>? tags) {
     _draft = _draft.copyWith(tags: () => tags);
   }
 

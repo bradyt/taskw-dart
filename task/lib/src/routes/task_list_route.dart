@@ -18,14 +18,14 @@ class TaskListRoute extends StatefulWidget {
 }
 
 class _TaskListRouteState extends State<TaskListRoute> {
-  List<Task> taskData;
-  String currentProfile;
-  Map<String, String> profiles;
-  Map<String, int> globalTags;
-  Set<String> selectedTags;
-  String selectedSort;
-  bool sortHeaderVisible;
-  bool pendingFilter;
+  List<Task>? taskData;
+  String? currentProfile;
+  late Map<String, String?> profiles;
+  Map<String, int>? globalTags;
+  late Set<String> selectedTags;
+  late String selectedSort;
+  late bool sortHeaderVisible;
+  late bool pendingFilter;
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
 
   Future<void> _sortAndFilterTaskData() async {
     var dir = await getApplicationDocumentsDirectory();
-    var storage = Profiles(dir).getCurrentStorage();
+    var storage = Profiles(dir).getCurrentStorage()!;
     var data = pendingFilter
         ? storage.pendingData().where((task) => task.status == 'pending')
         : storage.allData();
@@ -49,19 +49,17 @@ class _TaskListRouteState extends State<TaskListRoute> {
       return selectedTags.every((tag) => tags.contains(tag));
     }).toList();
 
-    if (selectedSort != null) {
-      var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
-      var ascending = selectedSort.endsWith('+');
-      taskData.sort((a, b) {
-        int result;
-        if (sortColumn == 'id') {
-          result = a.id.compareTo(b.id);
-        } else {
-          result = compareTasks(sortColumn)(a, b);
-        }
-        return ascending ? result : -result;
-      });
-    }
+    var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
+    var ascending = selectedSort.endsWith('+');
+    taskData!.sort((a, b) {
+      int result;
+      if (sortColumn == 'id') {
+        result = a.id!.compareTo(b.id!);
+      } else {
+        result = compareTasks(sortColumn)(a, b);
+      }
+      return ascending ? result : -result;
+    });
 
     setState(() {});
   }
@@ -73,7 +71,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
       p.setCurrentProfile(p.addProfile());
     }
     await _sortAndFilterTaskData();
-    globalTags = p.getCurrentStorage().tags();
+    globalTags = p.getCurrentStorage()!.tags();
     currentProfile = p.getCurrentProfile();
     for (var profile in p.listProfiles()) {
       profiles[profile] = p.getAlias(profile);
@@ -98,11 +96,12 @@ class _TaskListRouteState extends State<TaskListRoute> {
     selectedSort = 'urgency+';
     selectedTags = {};
     await _sortAndFilterTaskData();
-    globalTags = Profiles(dir).getCurrentStorage().tags();
+    globalTags = Profiles(dir).getCurrentStorage()!.tags();
     setState(() {});
   }
 
-  Future<void> _setAlias({String profile, String alias}) async {
+  Future<void> _setAlias(
+      {required String profile, required String alias}) async {
     var dir = await getApplicationDocumentsDirectory();
     Profiles(dir).setAlias(profile: profile, alias: alias);
     profiles[profile] = Profiles(dir).getAlias(profile);
@@ -145,7 +144,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
     var p = Profiles(dir)..deleteProfile(profile);
     if (p.listProfiles().isEmpty) {
       p.setCurrentProfile(p.addProfile());
-      globalTags = p.getCurrentStorage().tags();
+      globalTags = p.getCurrentStorage()!.tags();
       selectedSort = 'urgency+';
       selectedTags = {};
       await _sortAndFilterTaskData();
@@ -159,7 +158,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
       selectedSort = 'urgency+';
       selectedTags = {};
       await _sortAndFilterTaskData();
-      globalTags = p.getCurrentStorage().tags();
+      globalTags = p.getCurrentStorage()!.tags();
     }
     setState(() {});
   }
@@ -192,7 +191,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
   Future<void> _addTask(String description) async {
     var dir = await getApplicationDocumentsDirectory();
     var now = DateTime.now().toUtc();
-    Profiles(dir).getCurrentStorage().mergeTask(
+    Profiles(dir).getCurrentStorage()!.mergeTask(
           Task(
             status: 'pending',
             uuid: Uuid().v1(),
@@ -239,9 +238,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
   Future<void> _synchronize(BuildContext context) async {
     var dir = await getApplicationDocumentsDirectory();
     try {
-      var header = await Profiles(dir).getCurrentStorage().synchronize();
+      var header = await Profiles(dir).getCurrentStorage()!.synchronize();
       await _sortAndFilterTaskData();
-      globalTags = Profiles(dir).getCurrentStorage().tags();
+      globalTags = Profiles(dir).getCurrentStorage()!.tags();
       setState(() {});
       // ignore: deprecated_member_use
       Scaffold.of(context).showSnackBar(SnackBar(
@@ -279,7 +278,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
       p.setCurrentProfile(p.addProfile());
     }
     await _sortAndFilterTaskData();
-    globalTags = p.getCurrentStorage().tags();
+    globalTags = p.getCurrentStorage()!.tags();
     setState(() {});
   }
 
@@ -330,13 +329,13 @@ class _TaskListRouteState extends State<TaskListRoute> {
                         onPressed: _addProfile,
                       ),
                     ),
-                    for (var profile in profiles.keys ?? [])
+                    for (var profile in profiles.keys)
                       ExpansionTile(
                         key: PageStorageKey<String>('exp-$profile'),
                         leading: Radio<String>(
                           value: profile,
                           groupValue: currentProfile,
-                          onChanged: _selectProfile,
+                          onChanged: (profile) => _selectProfile(profile!),
                         ),
                         title: SingleChildScrollView(
                           key: PageStorageKey<String>('scroll-$profile'),
@@ -344,7 +343,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                           child: Text(
                             (profiles[profile]?.isEmpty ?? true)
                                 ? profile
-                                : profiles[profile],
+                                : profiles[profile]!,
                             style: GoogleFonts.firaMono(),
                           ),
                         ),
@@ -416,9 +415,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                     ])
                       ChoiceChip(
                         label: Text(
-                          (selectedSort?.startsWith(sort) ?? false)
-                              ? selectedSort
-                              : sort,
+                          (selectedSort.startsWith(sort)) ? selectedSort : sort,
                           style: GoogleFonts.firaMono(),
                         ),
                         selected: false,
@@ -446,14 +443,14 @@ class _TaskListRouteState extends State<TaskListRoute> {
               child: ListView(
                 children: [
                   if (taskData != null)
-                    for (var task in taskData)
+                    for (var task in taskData!)
                       Card(
                         child: InkWell(
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => DetailRoute(
-                                id: task.id,
+                                id: task.id!,
                                 uuid: task.uuid,
                               ),
                             ),
@@ -476,8 +473,8 @@ class _TaskListRouteState extends State<TaskListRoute> {
                                     scrollDirection: Axis.horizontal,
                                     child: Text(
                                       '${age(task.entry)} '
-                                              '${(task.due != null) ? when(task.due) : ''} '
-                                              '${task?.priority ?? ''} '
+                                              '${(task.due != null) ? when(task.due!) : ''} '
+                                              '${task.priority ?? ''} '
                                               '[${task.tags?.join(',') ?? ''}]'
                                           .replaceAll(RegExp(r' +'), ' '),
                                       style: GoogleFonts.firaMono(),
@@ -521,7 +518,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                   runSpacing: 4,
                   children: [
                     if (globalTags != null)
-                      for (var tag in globalTags.entries)
+                      for (var tag in globalTags!.entries)
                         FilterChip(
                           onSelected: (_) => _toggleTagFilter(tag.key),
                           label: Text(

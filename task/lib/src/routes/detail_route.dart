@@ -8,7 +8,7 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class DetailRoute extends StatefulWidget {
-  const DetailRoute({this.id, this.uuid});
+  const DetailRoute({required this.id, required this.uuid});
 
   final int id;
   final String uuid;
@@ -18,7 +18,7 @@ class DetailRoute extends StatefulWidget {
 }
 
 class _DetailRouteState extends State<DetailRoute> {
-  Modify modify;
+  Modify? modify;
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _DetailRouteState extends State<DetailRoute> {
   Future<void> _initialize() async {
     var dir = await getApplicationDocumentsDirectory();
     modify = Modify(
-      storage: Profiles(dir).getCurrentStorage(),
+      storage: Profiles(dir).getCurrentStorage()!,
       uuid: widget.uuid,
     );
     setState(() {});
@@ -39,25 +39,25 @@ class _DetailRouteState extends State<DetailRoute> {
     return (newValue) {
       switch (name) {
         case 'description':
-          modify.setDescription(newValue);
+          modify!.setDescription(newValue);
           break;
         case 'status':
-          modify.setStatus(newValue);
+          modify!.setStatus(newValue);
           break;
         case 'due':
-          modify.setDue(newValue);
+          modify!.setDue(newValue);
           break;
         case 'wait':
-          modify.setWait(newValue);
+          modify!.setWait(newValue);
           break;
         case 'until':
-          modify.setUntil(newValue);
+          modify!.setUntil(newValue);
           break;
         case 'priority':
-          modify.setPriority(newValue);
+          modify!.setPriority(newValue);
           break;
         case 'tags':
-          modify.setTags(newValue);
+          modify!.setTags(newValue);
           break;
         default:
       }
@@ -78,18 +78,18 @@ class _DetailRouteState extends State<DetailRoute> {
         children: [
           if (modify?.draft != null)
             for (var entry in {
-              'description': modify.draft.description,
-              'status': modify.draft.status,
-              'entry': modify.draft.entry,
-              'modified': modify.draft.modified,
-              'end': modify.draft.end,
-              'due': modify.draft.due,
-              'wait': modify.draft.wait,
-              'until': modify.draft.until,
-              'priority': modify.draft.priority,
-              'tags': modify.draft.tags,
-              'urgency': urgency(modify.draft),
-              'uuid': modify.draft.uuid,
+              'description': modify!.draft.description,
+              'status': modify!.draft.status,
+              'entry': modify!.draft.entry,
+              'modified': modify!.draft.modified,
+              'end': modify!.draft.end,
+              'due': modify!.draft.due,
+              'wait': modify!.draft.wait,
+              'until': modify!.draft.until,
+              'priority': modify!.draft.priority,
+              'tags': modify!.draft.tags,
+              'urgency': urgency(modify!.draft),
+              'uuid': modify!.draft.uuid,
             }.entries)
               AttributeWidget(
                 name: entry.key,
@@ -98,7 +98,7 @@ class _DetailRouteState extends State<DetailRoute> {
               ),
         ],
       ),
-      floatingActionButton: (modify?.changes?.isEmpty ?? false)
+      floatingActionButton: (modify?.changes.isEmpty ?? false)
           ? null
           : FloatingActionButton(
               onPressed: () {
@@ -113,7 +113,7 @@ class _DetailRouteState extends State<DetailRoute> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            for (var change in modify.changes.entries)
+                            for (var change in modify!.changes.entries)
                               (change) {
                                 var _old = change.value['old'];
                                 var _new = change.value['new'];
@@ -143,7 +143,7 @@ class _DetailRouteState extends State<DetailRoute> {
                         ElevatedButton(
                           onPressed: () {
                             var now = DateTime.now().toUtc();
-                            modify.save(
+                            modify!.save(
                               modified: () => now,
                             );
                             setState(() {});
@@ -163,7 +163,11 @@ class _DetailRouteState extends State<DetailRoute> {
 }
 
 class AttributeWidget extends StatelessWidget {
-  const AttributeWidget({this.name, this.value, this.callback});
+  const AttributeWidget({
+    required this.name,
+    required this.value,
+    required this.callback,
+  });
 
   final String name;
   final dynamic value;
@@ -240,7 +244,11 @@ class AttributeWidget extends StatelessWidget {
 }
 
 class DescriptionWidget extends StatelessWidget {
-  const DescriptionWidget({this.name, this.value, this.callback});
+  const DescriptionWidget({
+    required this.name,
+    required this.value,
+    required this.callback,
+  });
 
   final String name;
   final dynamic value;
@@ -299,7 +307,11 @@ class DescriptionWidget extends StatelessWidget {
 }
 
 class StatusWidget extends StatelessWidget {
-  const StatusWidget({this.name, this.value, this.callback});
+  const StatusWidget({
+    required this.name,
+    required this.value,
+    required this.callback,
+  });
 
   final String name;
   final dynamic value;
@@ -324,13 +336,10 @@ class StatusWidget extends StatelessWidget {
           switch (value) {
             case 'pending':
               return callback('completed');
-              break;
             case 'completed':
               return callback('deleted');
-              break;
             case 'deleted':
               return callback('pending');
-              break;
           }
         },
       ),
@@ -339,7 +348,11 @@ class StatusWidget extends StatelessWidget {
 }
 
 class DateTimeWidget extends StatelessWidget {
-  const DateTimeWidget({this.name, this.value, this.callback});
+  const DateTimeWidget({
+    required this.name,
+    required this.value,
+    required this.callback,
+  });
 
   final String name;
   final dynamic value;
@@ -391,7 +404,11 @@ class DateTimeWidget extends StatelessWidget {
 }
 
 class PriorityWidget extends StatelessWidget {
-  const PriorityWidget({this.name, this.value, this.callback});
+  const PriorityWidget({
+    required this.name,
+    required this.value,
+    required this.callback,
+  });
 
   final String name;
   final dynamic value;
@@ -430,7 +447,11 @@ class PriorityWidget extends StatelessWidget {
 }
 
 class TagsWidget extends StatelessWidget {
-  const TagsWidget({this.name, this.value, this.callback});
+  const TagsWidget({
+    required this.name,
+    required this.value,
+    required this.callback,
+  });
 
   final String name;
   final dynamic value;

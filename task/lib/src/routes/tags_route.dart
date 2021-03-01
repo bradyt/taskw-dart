@@ -6,32 +6,32 @@ import 'package:path_provider/path_provider.dart';
 import 'package:taskw/taskw.dart';
 
 class TagsRoute extends StatefulWidget {
-  const TagsRoute({this.value, this.callback});
+  const TagsRoute({required this.value, required this.callback});
 
-  final List<String> value;
-  final void Function(List<String>) callback;
+  final List<String>? value;
+  final void Function(List<String>?) callback;
 
   @override
   TagsRouteState createState() => TagsRouteState();
 }
 
 class TagsRouteState extends State<TagsRoute> {
-  Map<String, int> globalTags;
-  List<String> draftTags;
+  Map<String, int>? globalTags;
+  List<String>? draftTags;
 
   void _addTag(String tag) {
     if (draftTags == null) {
       draftTags = [tag];
     } else {
-      draftTags.add(tag);
+      draftTags!.add(tag);
     }
     widget.callback(draftTags);
     setState(() {});
   }
 
   void _removeTag(String tag) {
-    draftTags.remove(tag);
-    widget.callback((draftTags.isEmpty) ? null : draftTags);
+    draftTags!.remove(tag);
+    widget.callback((draftTags!.isEmpty) ? null : draftTags);
     setState(() {});
   }
 
@@ -44,7 +44,7 @@ class TagsRouteState extends State<TagsRoute> {
 
   Future<void> _initialize() async {
     var dir = await getApplicationDocumentsDirectory();
-    globalTags = Profiles(dir).getCurrentStorage().tags()
+    globalTags = Profiles(dir).getCurrentStorage()!.tags()
       ..putIfAbsent(
         'next',
         () => 0,
@@ -67,7 +67,7 @@ class TagsRouteState extends State<TagsRoute> {
               runSpacing: 4,
               children: [
                 if (draftTags != null)
-                  for (var tag in draftTags)
+                  for (var tag in draftTags!)
                     FilterChip(
                       onSelected: (_) => _removeTag(tag),
                       label: Text(
@@ -77,7 +77,7 @@ class TagsRouteState extends State<TagsRoute> {
                     ),
                 Divider(),
                 if (globalTags != null)
-                  for (var tag in globalTags.entries
+                  for (var tag in globalTags!.entries
                       .where((tag) => !(draftTags?.contains(tag.key) ?? false)))
                     FilterChip(
                       onSelected: (_) => _addTag(tag.key),

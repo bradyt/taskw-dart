@@ -20,7 +20,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
   const ConfigureTaskserverRoute(this.profile, this.alias);
 
   final String profile;
-  final String alias;
+  final String? alias;
 
   Future<void> _setConfigurationFromFixtureForDebugging() async {
     var dir = await getApplicationDocumentsDirectory();
