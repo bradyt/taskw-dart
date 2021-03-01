@@ -213,6 +213,7 @@ class TaskListRoute extends StatelessWidget {
                                               '${(task.due != null) ? when(task.due!) : ''} '
                                               '${task.priority ?? ''} '
                                               '[${task.tags?.join(',') ?? ''}]'
+                                          .replaceFirst(RegExp(r' \[\]$'), '')
                                           .replaceAll(RegExp(r' +'), ' '),
                                       style: GoogleFonts.firaMono(),
                                     ),
