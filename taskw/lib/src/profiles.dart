@@ -49,11 +49,11 @@ class Profiles {
     }
   }
 
-  void setAlias({String profile, String alias}) {
+  void setAlias({required String profile, required String alias}) {
     File('${base.path}/profiles/$profile/alias').writeAsStringSync(alias);
   }
 
-  String getAlias(String profile) {
+  String? getAlias(String profile) {
     var contents =
         File('${base.path}/profiles/$profile/alias').readAsStringSync();
     return (contents.isEmpty) ? null : contents;
@@ -63,14 +63,14 @@ class Profiles {
     File('${base.path}/current-profile').writeAsStringSync(profile);
   }
 
-  String getCurrentProfile() {
+  String? getCurrentProfile() {
     if (File('${base.path}/current-profile').existsSync()) {
       return File('${base.path}/current-profile').readAsStringSync();
     }
     return null;
   }
 
-  Storage getCurrentStorage() {
+  Storage? getCurrentStorage() {
     var currentProfile = getCurrentProfile();
     if (currentProfile != null) {
       return getStorage(currentProfile);

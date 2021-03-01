@@ -5,7 +5,7 @@ import 'package:taskc/taskc.dart';
 import 'package:taskw/taskw.dart';
 
 class Modify {
-  Modify({Storage storage, String uuid})
+  Modify({required Storage storage, required String uuid})
       : _storage = storage,
         _uuid = uuid {
     _draft = storage.getTask(_uuid);
@@ -14,8 +14,8 @@ class Modify {
 
   final Storage _storage;
   final String _uuid;
-  Task _draft;
-  Task _saved;
+  late Task _draft;
+  late Task _saved;
 
   Task get draft => _draft;
 
@@ -111,7 +111,7 @@ class Modify {
     _draft = _draft.copyWith(tags: () => tags);
   }
 
-  void save({DateTime Function() modified}) {
+  void save({required DateTime Function() modified}) {
     _storage.mergeTask(
       _draft.copyWith(modified: modified),
     );
@@ -120,7 +120,7 @@ class Modify {
   }
 
   // copied from 'package:flutter/foundation.dart'
-  bool _listEquals<T>(List<T> a, List<T> b) {
+  bool _listEquals<T>(List<T>? a, List<T>? b) {
     if (a == null) return b == null;
     if (b == null || a.length != b.length) return false;
     if (identical(a, b)) return true;

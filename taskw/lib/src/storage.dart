@@ -22,7 +22,7 @@ class Storage {
   Map<String, int> tags() {
     var listOfLists = pendingData().map((task) => task.tags);
     var listOfTags = listOfLists.expand((tags) => tags ?? []);
-    var setOfTags = listOfTags.toSet() ?? {};
+    var setOfTags = listOfTags.toSet();
     return SplayTreeMap.of({
       if (setOfTags.isNotEmpty)
         for (var tag in setOfTags) tag: 0,
@@ -32,7 +32,7 @@ class Storage {
   void updateWaitOrUntil(Iterable<Task> pendingData) {
     var now = DateTime.now();
     for (var task in pendingData) {
-      if (task.until != null && task.until.isBefore(now)) {
+      if (task.until != null && task.until!.isBefore(now)) {
         mergeTask(
           task.copyWith(
             status: () => 'deleted',
@@ -40,7 +40,7 @@ class Storage {
           ),
         );
       } else if (task.status == 'waiting' &&
-          (task.wait == null || task.wait.isBefore(now))) {
+          (task.wait == null || task.wait!.isBefore(now))) {
         _mergeTasks(
           [
             task.copyWith(
@@ -58,9 +58,9 @@ class Storage {
         (task) => task.status != 'completed' && task.status != 'deleted');
     var now = DateTime.now();
     if (data.any((task) =>
-        (task.until != null && task.until.isBefore(now)) ||
+        (task.until != null && task.until!.isBefore(now)) ||
         (task.status == 'waiting' &&
-            (task.wait == null || task.wait.isBefore(now))))) {
+            (task.wait == null || task.wait!.isBefore(now))))) {
       updateWaitOrUntil(data);
       data = _allData().where(
           (task) => task.status != 'completed' && task.status != 'deleted');
@@ -104,16 +104,13 @@ class Storage {
   }
 
   Task getTask(String uuid) {
-    if (File('${profile.path}/.task/all.data').existsSync()) {
-      return File('${profile.path}/.task/all.data')
-          .readAsStringSync()
-          .trim()
-          .split('\n')
-          .where((line) => line.isNotEmpty)
-          .map((line) => Task.fromJson(json.decode(line)))
-          .firstWhere((task) => task.uuid == uuid);
-    }
-    return null;
+    return File('${profile.path}/.task/all.data')
+        .readAsStringSync()
+        .trim()
+        .split('\n')
+        .where((line) => line.isNotEmpty)
+        .map((line) => Task.fromJson(json.decode(line)))
+        .firstWhere((task) => task.uuid == uuid);
   }
 
   void _mergeTasks(List<Task> tasks) {
@@ -124,7 +121,8 @@ class Storage {
         .split('\n');
     var taskMap = {
       for (var taskLine in lines)
-        if (taskLine.isNotEmpty) json.decode(taskLine)['uuid']: taskLine,
+        if (taskLine.isNotEmpty)
+          (json.decode(taskLine) as Map)['uuid']: taskLine,
     };
     for (var task in tasks) {
       taskMap[task.uuid] = json.encode(task);
@@ -140,7 +138,7 @@ class Storage {
 
   File fileByKey(String key) {
     Directory('${profile.path}/.task').createSync(recursive: true);
-    File file;
+    late File file;
     switch (key) {
       case '.taskrc':
         file = _taskrc;
@@ -159,7 +157,7 @@ class Storage {
     return file;
   }
 
-  void addFileContents({String key, String contents}) {
+  void addFileContents({required String key, required String contents}) {
     fileByKey(key).writeAsStringSync(contents);
   }
 
@@ -171,7 +169,7 @@ class Storage {
     var ca = '${profile.path}/.task/ca.cert.pem';
     var cert = '${profile.path}/.task/first_last.cert.pem';
     var key = '${profile.path}/.task/first_last.key.pem';
-    var server = config['taskd.server'].split(':');
+    var server = (config['taskd.server'] as String).split(':');
     if (server[0] == 'localhost') {
       if (Platform.isAndroid) {
         server[0] = '10.0.2.2';

@@ -6,7 +6,7 @@ import 'package:taskw/taskw.dart';
 
 void main() {
   group('Test statistics method;', () {
-    Storage storage;
+    late Storage storage;
 
     setUp(() {
       var base = Directory('test/profile-testing/statistics')

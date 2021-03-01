@@ -28,21 +28,23 @@ double urgency(Task task) {
   result += 12.0 * urgencyDue(task);
   result += 2.0 * urgencyAge(task);
 
-  return num.parse(result.toStringAsFixed(3));
+  return double.parse(result.toStringAsFixed(3));
 }
 
 double urgencyScheduled(Task task) =>
-    (task.scheduled != null && task.scheduled.isBefore(DateTime.now())) ? 1 : 0;
+    (task.scheduled != null && task.scheduled!.isBefore(DateTime.now()))
+        ? 1
+        : 0;
 
 double urgencyWaiting(Task task) => (task.status == 'waiting') ? 1 : 0;
 
 double urgencyTags(Task task) {
   if (task.tags?.isNotEmpty ?? false) {
-    if (task.tags.length == 1) {
+    if (task.tags!.length == 1) {
       return 0.8;
-    } else if (task.tags.length == 2) {
+    } else if (task.tags!.length == 2) {
       return 0.9;
-    } else if (task.tags.length > 2) {
+    } else if (task.tags!.length > 2) {
       return 1;
     }
   }
@@ -51,12 +53,12 @@ double urgencyTags(Task task) {
 
 double urgencyDue(Task task) {
   if (task.due != null) {
-    var daysOverdue = DateTime.now().difference(task.due).inSeconds / 86400;
+    var daysOverdue = DateTime.now().difference(task.due!).inSeconds / 86400;
 
     if (daysOverdue >= 7.0) {
       return 1;
     } else if (daysOverdue >= -14.0) {
-      return num.parse(
+      return double.parse(
           ((daysOverdue + 14) * 0.8 / 21 + 0.2).toStringAsFixed(3));
     }
 
@@ -66,14 +68,11 @@ double urgencyDue(Task task) {
 }
 
 double urgencyAge(Task task) {
-  if (task.entry != null) {
-    var entryAge =
-        DateTime.now().difference(task.entry).inMilliseconds / 86400000;
-    if (entryAge >= 365) {
-      return 1;
-    } else {
-      return num.parse((entryAge / 365).toStringAsFixed(3));
-    }
+  var entryAge =
+      DateTime.now().difference(task.entry).inMilliseconds / 86400000;
+  if (entryAge >= 365) {
+    return 1;
+  } else {
+    return double.parse((entryAge / 365).toStringAsFixed(3));
   }
-  return 0;
 }

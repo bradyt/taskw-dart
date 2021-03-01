@@ -11,7 +11,7 @@ import 'package:taskw/taskw.dart';
 void main() {
   group('Test profiles;', () {
     Directory base;
-    Profiles profiles;
+    late Profiles profiles;
 
     setUp(() {
       base = Directory(
@@ -29,7 +29,7 @@ void main() {
         ..addProfile()
         ..setCurrentProfile(profiles.listProfiles().first);
 
-      var storage = profiles.getCurrentStorage();
+      var storage = profiles.getCurrentStorage()!;
 
       expect(() => storage.pendingData(), returnsNormally);
 
@@ -51,8 +51,8 @@ void main() {
       var tasks = storage.pendingData();
 
       expect(tasks.length, 2);
-      expect(tasks[1].description, 'foo');
-      expect(tasks[2].description, 'bar');
+      expect(tasks[0].description, 'foo');
+      expect(tasks[1].description, 'bar');
     });
   });
 }

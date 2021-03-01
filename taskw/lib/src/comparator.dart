@@ -7,7 +7,7 @@ import 'package:taskw/taskw.dart';
 // ignore: prefer_expression_function_bodies
 int Function(Task, Task) compareTasks(String column) {
   return (a, b) {
-    int result;
+    int? result;
     switch (column) {
       case 'entry':
         result = a.entry.compareTo(b.entry);
@@ -20,7 +20,7 @@ int Function(Task, Task) compareTasks(String column) {
         } else if (b.due == null) {
           return -1;
         } else {
-          result = a.due.compareTo(b.due);
+          result = a.due!.compareTo(b.due!);
         }
         break;
       case 'priority':
@@ -33,7 +33,7 @@ int Function(Task, Task) compareTasks(String column) {
             i < min(a.tags?.length ?? 0, b.tags?.length ?? 0);
             i++) {
           if (result == null || result == 0) {
-            result = a.tags[i].compareTo(b.tags[i]);
+            result = a.tags![i].compareTo(b.tags![i]);
           }
         }
         if (result == null || result == 0) {
@@ -45,6 +45,6 @@ int Function(Task, Task) compareTasks(String column) {
         break;
       default:
     }
-    return result;
+    return result!;
   };
 }
