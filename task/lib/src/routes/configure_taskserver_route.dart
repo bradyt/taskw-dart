@@ -24,6 +24,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
       'taskd.ca': '.task/ca.cert.pem',
       'taskd.cert': '.task/first_last.cert.pem',
       'taskd.key': '.task/first_last.key.pem',
+      'server.cert': '.task/server.cert.pem',
     }.entries) {
       var contents = await rootBundle.loadString('../fixture/${entry.value}');
       storage.addFileContents(

@@ -30,6 +30,14 @@ void main() {
           contents: File('../fixture/${entry.value}').readAsStringSync(),
         );
       }
+      try {
+        await storage.statistics();
+      } on BadCertificateException catch (e) {
+        storage.addFileContents(
+          key: 'server.cert',
+          contents: e.certificate.pem,
+        );
+      }
       var header = await storage.statistics();
       expect(header['code'], '200');
     });

@@ -18,6 +18,7 @@ class Storage {
   File get _ca => File('${profile.path}/.task/ca.cert.pem');
   File get _cert => File('${profile.path}/.task/first_last.cert.pem');
   File get _key => File('${profile.path}/.task/first_last.key.pem');
+  File get _serverCert => File('${profile.path}/.task/server.cert.pem');
 
   Map<String, int> tags() {
     var listOfLists = pendingData().map((task) => task.tags);
@@ -146,6 +147,9 @@ class Storage {
       case 'taskd.key':
         file = _key;
         break;
+      case 'server.cert':
+        file = _serverCert;
+        break;
       default:
     }
     return file;
@@ -172,8 +176,17 @@ class Storage {
         ..setTrustedCertificates(ca)
         ..useCertificateChain(cert)
         ..usePrivateKey(key),
-      onBadCertificate:
-          (Platform.isIOS || Platform.isMacOS) ? (_) => true : null,
+      onBadCertificate: (serverCert) {
+        var file = File('${profile.path}/.task/server.cert.pem');
+        if (file.existsSync() && serverCert.pem == file.readAsStringSync()) {
+          return true;
+        } else {
+          throw BadCertificateException(
+            profile: profile,
+            certificate: serverCert,
+          );
+        }
+      },
     );
   }
 

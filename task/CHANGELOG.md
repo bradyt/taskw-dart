@@ -1,3 +1,9 @@
+# 0.0.9
+
+- Let user decide what to do when server certificates cannot be
+  verified. This issue was seen with Taskserver's pki generated
+  self-signed certificates, configured on iOS version of app.
+
 # 0.0.8
 
 - Fix bugs in tags and taskserver pages.

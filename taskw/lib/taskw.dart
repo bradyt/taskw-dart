@@ -1,5 +1,6 @@
 library taskw;
 
+export 'src/bad_certificate_exception.dart';
 export 'src/comparator.dart';
 export 'src/datetime_differences.dart';
 export 'src/modify.dart';
