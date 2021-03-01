@@ -96,6 +96,47 @@ class Storage {
             if (line.isNotEmpty) Task.fromJson(json.decode(line)),
       ];
 
+  String export() {
+    var string = allData()
+        .map((task) {
+          var _task = task.toJson();
+
+          _task['urgency'] = num.parse(urgency(task)
+              .toStringAsFixed(1)
+              .replaceFirst(RegExp(r'.0$'), ''));
+
+          var keyOrder = [
+            'id',
+            'description',
+            'end',
+            'entry',
+            'modified',
+            'status',
+            'until',
+            'tags',
+          ].asMap().map((key, value) => MapEntry(value, key));
+
+          var fallbackOrder = _task.keys
+              .toList()
+              .asMap()
+              .map((key, value) => MapEntry(value, key));
+
+          for (var entry in fallbackOrder.entries) {
+            keyOrder.putIfAbsent(
+              entry.key,
+              () => entry.value + keyOrder.length,
+            );
+          }
+
+          return json.encode(SplayTreeMap.of(_task, (key1, key2) {
+            return keyOrder[key1]!.compareTo(keyOrder[key2]!);
+          }));
+        })
+        .toList()
+        .join(',\n');
+    return '[\n$string\n]\n';
+  }
+
   void mergeTask(Task task) {
     _mergeTasks([task]);
     File('${profile.path}/.task/backlog.data').writeAsStringSync(

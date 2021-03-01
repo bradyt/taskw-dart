@@ -21,3 +21,24 @@ Future<void> saveServerCert(String contents) async {
     );
   }
 }
+
+Future<void> exportTasks({
+  required String contents,
+  required String suggestedName,
+}) async {
+  if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+    var path = await getSavePath(
+      suggestedName: suggestedName,
+    );
+    var data = Uint8List.fromList(contents.codeUnits);
+    var file = XFile.fromData(
+      data,
+    );
+    await file.saveTo(path!);
+  } else {
+    await FilePickerWritable().openFileForCreate(
+      fileName: suggestedName,
+      writer: (tempFile) => tempFile.writeAsString(contents),
+    );
+  }
+}

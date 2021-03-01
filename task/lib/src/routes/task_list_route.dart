@@ -102,6 +102,25 @@ class TaskListRoute extends StatelessWidget {
                             ),
                           ),
                           ListTile(
+                              leading: Padding(
+                                padding: EdgeInsets.all(12),
+                                child: Icon(Icons.file_download),
+                              ),
+                              title: Text('Export tasks'),
+                              onTap: () {
+                                var tasks = ProfilesWidget.of(context)
+                                    .getStorage(entry.key)
+                                    .export();
+                                var now = DateTime.now()
+                                    .toIso8601String()
+                                    .replaceAll(RegExp(r'[-:]'), '')
+                                    .replaceAll(RegExp(r'\..*'), '');
+                                exportTasks(
+                                  contents: tasks,
+                                  suggestedName: 'tasks-$now.txt',
+                                );
+                              }),
+                          ListTile(
                             leading: Padding(
                               padding: EdgeInsets.all(12),
                               child: Icon(Icons.delete),

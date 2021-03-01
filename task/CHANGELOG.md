@@ -1,5 +1,6 @@
 # 0.0.9
 
+- Add feature to export tasks from a profile.
 - Let user decide what to do when server certificates cannot be
   verified. This issue was seen with Taskserver's pki generated
   self-signed certificates, configured on iOS version of app.
