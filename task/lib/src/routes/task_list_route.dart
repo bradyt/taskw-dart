@@ -46,7 +46,9 @@ class _TaskListRouteState extends State<TaskListRoute> {
         : storage.allData();
     taskData = data.where((task) {
       var tags = task.tags?.toSet() ?? {};
-      return selectedTags.every((tag) => tags.contains(tag));
+      return selectedTags.every((tag) => (tag.startsWith('+'))
+          ? tags.contains(tag.substring(1))
+          : !tags.contains(tag.substring(1)));
     }).toList();
 
     var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
@@ -256,10 +258,14 @@ class _TaskListRouteState extends State<TaskListRoute> {
   }
 
   Future<void> _toggleTagFilter(String tag) async {
-    if (selectedTags.contains(tag)) {
-      selectedTags.remove(tag);
+    if (selectedTags.contains('+$tag')) {
+      selectedTags
+        ..remove('+$tag')
+        ..add('-$tag');
+    } else if (selectedTags.contains('-$tag')) {
+      selectedTags.remove('-$tag');
     } else {
-      selectedTags.add(tag);
+      selectedTags.add('+$tag');
     }
     await _sortAndFilterTaskData();
     setState(() {});
@@ -522,8 +528,11 @@ class _TaskListRouteState extends State<TaskListRoute> {
                         FilterChip(
                           onSelected: (_) => _toggleTagFilter(tag.key),
                           label: Text(
-                            '${selectedTags.contains(tag.key) ? '+' : ''}'
-                            '${tag.key}',
+                            selectedTags.firstWhere(
+                              (selectedTag) =>
+                                  selectedTag.substring(1) == tag.key,
+                              orElse: () => tag.key,
+                            ),
                             style: GoogleFonts.firaMono(),
                           ),
                         ),

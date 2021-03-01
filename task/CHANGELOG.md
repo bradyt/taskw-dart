@@ -1,3 +1,9 @@
+# 0.0.7
+
+- Add negative tag filtering, e.g. -next means hide tasks that have
+  the next tag.
+- Remove `android.permission.READ_EXTERNAL_STORAGE`.
+
 # 0.0.6
 
 - Add sort feature.
