@@ -239,7 +239,7 @@ class Storage {
     );
     var tasks = [
       for (var task in response.payload.tasks)
-        Task.fromJson(json.decode(task)..remove('id')),
+        Task.fromJson((json.decode(task) as Map)..remove('id')),
     ];
     _mergeTasks(tasks);
     File('${profile.path}/.task/backlog.data')

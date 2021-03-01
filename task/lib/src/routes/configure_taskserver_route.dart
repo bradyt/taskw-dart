@@ -139,8 +139,8 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
   bool hideKey = true;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _getConfig().catchError(
       (_) {
         server = '';

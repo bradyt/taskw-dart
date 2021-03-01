@@ -38,6 +38,11 @@ class TagsRouteState extends State<TagsRoute> {
   void initState() {
     super.initState();
     draftTags = widget.value;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _initialize();
   }
 
