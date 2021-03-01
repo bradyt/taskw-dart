@@ -1,5 +1,6 @@
 # 0.0.7
 
+- Potential quick fix for short ids breaking sync.
 - Improve UI for configuration of Taskserver.
 - Add negative tag filtering, e.g. -next means hide tasks that have
   the next tag.
