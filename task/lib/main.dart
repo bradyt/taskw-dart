@@ -4,13 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:uuid/uuid.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:task/task.dart';
 
-void main() {
+void main([List<String> args = const []]) {
   GoogleFonts.config.allowRuntimeFetching = false;
 
   LicenseRegistry.addLicense(() async* {
@@ -20,12 +21,23 @@ void main() {
 
   WidgetsFlutterBinding.ensureInitialized();
 
+  Directory? testingDirectory;
+  if (args.contains('flutter_driver_test')) {
+    testingDirectory = Directory(
+      '${Directory.systemTemp.path}/flutter_driver_test/${Uuid().v1()}',
+    )..createSync(recursive: true);
+    stdout.writeln(testingDirectory);
+    Directory(
+      '${testingDirectory.path}/profiles/acae0462-6a34-11e4-8001-002590720087',
+    ).createSync(recursive: true);
+  }
+
   runApp(
     FutureBuilder<Directory>(
       future: getApplicationDocumentsDirectory(),
       builder: (context, snapshot) => (snapshot.hasData)
           ? ProfilesWidget(
-              baseDirectory: snapshot.data!,
+              baseDirectory: testingDirectory ?? snapshot.data!,
               child: TaskApp(),
             )
           : Placeholder(),

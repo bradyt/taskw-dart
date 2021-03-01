@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:task/main.dart';
 
 void main() {
+  // ignore: avoid_types_on_closure_parameters
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(TaskApp());

@@ -38,8 +38,15 @@ class Profiles {
     if (a.isEmpty || b.isEmpty) {
       return 0;
     }
-    DateTime created(String profile) => DateTime.parse(
-        File('${base.path}/profiles/$profile/created').readAsStringSync());
+    DateTime created(String profile) {
+      if (!File('${base.path}/profiles/$profile/created').existsSync()) {
+        File('${base.path}/profiles/$profile/created')
+            .writeAsStringSync('${DateTime.now().toUtc()}');
+      }
+      return DateTime.parse(
+          File('${base.path}/profiles/$profile/created').readAsStringSync());
+    }
+
     var aCreated = created(a);
     var bCreated = created(b);
     if (aCreated.isBefore(bCreated)) {
@@ -71,9 +78,13 @@ class Profiles {
   }
 
   String? getAlias(String profile) {
-    var contents =
-        File('${base.path}/profiles/$profile/alias').readAsStringSync();
-    return (contents.isEmpty) ? null : contents;
+    String? result;
+    if (File('${base.path}/profiles/$profile/alias').existsSync()) {
+      var contents =
+          File('${base.path}/profiles/$profile/alias').readAsStringSync();
+      result = (contents.isEmpty) ? null : contents;
+    }
+    return result;
   }
 
   void setCurrentProfile(String? profile) {
