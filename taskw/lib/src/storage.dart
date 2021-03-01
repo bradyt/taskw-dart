@@ -98,7 +98,7 @@ class Storage {
   void mergeTask(Task task) {
     _mergeTasks([task]);
     File('${profile.path}/.task/backlog.data').writeAsStringSync(
-      '${json.encode(task.toJson())}\n',
+      '${json.encode(task.copyWith(id: () => null).toJson())}\n',
       mode: FileMode.append,
     );
   }
@@ -119,7 +119,7 @@ class Storage {
           (json.decode(taskLine) as Map)['uuid']: taskLine,
     };
     for (var task in tasks) {
-      taskMap[task.uuid] = json.encode(task);
+      taskMap[task.uuid] = json.encode(task.copyWith(id: () => null));
     }
     File('${profile.path}/.task/all.data').writeAsStringSync('');
     for (var task in taskMap.values) {
@@ -238,7 +238,8 @@ class Storage {
       payload: payload,
     );
     var tasks = [
-      for (var task in response.payload.tasks) Task.fromJson(json.decode(task)),
+      for (var task in response.payload.tasks)
+        Task.fromJson(json.decode(task)..remove('id')),
     ];
     _mergeTasks(tasks);
     File('${profile.path}/.task/backlog.data')
