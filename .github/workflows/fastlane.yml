@@ -1,9 +1,5 @@
 name: test fastlane setup
 
-defaults:
-  run:
-    working-directory: task
-
 on:
   pull_request:
   schedule:
@@ -11,14 +7,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  simple:
+  fastlane:
+    strategy:
+      matrix:
+        working-directory: [task/android, task/ios]
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
     - run: gem install --user-install bundler
-    - run: bundle config set path 'vendor/bundle'
     - run: bundle install
+      working-directory: ${{ matrix.working-directory }}
     - run: bundle exec fastlane --version
-      working-directory: task/android
-    - run: bundle exec fastlane --version
-      working-directory: task/ios
+      working-directory: ${{ matrix.working-directory }}
