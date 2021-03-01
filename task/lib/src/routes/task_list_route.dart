@@ -485,7 +485,7 @@ class _TaskListRouteState extends State<TaskListRoute> {
                                   ),
                                 ),
                                 Text(
-                                  '${urgency(task)}',
+                                  ' ${urgency(task).toStringAsFixed(1).replaceFirst(RegExp(r'.0$'), '')}',
                                   style: GoogleFonts.firaMono(),
                                 ),
                               ],
