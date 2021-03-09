@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:taskw/taskw.dart';
 
 Future<void> setConfig({required String profile, required String key}) async {
-  if (Platform.isLinux || Platform.isMacOS) {
+  if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
     var typeGroup = XTypeGroup(label: 'config', extensions: []);
     var file = await openFile(acceptedTypeGroups: [typeGroup]);
     if (file != null) {

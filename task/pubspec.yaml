@@ -14,6 +14,7 @@ dependencies:
   file_selector: ^0.8.2
   file_selector_linux:
   file_selector_macos: ^0.0.4
+  file_selector_windows:
   flutter:
     sdk: flutter
   google_fonts: ^2.0.0

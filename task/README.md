@@ -10,5 +10,5 @@ run`.
 To install to your Android or iOS device, run `flutter build apk` or
 `flutter build ios`, then `flutter install`.
 
-To run the app on Linux or macOS, check `flutter config`, `flutter
- doctor` and try `flutter run`.
+To run the app on Linux, Windows or macOS, check `flutter config`,
+ `flutter doctor` and try `flutter run`.
