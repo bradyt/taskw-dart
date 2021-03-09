@@ -28,7 +28,8 @@ class Profiles {
     var dir = Directory('${base.path}/profiles')..createSync();
     var dirs = dir
         .listSync()
-        .map((entity) => entity.path.split('/').last)
+        .map((entity) =>
+            entity.uri.pathSegments.lastWhere((segment) => segment.isNotEmpty))
         .toList()
           ..sort(comparator);
     return dirs;
