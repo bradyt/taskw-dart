@@ -1,5 +1,19 @@
-Todo app inspired by Taskwarrior and TaskwarriorC2.
+"task add", or simply, "task", is an unofficial mobile client to Taskserver.
 
-Add, edit, list, sync tasks.
+In other words, "task add" is a todo app, for Android and iOS.
 
-Future version may have option to import/export tasks/profile.
+The interface is inspired by Taskwarrior and TaskwarriorC2.
+
+This app is an amateur/hobby project, useful to at least me. I expect the target audience may be limited to somewhere between 10 and 1000 people on the planet.
+
+Features:
+
+- Add, edit, list, sort, filter your tasks.
+- Sync tasks with a Taskserver.
+- Export tasks in a format similar to cli task's export command.
+
+Quirks:
+
+- To remove a due date, long-press the button.
+
+If you want to use a Taskserver to sync your tasks, I recommend you use a self-hosted instance so that you have full access to server logs and data.
