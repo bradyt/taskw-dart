@@ -4,10 +4,11 @@
 [Taskwarrior](https://taskwarrior.org) and
 [TaskwarriorC2](https://bitbucket.org/kvorobyev/taskwarriorc2/).
 
-List, add, edit, sync tasks.
+Features:
 
-Future version may have import/export of task lists, in a format that
-might be compatible with Taskwarrior.
+- Add, edit, list, sort, filter your tasks.
+- Sync tasks with a Taskserver.
+- Export tasks in a format similar to cli task's export command.
 
 # How to get it
 
