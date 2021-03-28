@@ -38,9 +38,11 @@ void main() {
     Process.run(
       'convert',
       [
-        'noun_checkmark_1763484.svg',
+        '-density',
+        '1200',
         '-resize',
         size.dimensions,
+        'noun_checkmark_1763484.svg',
         '../${size.platform}/Runner/Assets.xcassets/AppIcon.appiconset/${size.filename}',
       ],
     );
