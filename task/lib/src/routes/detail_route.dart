@@ -54,6 +54,9 @@ class _DetailRouteState extends State<DetailRoute> {
         case 'tags':
           modify.setTags(newValue);
           break;
+        case 'annotations':
+          modify.setAnnotations(newValue);
+          break;
         default:
       }
       setState(() {});
@@ -82,6 +85,7 @@ class _DetailRouteState extends State<DetailRoute> {
             'until': modify.draft.until,
             'priority': modify.draft.priority,
             'tags': modify.draft.tags,
+            'annotations': modify.draft.annotations,
             'udas': modify.draft.udas,
             'urgency': urgency(modify.draft),
             'uuid': modify.draft.uuid,
@@ -212,6 +216,12 @@ class AttributeWidget extends StatelessWidget {
         );
       case 'tags':
         return TagsWidget(
+          name: name,
+          value: localValue,
+          callback: callback,
+        );
+      case 'annotations':
+        return AnnotationsWidget(
           name: name,
           value: localValue,
           callback: callback,
@@ -487,6 +497,48 @@ class TagsWidget extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => TagsRoute(
+              value: value,
+              callback: callback,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AnnotationsWidget extends StatelessWidget {
+  const AnnotationsWidget({
+    required this.name,
+    required this.value,
+    required this.callback,
+  });
+
+  final String name;
+  final dynamic value;
+  final void Function(dynamic) callback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              Text(
+                (value == null)
+                    ? '${'$name:'.padRight(13)}null'
+                    : '${'$name:'.padRight(13)}${value.length} annotation(s)',
+                style: GoogleFonts.firaMono(),
+              ),
+            ],
+          ),
+        ),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AnnotationsRoute(
               value: value,
               callback: callback,
             ),

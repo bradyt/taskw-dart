@@ -18,13 +18,16 @@ dependencies:
   file_selector_windows:
   flutter:
     sdk: flutter
+  flutter_linkify:
   google_fonts:
+  linkify:
   path_provider:
   path_provider_macos:
   taskc:
     path: ../taskc
   taskw:
     path: ../taskw
+  url_launcher:
   uuid:
 
 dev_dependencies:

@@ -24,12 +24,25 @@ class TaskListView extends StatelessWidget {
                 ),
               ),
               child: ListTile(
-                title: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Text(
-                    task.description,
-                    style: GoogleFonts.firaMono(),
-                  ),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          task.description,
+                          style: GoogleFonts.firaMono(),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      (task.annotations != null)
+                          ? ' [${task.annotations!.length}]'
+                          : '',
+                      style: GoogleFonts.firaMono(),
+                    ),
+                  ],
                 ),
                 subtitle: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

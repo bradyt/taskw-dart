@@ -73,6 +73,12 @@ class Modify {
         'new': _draft.tags,
       };
     }
+    if (_draft.annotations != _saved.annotations) {
+      result['annotations'] = {
+        'old': _saved.annotations?.length ?? 0,
+        'new': _draft.annotations?.length ?? 0,
+      };
+    }
     return result;
   }
 
@@ -118,7 +124,11 @@ class Modify {
   }
 
   void setTags(ListBuilder<String>? tags) {
-    _draft = _draft.rebuild((b) => b..tags = (tags == null) ? null : tags);
+    _draft = _draft.rebuild((b) => b..tags = tags);
+  }
+
+  void setAnnotations(ListBuilder<Annotation>? annotations) {
+    _draft = _draft.rebuild((b) => b..annotations = annotations);
   }
 
   void save({required DateTime Function() modified}) {

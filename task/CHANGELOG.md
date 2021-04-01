@@ -1,6 +1,10 @@
 # 0.0.10
 
-- Display UDAs
+- Add annotations feature
+  - Indicate count in list and detail views
+  - Add UI that lists annotations, and has an add button
+  - Linkify urls and emails
+- Display UDAs in detail view
 - Prevent trailing slashes in task description which may corrupt
   account at Taskserver
 - Prevent newlines in task descriptions
