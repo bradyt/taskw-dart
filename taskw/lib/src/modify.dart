@@ -9,7 +9,7 @@ class Modify {
     required Task Function(String) getTask,
     required void Function(Task) mergeTask,
     required String uuid,
-  })   : _getTask = getTask,
+  })  : _getTask = getTask,
         _mergeTask = mergeTask,
         _uuid = uuid {
     _draft = _getTask(_uuid);
