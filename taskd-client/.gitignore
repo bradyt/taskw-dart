@@ -1,0 +1,24 @@
+# Files and directories created by pub
+.dart_tool/
+.packages
+
+# Omit commiting pubspec.lock for library packages:
+# https://dart.dev/guides/libraries/private-files#pubspeclock
+pubspec.lock
+
+# Conventional directory for build outputs
+build/
+
+# Directory created by dartdoc
+doc/api/
+
+root/
+
+coverage/
+coverage_badge.svg
+test/.test_coverage.dart
+
+fixture/.task
+fixture/.taskrc
+fixture/pki/*.pem
+fixture/var
