@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:taskc/json.dart';
+import 'package:taskc/storage.dart';
 import 'package:taskc/taskc.dart' as taskc show statistics, synchronize;
 import 'package:taskc/taskc.dart' hide statistics, synchronize;
 import 'package:taskc/taskrc.dart';
