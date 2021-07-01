@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:taskw/taskw.dart';
+
 import 'package:task/task.dart';
 
 class TagsRoute extends StatefulWidget {
@@ -115,8 +117,17 @@ class TagsRouteState extends State<TagsRoute> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    _addTag(controller.text);
-                    Navigator.of(context).pop();
+                    try {
+                      validateTaskTags(controller.text);
+                      _addTag(controller.text);
+                      Navigator.of(context).pop();
+                    } on FormatException catch (e, trace) {
+                      showExceptionDialog(
+                        context: context,
+                        e: e,
+                        trace: trace,
+                      );
+                    }
                   },
                   child: Text('Submit'),
                 ),

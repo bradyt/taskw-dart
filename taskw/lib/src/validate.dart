@@ -14,3 +14,14 @@ void validateTaskDescription(String description) {
     );
   }
 }
+
+void validateTaskTags(String tag) {
+  if (tag.contains(' ')) {
+    throw FormatException(
+      'Taskwarrior documentation on JSON format indicates your task tag '
+      'should not contain spaces.',
+      tag,
+      tag.indexOf(' '),
+    );
+  }
+}
