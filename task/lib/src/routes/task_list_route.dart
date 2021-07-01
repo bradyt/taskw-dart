@@ -168,8 +168,9 @@ class ProfilesColumn extends StatelessWidget {
               ListTile(
                 title: Text('Profiles'),
                 trailing: IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () => profilesWidget.addProfile()),
+                  icon: Icon(Icons.add),
+                  onPressed: () => profilesWidget.addProfile(),
+                ),
               ),
               for (var entry in profilesMap.entries)
                 ExpansionTile(
