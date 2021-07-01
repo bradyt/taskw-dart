@@ -14,8 +14,6 @@ import 'package:taskc/taskc.dart';
 import 'package:taskc/taskd.dart';
 import 'package:taskc/taskrc.dart';
 
-import 'package:taskw/taskw.dart';
-
 void main() {
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen((record) {

@@ -7,3 +7,4 @@ library storage;
 
 export 'src/storage/bad_certificate_exception.dart';
 export 'src/storage/storage.dart';
+export 'src/storage/taskserver_configuration_exception.dart';
