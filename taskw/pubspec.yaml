@@ -16,3 +16,4 @@ dependencies:
 
 dev_dependencies:
   test:
+  test_cov:
