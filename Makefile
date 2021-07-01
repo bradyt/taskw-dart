@@ -23,4 +23,4 @@ format:
 		--summary none
 
 install:
-	dart pub global activate -spath taskw
+	dart pub global activate -spath taskc

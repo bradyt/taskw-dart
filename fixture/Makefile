@@ -13,4 +13,4 @@ setup-android:
 	taskd-setup -t $(PWD)/android/var/taskd -H $(PWD)/../task/assets --binding-address=127.0.0.1 --client-address=10.0.2.2
 
 install:
-	dart pub global activate -spath ../taskw
+	dart pub global activate -spath ../taskc

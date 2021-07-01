@@ -4,7 +4,7 @@ dart --disable-analytics
 
 # toc: https://taskwarrior.org/docs/taskserver/setup.html
 cd /opt/fixture
-dart pub global activate -spath /opt/taskw
+dart pub global activate -spath /opt/taskc
 taskd-setup \
     -t /opt/fixture/var/taskd \
     -H /opt/assets \
