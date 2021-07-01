@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
 import 'package:taskc/storage.dart';
 
 import 'package:task/task.dart';
@@ -68,7 +70,10 @@ connections.'''
     builder: (context) => AlertDialog(
       scrollable: true,
       title: SelectableText('${e.runtimeType}'),
-      content: SelectableText('$e${trace != null ? '\n$trace' : ''}'),
+      content: SelectableText(
+        '$e${trace != null ? '\n$trace' : ''}',
+        style: GoogleFonts.firaMono(),
+      ),
       actions: [
         ElevatedButton(
           onPressed: () {

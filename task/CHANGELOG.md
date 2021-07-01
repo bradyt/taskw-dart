@@ -1,5 +1,7 @@
 # 0.0.10
 
+- Prevent trailing slashes in task description which may corrupt
+  account at Taskserver
 - Active chips are made bold for easier visual scanning
 - Move task id and status to after the task description
 

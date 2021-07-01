@@ -285,8 +285,17 @@ class DescriptionWidget extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    callback(controller.text);
-                    Navigator.of(context).pop();
+                    try {
+                      validateTaskDescription(controller.text);
+                      callback(controller.text);
+                      Navigator.of(context).pop();
+                    } on FormatException catch (e, trace) {
+                      showExceptionDialog(
+                        context: context,
+                        e: e,
+                        trace: trace,
+                      );
+                    }
                   },
                   child: Text('Submit'),
                 ),

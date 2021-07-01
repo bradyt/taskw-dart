@@ -7,6 +7,7 @@ android:
 	TASKDDATA=./android/var/taskd taskd server --debug
 
 setup:
+	(cd .. && make get)
 	taskd-setup -t $(PWD)/var/taskd -H $(PWD)/../task/assets
 
 setup-android:
