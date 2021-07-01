@@ -1,3 +1,7 @@
+# 0.0.10
+
+- Active chips are made bold for easier visual scanning
+
 # 0.0.9
 
 - Add feature to export tasks from a profile.

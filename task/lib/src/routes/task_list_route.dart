@@ -170,12 +170,14 @@ class TaskListRoute extends StatelessWidget {
                       'urgency',
                     ])
                       ChoiceChip(
-                        label: Text(
-                          (storageWidget.selectedSort.startsWith(sort))
-                              ? storageWidget.selectedSort
-                              : sort,
-                          style: GoogleFonts.firaMono(),
-                        ),
+                        label: (storageWidget.selectedSort.startsWith(sort))
+                            ? Text(
+                                storageWidget.selectedSort,
+                                style: GoogleFonts.firaMono(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              )
+                            : Text(sort, style: GoogleFonts.firaMono()),
                         selected: false,
                         onSelected: (_) {
                           if (storageWidget.selectedSort == '$sort+') {
@@ -229,7 +231,13 @@ class TaskListRoute extends StatelessWidget {
                                   selectedTag.substring(1) == tag.key,
                               orElse: () => tag.key,
                             ),
-                            style: GoogleFonts.firaMono(),
+                            style: GoogleFonts.firaMono(
+                              fontWeight: storageWidget.selectedTags.any(
+                                      (selectedTag) =>
+                                          selectedTag.substring(1) == tag.key)
+                                  ? FontWeight.w700
+                                  : null,
+                            ),
                           ),
                         ),
                   ],
