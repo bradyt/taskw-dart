@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:file_picker_writable/file_picker_writable.dart';
 import 'package:file_selector/file_selector.dart';
 
-import 'package:taskw/taskw.dart';
+import 'package:taskc/storage.dart';
 
 Future<void> setConfig({required Storage storage, required String key}) async {
   if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {

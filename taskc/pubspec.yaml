@@ -16,4 +16,6 @@ dependencies:
   uuid:
 
 dev_dependencies:
+  taskw:
+    path: ../taskw
   test:
