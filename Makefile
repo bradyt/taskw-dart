@@ -4,7 +4,10 @@ watch: get
 analyze: get
 	dart analyze
 
-get: taskw/pubspec.lock task/.packages
+get: taskc/pubspec.lock taskw/pubspec.lock task/.packages
+
+taskc/pubspec.lock:
+	cd taskc && dart pub get
 
 taskw/pubspec.lock:
 	cd taskw && dart pub get

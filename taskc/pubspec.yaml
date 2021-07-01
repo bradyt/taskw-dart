@@ -1,4 +1,4 @@
-name: taskw
+name: taskc
 description: Provides Dart libraries for developing a Taskwarrior client to your Taskserver
 version: 0.0.0-alpha.0
 
@@ -7,11 +7,12 @@ publish_to: none
 environment:
   sdk: '>=2.13.0 <3.0.0'
 
+executables:
+  taskd-setup: taskd_setup
+
 dependencies:
   collection:
   intl:
-  taskc:
-    path: ../taskc
   uuid:
 
 dev_dependencies:

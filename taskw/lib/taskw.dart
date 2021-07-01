@@ -10,12 +10,12 @@ library taskw;
 
 // import 'package:taskw/taskc.dart';
 
-export 'src/taskw/bad_certificate_exception.dart';
-export 'src/taskw/comparator.dart';
-export 'src/taskw/datetime_differences.dart';
-export 'src/taskw/modify.dart';
-export 'src/taskw/profiles.dart';
-export 'src/taskw/storage.dart';
-export 'src/taskw/task_copy_with.dart';
-export 'src/taskw/taskserver_configuration_exception.dart';
-export 'src/taskw/urgency.dart';
+export 'src/bad_certificate_exception.dart';
+export 'src/comparator.dart';
+export 'src/datetime_differences.dart';
+export 'src/modify.dart';
+export 'src/profiles.dart';
+export 'src/storage.dart';
+export 'src/task_copy_with.dart';
+export 'src/taskserver_configuration_exception.dart';
+export 'src/urgency.dart';

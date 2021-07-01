@@ -462,6 +462,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  taskc:
+    dependency: "direct main"
+    description:
+      path: "../taskc"
+      relative: true
+    source: path
+    version: "0.0.0-alpha.0"
   taskw:
     dependency: "direct main"
     description:

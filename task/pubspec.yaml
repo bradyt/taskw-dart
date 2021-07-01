@@ -21,6 +21,8 @@ dependencies:
   google_fonts:
   path_provider:
   path_provider_macos:
+  taskc:
+    path: ../taskc
   taskw:
     path: ../taskw
   uuid:
