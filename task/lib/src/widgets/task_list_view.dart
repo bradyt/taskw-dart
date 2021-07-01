@@ -27,9 +27,7 @@ class TaskListView extends StatelessWidget {
                 title: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Text(
-                    '${(task.id == 0) ? '-' : task.id} '
-                    '${pendingFilter ? '' : '${task.status[0].toUpperCase()} '}'
-                    '${task.description}',
+                    task.description,
                     style: GoogleFonts.firaMono(),
                   ),
                 ),
@@ -40,7 +38,9 @@ class TaskListView extends StatelessWidget {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Text(
-                          '${age(task.entry)} '
+                          '${(task.id == 0) ? '-' : task.id} '
+                                  '${pendingFilter ? '' : '${task.status[0].toUpperCase()} '}'
+                                  '${age(task.entry)} '
                                   '${(task.due != null) ? when(task.due!) : ''} '
                                   '${task.priority ?? ''} '
                                   '[${task.tags?.join(',') ?? ''}]'

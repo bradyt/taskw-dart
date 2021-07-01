@@ -1,6 +1,7 @@
 # 0.0.10
 
 - Active chips are made bold for easier visual scanning
+- Move task id and status to after the task description
 
 # 0.0.9
 
