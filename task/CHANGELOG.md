@@ -2,6 +2,7 @@
 
 - Prevent trailing slashes in task description which may corrupt
   account at Taskserver
+- Prevent newlines in task descriptions
 - Active chips are made bold for easier visual scanning
 - Move task id and status to after the task description
 
