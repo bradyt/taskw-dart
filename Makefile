@@ -1,10 +1,10 @@
-watch: pub_get
+watch: get
 	flutter analyze --watch
 
-analyze: pub_get
+analyze: get
 	dart analyze
 
-pub_get: taskw/pubspec.lock task/.packages
+get: taskw/pubspec.lock task/.packages
 
 taskw/pubspec.lock:
 	cd taskw && dart pub get
@@ -18,3 +18,6 @@ format:
 		--output none \
 		--set-exit-if-changed \
 		--summary none
+
+install:
+	dart pub global activate -spath taskw

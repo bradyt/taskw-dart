@@ -1,11 +1,16 @@
+.PHONY: android
+
 run:
 	TASKDDATA=./var/taskd taskd server --debug
 
-setup:
-	taskd-setup
-
 android:
-	taskd-setup --CN=10.0.2.2 --address=127.0.0.1
+	TASKDDATA=./android/var/taskd taskd server --debug
+
+setup:
+	taskd-setup -t $(PWD)/var/taskd -H $(PWD)/../task/assets
+
+setup-android:
+	taskd-setup -t $(PWD)/android/var/taskd -H $(PWD)/../task/assets --binding-address=127.0.0.1 --client-address=10.0.2.2
 
 install:
-	dart pub global activate -sgit https://github.com/bradyt/taskd-setup-dart.git
+	dart pub global activate -spath ../taskw

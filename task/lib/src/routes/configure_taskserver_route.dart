@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:taskc/taskc.dart';
+import 'package:taskw/taskc.dart';
 
 import 'package:taskw/taskw.dart';
 
@@ -24,9 +24,9 @@ class ConfigureTaskserverRoute extends StatelessWidget {
       'taskd.ca': '.task/ca.cert.pem',
       'taskd.cert': '.task/first_last.cert.pem',
       'taskd.key': '.task/first_last.key.pem',
-      'server.cert': '.task/server.cert.pem',
+      // 'server.cert': '.task/server.cert.pem',
     }.entries) {
-      var contents = await rootBundle.loadString('../fixture/${entry.value}');
+      var contents = await rootBundle.loadString('assets/${entry.value}');
       storage.addFileContents(
         key: entry.key,
         contents: contents,

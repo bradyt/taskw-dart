@@ -10,20 +10,20 @@ environment:
 
 dependencies:
   crypto:
-  cupertino_icons: ^1.0.2
-  file_picker_writable: ^2.0.0
-  file_selector: ^0.8.2
+  cupertino_icons:
+  file_picker_writable:
+  file_selector:
   file_selector_linux:
-  file_selector_macos: ^0.0.4
+  file_selector_macos:
   file_selector_windows:
   flutter:
     sdk: flutter
-  google_fonts: ^2.0.0
-  path_provider: ^2.0.1
-  path_provider_macos: ^2.0.0
+  google_fonts:
+  path_provider:
+  path_provider_macos:
   taskw:
     path: ../taskw
-  uuid: ^3.0.1
+  uuid:
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +34,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - ../fixture/
-    - ../fixture/.task/
+    - assets/
+    - assets/.task/
     - google_fonts/

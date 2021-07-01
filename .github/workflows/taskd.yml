@@ -6,6 +6,8 @@ defaults:
 
 on:
   pull_request:
+  push:
+    branches-ignore: [main]
   schedule:
     - cron: 0 0 1 * *
   workflow_dispatch:
@@ -18,15 +20,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - run: taskd status
+    - run: task --version
+    - run: taskd --version
+
     - run: dart --disable-analytics
 
-    - run: dart pub global activate --source git https://github.com/bradyt/taskd-setup-dart.git
-    - run: |
-        export "PATH=$HOME/.pub-cache/bin:$PATH"
-        taskd-setup --TASKDDATA '/var/taskd'
-      working-directory: fixture
-    - run: TASKDDATA='/var/taskd' taskdctl start
-    - run: sleep 2
-
     - run: dart pub get
-    - run: dart test
+    - run: dart test -j 1
