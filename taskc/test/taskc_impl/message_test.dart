@@ -207,7 +207,17 @@ void main() {
           description: r'hello\',
         ).toJson(),
       );
-      json.decode(payload);
+
+      expect(() => json.decode(payload), returnsNormally);
+      expect(
+        payload,
+        '{'
+        '"status":"pending",'
+        '"uuid":"$taskUuid",'
+        '"entry":"${iso8601Basic.format(now)}",'
+        '"description":"hello\\\\"' // ignore: use_raw_strings
+        '}',
+      );
 
       var response = await synchronize(
         connection: connection,
