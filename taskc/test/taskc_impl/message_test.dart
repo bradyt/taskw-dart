@@ -13,10 +13,8 @@ import 'package:taskc/taskd.dart';
 import 'package:taskc/taskrc.dart';
 
 void main() {
-  var uuid = const Uuid().v1();
   var taskdData = Directory('../fixture/var/taskd').absolute.path;
   var taskd = Taskd(taskdData);
-  var home = Directory('test/taskd/tmp/$uuid').absolute.path;
   late Map<String, String> config;
   late List<String> server;
   late Connection connection;
@@ -32,6 +30,8 @@ void main() {
     await Future.delayed(const Duration(seconds: 1));
 
     var userKey = await taskd.addUser('First Last');
+    var uuid = const Uuid().v1();
+    var home = Directory('test/taskc_impl/tmp/$uuid').absolute.path;
     await taskd.initializeClient(
       home: home,
       address: 'localhost',
@@ -170,6 +170,78 @@ void main() {
 
       expect(response.header['code'], '200');
       expect(response.header['status'], 'Ok');
+    });
+    test('escape character', () async {
+      var userKey = await taskd.addUser('First Last');
+      var uuid = const Uuid().v1();
+      var home = Directory('test/taskc_impl/tmp/$uuid').absolute.path;
+      await taskd.initializeClient(
+        home: home,
+        address: 'localhost',
+        port: 53589,
+        fullName: 'First Last',
+        fileName: 'first_last',
+        userKey: userKey,
+      );
+      config = parseTaskrc(
+        File('$home/.taskrc').readAsStringSync(),
+      );
+      server = (config['taskd.server']!).split(':');
+      connection = Connection(
+        address: server[0],
+        port: int.parse(server[1]),
+        context: SecurityContext()
+          ..useCertificateChain(config['taskd.certificate']!)
+          ..usePrivateKey(config['taskd.key']!),
+        onBadCertificate: (_) => true,
+      );
+      credentials = Credentials.fromString(config['taskd.credentials']!);
+
+      var taskUuid = const Uuid().v1();
+      var now = DateTime.now();
+      var payload = json.encode(
+        Task(
+          status: 'pending',
+          uuid: taskUuid,
+          entry: now,
+          description: r'hello\',
+        ).toJson(),
+      );
+      json.decode(payload);
+
+      var response = await synchronize(
+        connection: connection,
+        credentials: credentials,
+        payload: payload,
+      );
+
+      expect(response.header['code'], '200');
+      expect(response.header['status'], 'Ok');
+
+      response = await synchronize(
+        connection: connection,
+        credentials: credentials,
+        payload: '',
+      );
+
+      expect(response.header['code'], '200');
+      expect(response.header['status'], 'Ok');
+
+      var task = response.payload.tasks.first;
+
+      expect(
+        () => json.decode(task),
+        throwsA(const TypeMatcher<FormatException>()),
+      );
+      expect(
+        task,
+        '{'
+        '"description":"hello\\\\\x00",'
+        '"entry":"${iso8601Basic.format(now)}",'
+        '"status":"pending",'
+        '"uuid":"$taskUuid"'
+        '}',
+      );
     });
   });
 }
