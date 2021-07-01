@@ -15,7 +15,7 @@ class TagsRoute extends StatefulWidget {
 }
 
 class TagsRouteState extends State<TagsRoute> {
-  Map<String, int>? globalTags;
+  Map<String, int>? _globalTags;
   List<String>? draftTags;
 
   void _addTag(String tag) {
@@ -47,7 +47,7 @@ class TagsRouteState extends State<TagsRoute> {
   }
 
   Future<void> _initialize() async {
-    globalTags = StorageWidget.of(context).globalTags
+    _globalTags = StorageWidget.of(context).globalTags
       ..putIfAbsent(
         'next',
         () => 0,
@@ -79,8 +79,8 @@ class TagsRouteState extends State<TagsRoute> {
                       ),
                     ),
                 Divider(),
-                if (globalTags != null)
-                  for (var tag in globalTags!.entries
+                if (_globalTags != null)
+                  for (var tag in _globalTags!.entries
                       .where((tag) => !(draftTags?.contains(tag.key) ?? false)))
                     FilterChip(
                       onSelected: (_) => _addTag(tag.key),
