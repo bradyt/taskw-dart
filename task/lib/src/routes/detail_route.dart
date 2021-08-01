@@ -82,6 +82,7 @@ class _DetailRouteState extends State<DetailRoute> {
             'until': modify.draft.until,
             'priority': modify.draft.priority,
             'tags': modify.draft.tags,
+            'udas': modify.draft.udas,
             'urgency': urgency(modify.draft),
             'uuid': modify.draft.uuid,
           }.entries)

@@ -1,5 +1,6 @@
 # 0.0.10
 
+- Display UDAs
 - Prevent trailing slashes in task description which may corrupt
   account at Taskserver
 - Prevent newlines in task descriptions
