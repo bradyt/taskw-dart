@@ -23,4 +23,4 @@ jobs:
     - run: dart pub get
     - run: dart format . --fix --output none --set-exit-if-changed --summary none
     - run: dart analyze --fatal-infos
-    - run: dart test test/taskw/datetime_differences_test.dart
+    - run: dart test
