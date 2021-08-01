@@ -1,3 +1,7 @@
+# 0.0.13
+
+- Improve feedback for server success or error
+
 # 0.0.12
 
 - Persist each profile's sorting and filtering

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:taskc/taskc.dart';
 import 'package:taskc/taskc_impl.dart';
 
@@ -15,12 +17,31 @@ key: ${credentials.key}
 protocol: v1
 
 $payload''';
-  var response =
+  var responseBytes =
       await send(connection: connection, bytes: Codec.encode(message));
-  if (response.isEmpty) {
+  if (responseBytes.isEmpty) {
     throw EmptyResponseException();
   }
-  return Response.fromString(Codec.decode(response));
+  var response = Response.fromString(Codec.decode(responseBytes));
+  if ([
+    '200',
+    '201',
+    '202',
+  ].contains(response.header['code'])) {
+    return response;
+  } else {
+    throw TaskserverResponseException(response.header);
+  }
+}
+
+class TaskserverResponseException implements Exception {
+  TaskserverResponseException(this.header);
+
+  final Map header;
+
+  @override
+  String toString() =>
+      'response.header = ${const JsonEncoder.withIndent('  ').convert(header)}';
 }
 
 class EmptyResponseException implements Exception {
