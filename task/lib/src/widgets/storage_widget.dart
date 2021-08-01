@@ -49,9 +49,9 @@ class _StorageWidgetState extends State<StorageWidget> {
   }
 
   void _profileSet() {
-    pendingFilter = true;
-    selectedSort = 'urgency+';
-    selectedTags = {};
+    pendingFilter = storage.getPendingFilter();
+    selectedSort = storage.getSelectedSort();
+    selectedTags = storage.getSelectedTags();
     _refreshTasks();
     globalTags = storage.tags();
   }
@@ -87,13 +87,15 @@ class _StorageWidgetState extends State<StorageWidget> {
   }
 
   void togglePendingFilter() {
-    pendingFilter = !pendingFilter;
+    storage.togglePendingFilter();
+    pendingFilter = storage.getPendingFilter();
     _refreshTasks();
     setState(() {});
   }
 
   void selectSort(String sort) {
-    selectedSort = sort;
+    storage.setSelectedSort(sort);
+    selectedSort = storage.getSelectedSort();
     _refreshTasks();
     setState(() {});
   }
@@ -108,6 +110,8 @@ class _StorageWidgetState extends State<StorageWidget> {
     } else {
       selectedTags.add('+$tag');
     }
+    storage.toggleTagFilter(tag);
+    selectedTags = storage.getSelectedTags();
     _refreshTasks();
     setState(() {});
   }

@@ -1,3 +1,7 @@
+# 0.0.12
+
+- Persist each profile's sorting and filtering
+
 # 0.0.11
 
 - Fix bug deserializing imask as int

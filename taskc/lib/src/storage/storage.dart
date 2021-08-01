@@ -25,6 +25,66 @@ class Storage {
   File get _key => File('${profile.path}/.task/first_last.key.pem');
   File get _serverCert => File('${profile.path}/.task/server.cert.pem');
 
+  File get _selectedSort => File('${profile.path}/selectedSort');
+  File get _pendingFilter => File('${profile.path}/pendingFilter');
+  File get _selectedTags => File('${profile.path}/selectedTags');
+
+  void setSelectedSort(String selectedSort) {
+    if (!_selectedSort.existsSync()) {
+      _selectedSort.createSync(recursive: true);
+    }
+    _selectedSort.writeAsStringSync(selectedSort);
+  }
+
+  String getSelectedSort() {
+    if (!_selectedSort.existsSync()) {
+      _selectedSort
+        ..createSync(recursive: true)
+        ..writeAsStringSync('urgency+');
+    }
+    return _selectedSort.readAsStringSync();
+  }
+
+  void togglePendingFilter() {
+    _pendingFilter.writeAsStringSync(
+      json.encode(!getPendingFilter()),
+    );
+  }
+
+  bool getPendingFilter() {
+    if (!_pendingFilter.existsSync()) {
+      _pendingFilter
+        ..createSync(recursive: true)
+        ..writeAsStringSync('true');
+    }
+    return json.decode(_pendingFilter.readAsStringSync());
+  }
+
+  void toggleTagFilter(String tag) {
+    var _tags = getSelectedTags();
+    if (_tags.contains('+$tag')) {
+      _tags
+        ..remove('+$tag')
+        ..add('-$tag');
+    } else if (_tags.contains('-$tag')) {
+      _tags.remove('-$tag');
+    } else {
+      _tags.add('+$tag');
+    }
+    _selectedTags.writeAsStringSync(json.encode(_tags.toList()));
+  }
+
+  Set<String> getSelectedTags() {
+    if (!_selectedTags.existsSync()) {
+      _selectedTags
+        ..createSync(recursive: true)
+        ..writeAsStringSync(json.encode([]));
+    }
+    return (json.decode(_selectedTags.readAsStringSync()) as List)
+        .cast<String>()
+        .toSet();
+  }
+
   Map<String, int> tags() {
     var listOfLists = pendingData().map((task) => task.tags);
     var listOfTags = listOfLists.expand((tags) => tags ?? BuiltList());
