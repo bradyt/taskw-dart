@@ -1,3 +1,8 @@
+# 0.0.14
+
+- Do not show misleading/invented fingerprint for private key
+- Use more reliable fingerprint methods
+
 # 0.0.13
 
 - Improve display and feedback for server error

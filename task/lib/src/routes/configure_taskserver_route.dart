@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -6,6 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pem/pem.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -142,13 +142,11 @@ class _PemWidgetState extends State<PemWidget> {
       subtitle: (key) {
         try {
           var contents = widget.storage.fileByKey(key).readAsStringSync();
-          var re = RegExp(r'(^-----[^-]+-----$)([^-]*)', multiLine: true);
-          var normalized =
-              re.firstMatch(contents)?.group(2)?.replaceAll('\n', '');
-          var bytes = base64.decode(normalized!);
-          var sha1Digest = sha1.convert(bytes);
+          var fingerprints = decodePemBlocks(PemLabel.certificate, contents)
+              .map((block) => 'SHA-1: ${sha1.convert(block)}'.toUpperCase())
+              .join('\n');
           return Text(
-            'SHA-1: $sha1Digest'.toUpperCase(),
+            fingerprints,
             style: GoogleFonts.firaMono(),
           );
           // ignore: avoid_catches_without_on_clauses

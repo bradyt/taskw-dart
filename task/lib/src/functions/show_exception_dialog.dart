@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:pem/pem.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,12 +14,9 @@ void showExceptionDialog({context, e, trace}) {
   if (e.runtimeType == BadCertificateException) {
     String identifier;
     try {
-      var re = RegExp(r'(^-----[^-]+-----$)([^-]*)', multiLine: true);
-      var normalized =
-          re.firstMatch(e.certificate.pem)?.group(2)?.replaceAll('\n', '');
-      var bytes = base64.decode(normalized!);
-      var sha1Digest = sha1.convert(bytes);
-      identifier = 'SHA-1: $sha1Digest';
+      identifier = decodePemBlocks(PemLabel.certificate, e.certificate.pem)
+          .map((block) => 'SHA-1: ${sha1.convert(block)}'.toUpperCase())
+          .join('\n');
       // ignore: avoid_catches_without_on_clauses
     } catch (_) {
       identifier = '${e.certificate}';

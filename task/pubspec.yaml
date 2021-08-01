@@ -23,6 +23,7 @@ dependencies:
   linkify:
   path_provider:
   path_provider_macos:
+  pem:
   taskc:
     path: ../taskc
   taskw:
