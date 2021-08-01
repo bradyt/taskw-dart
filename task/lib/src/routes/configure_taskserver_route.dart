@@ -109,38 +109,60 @@ class ConfigureTaskserverRoute extends StatelessWidget {
       body: ListView(
         children: [
           TaskrcWidget(profile),
-          for (var key in [
+          for (var pem in [
             'taskd.ca',
             'taskd.cert',
             'taskd.key',
           ])
-            ListTile(
-              title: Text(key),
-              subtitle: (key) {
-                try {
-                  var contents = storage.fileByKey(key).readAsStringSync();
-                  var re =
-                      RegExp(r'(^-----[^-]+-----$)([^-]*)', multiLine: true);
-                  var normalized =
-                      re.firstMatch(contents)?.group(2)?.replaceAll('\n', '');
-                  var bytes = base64.decode(normalized!);
-                  var sha1Digest = sha1.convert(bytes);
-                  return Text(
-                    'SHA-1: $sha1Digest'.toUpperCase(),
-                    style: GoogleFonts.firaMono(),
-                  );
-                  // ignore: avoid_catches_without_on_clauses
-                } catch (e) {
-                  return Text(
-                    '${e.runtimeType}',
-                    style: GoogleFonts.firaMono(),
-                  );
-                }
-              }(key),
-              onTap: () => setConfig(storage: storage, key: key),
+            PemWidget(
+              storage: storage,
+              pem: pem,
             ),
         ],
       ),
+    );
+  }
+}
+
+class PemWidget extends StatefulWidget {
+  const PemWidget({required this.storage, required this.pem});
+
+  final Storage storage;
+  final String pem;
+
+  @override
+  _PemWidgetState createState() => _PemWidgetState();
+}
+
+class _PemWidgetState extends State<PemWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(widget.pem),
+      subtitle: (key) {
+        try {
+          var contents = widget.storage.fileByKey(key).readAsStringSync();
+          var re = RegExp(r'(^-----[^-]+-----$)([^-]*)', multiLine: true);
+          var normalized =
+              re.firstMatch(contents)?.group(2)?.replaceAll('\n', '');
+          var bytes = base64.decode(normalized!);
+          var sha1Digest = sha1.convert(bytes);
+          return Text(
+            'SHA-1: $sha1Digest'.toUpperCase(),
+            style: GoogleFonts.firaMono(),
+          );
+          // ignore: avoid_catches_without_on_clauses
+        } catch (e) {
+          return Text(
+            '${e.runtimeType}',
+            style: GoogleFonts.firaMono(),
+          );
+        }
+      }(widget.pem),
+      onTap: () async {
+        await setConfig(storage: widget.storage, key: widget.pem);
+        setState(() {});
+      },
     );
   }
 }

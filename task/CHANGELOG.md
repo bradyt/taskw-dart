@@ -1,6 +1,7 @@
 # 0.0.13
 
 - Improve feedback for server success or error
+- Update state of cert/key fingerprint in display
 
 # 0.0.12
 
