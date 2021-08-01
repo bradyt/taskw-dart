@@ -6,6 +6,7 @@
 - Prevent spaces in new tags
 - Active chips are made bold for easier visual scanning
 - Move task id and status to after the task description
+- Catch more errors during sync, to present to user
 
 # 0.0.9
 
