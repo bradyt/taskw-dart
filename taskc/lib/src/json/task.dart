@@ -1,13 +1,8 @@
 // ignore_for_file: always_put_control_body_on_new_line
 
-import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 
-/// > Dates are rendered in ISO 8601 combined date and time in UTC format using
-/// > the template: `YYYYMMDDTHHMMSSZ`. An example: `20120110T231200Z`. No other
-/// > formats are supported.  --
-/// > <https://taskwarrior.org/docs/design/task.html#type_date>.
-final DateFormat iso8601Basic = DateFormat('yMMddTHHmmss\'Z\'');
+import 'package:taskc/json.dart';
 
 @immutable
 class Task {
@@ -208,31 +203,4 @@ class Task {
     }
     return true;
   }
-}
-
-@immutable
-class Annotation {
-  const Annotation({required this.entry, required this.description});
-
-  factory Annotation.fromJson(Map annotation) => Annotation(
-        entry: DateTime.parse(annotation['entry']),
-        description: annotation['description'],
-      );
-
-  final DateTime entry;
-  final String description;
-
-  Map toJson() => {
-        'entry': iso8601Basic.format(entry),
-        'description': description,
-      };
-
-  @override
-  int get hashCode => 0;
-
-  @override
-  bool operator ==(Object other) =>
-      other is Annotation &&
-      entry == other.entry &&
-      description == other.description;
 }
