@@ -244,6 +244,15 @@ class ProfilesColumn extends StatelessWidget {
                     ListTile(
                       leading: Padding(
                         padding: EdgeInsets.all(12),
+                        child: Icon(Icons.copy),
+                      ),
+                      title: Text('Copy config to new profile'),
+                      onTap: () => ProfilesWidget.of(context)
+                          .copyConfigToNewProfile(entry.key),
+                    ),
+                    ListTile(
+                      leading: Padding(
+                        padding: EdgeInsets.all(12),
                         child: Icon(Icons.delete),
                       ),
                       title: Text('Delete profile'),

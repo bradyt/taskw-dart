@@ -52,6 +52,12 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
     setState(() {});
   }
 
+  void copyConfigToNewProfile(String profile) {
+    _profiles.copyConfigToNewProfile(profile);
+    profilesMap = _profiles.profilesMap();
+    setState(() {});
+  }
+
   void deleteProfile(String profile) {
     _profiles.deleteProfile(profile);
     _checkProfiles();
@@ -80,6 +86,7 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
   Widget build(BuildContext context) {
     return _InheritedProfiles(
       addProfile: addProfile,
+      copyConfigToNewProfile: copyConfigToNewProfile,
       deleteProfile: deleteProfile,
       renameProfile: renameProfile,
       selectProfile: selectProfile,
@@ -99,6 +106,7 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
 class _InheritedProfiles extends InheritedModel<String> {
   const _InheritedProfiles({
     required this.addProfile,
+    required this.copyConfigToNewProfile,
     required this.deleteProfile,
     required this.renameProfile,
     required this.selectProfile,
@@ -109,6 +117,7 @@ class _InheritedProfiles extends InheritedModel<String> {
   }) : super(child: child);
 
   final Function() addProfile;
+  final Function(String) copyConfigToNewProfile;
   final Function(String) deleteProfile;
   final void Function({
     required String profile,

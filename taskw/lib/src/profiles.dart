@@ -23,6 +23,22 @@ class Profiles {
     return uuid;
   }
 
+  void copyConfigToNewProfile(String profile) {
+    var newProfile = addProfile();
+    Directory('${base.path}/profiles/$newProfile/.task')
+        .createSync(recursive: true);
+    for (var file in [
+      '.taskrc',
+      '.task/ca.cert.pem',
+      '.task/first_last.cert.pem',
+      '.task/first_last.key.pem',
+    ]) {
+      File('${base.path}/profiles/$profile/$file').copySync(
+        '${base.path}/profiles/$newProfile/$file',
+      );
+    }
+  }
+
   List<String> listProfiles() {
     var dir = Directory('${base.path}/profiles')..createSync();
     var dirs = dir

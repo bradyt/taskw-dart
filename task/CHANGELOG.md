@@ -1,6 +1,7 @@
 # 0.0.12
 
 - Persist each profile's sorting and filtering
+- Add feature for copying Taskserver configuration to new profile
 
 # 0.0.11
 
