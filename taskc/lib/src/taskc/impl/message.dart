@@ -17,5 +17,14 @@ protocol: v1
 $payload''';
   var response =
       await send(connection: connection, bytes: Codec.encode(message));
+  if (response.isEmpty) {
+    throw EmptyResponseException();
+  }
   return Response.fromString(Codec.decode(response));
+}
+
+class EmptyResponseException implements Exception {
+  @override
+  String toString() => 'The server returned an empty response. '
+      'Please review the server logs or contact administrator.';
 }
