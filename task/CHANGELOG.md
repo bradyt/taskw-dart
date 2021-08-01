@@ -1,3 +1,7 @@
+# 0.0.11
+
+- Fix bug deserializing imask as int
+
 # 0.0.10
 
 - Add annotations feature
