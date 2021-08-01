@@ -2,6 +2,7 @@
 
 - Persist each profile's sorting and filtering
 - Add feature for copying Taskserver configuration to new profile
+- Display SHA-1 fingerprint of certs and keys
 
 # 0.0.11
 
