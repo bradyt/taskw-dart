@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
@@ -12,6 +13,18 @@ import 'package:task/task.dart';
 void showExceptionDialog({context, e, trace}) {
   stdout.writeln(e);
   if (e.runtimeType == BadCertificateException) {
+    String identifier;
+    try {
+      var re = RegExp(r'(^-----[^-]+-----$)([^-]*)', multiLine: true);
+      var normalized =
+          re.firstMatch(e.certificate.sha1)?.group(2)?.replaceAll('\n', '');
+      var bytes = base64.decode(normalized!);
+      var sha1Digest = sha1.convert(bytes);
+      identifier = '$sha1Digest';
+      // ignore: avoid_catches_without_on_clauses
+    } catch (_) {
+      identifier = '${e.certificate}';
+    }
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -22,7 +35,7 @@ void showExceptionDialog({context, e, trace}) {
           children: [
             Text(
               '''
-sha1: ${sha1.convert(e.certificate.sha1)}
+$identifier
 
 The server sent a certificate that could not be verified with your CA file.
 

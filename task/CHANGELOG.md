@@ -3,6 +3,7 @@
 - Persist each profile's sorting and filtering
 - Add feature for copying Taskserver configuration to new profile
 - Display SHA-1 fingerprint of certs and keys
+- Fix fingerprint in bad certificate exception
 
 # 0.0.11
 
