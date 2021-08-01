@@ -1,0 +1,11 @@
+- Add annotations feature
+  - Indicate count in list and detail views
+  - Add UI that lists annotations, and has an add button
+  - Linkify urls and emails
+- Display UDAs in detail view
+- Prevent trailing slashes in task description which may corrupt account at Taskserver
+- Prevent newlines in task descriptions
+- Prevent spaces in new tags
+- Active chips are made bold for easier visual scanning
+- Move task id and status to after the task description
+- Catch more errors during sync, to present to user
