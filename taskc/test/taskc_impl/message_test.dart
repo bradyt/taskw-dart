@@ -72,10 +72,11 @@ void main() {
 
   String newTask() => json.encode(
         Task(
-          status: 'pending',
-          uuid: const Uuid().v1(),
-          entry: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
-          description: 'test',
+          (b) => b
+            ..status = 'pending'
+            ..uuid = const Uuid().v1()
+            ..entry = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true)
+            ..description = 'test',
         ).toJson(),
       );
 
@@ -198,13 +199,14 @@ void main() {
       credentials = Credentials.fromString(config['taskd.credentials']!);
 
       var taskUuid = const Uuid().v1();
-      var now = DateTime.now();
+      var now = DateTime.now().toUtc();
       var payload = json.encode(
         Task(
-          status: 'pending',
-          uuid: taskUuid,
-          entry: now,
-          description: r'hello\',
+          (b) => b
+            ..status = 'pending'
+            ..uuid = taskUuid
+            ..entry = now
+            ..description = r'hello\',
         ).toJson(),
       );
 

@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:test/test.dart';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:taskc/json.dart';
@@ -36,13 +38,14 @@ void main() {
       for (var description in ['foo', 'bar']) {
         storage.mergeTask(
           Task(
-            status: 'pending',
-            uuid: const Uuid().v1(),
-            entry: DateTime.now().toUtc(),
-            description: description,
-            tags: const [],
-            annotations: const [],
-            udas: const {},
+            (b) => b
+              ..status = 'pending'
+              ..uuid = const Uuid().v1()
+              ..entry = DateTime.now().toUtc()
+              ..description = description
+              ..tags = ListBuilder(const [])
+              ..annotations = ListBuilder(const [])
+              ..udas = json.encode(const {}),
           ),
         );
       }

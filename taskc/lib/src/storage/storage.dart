@@ -4,6 +4,8 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:built_collection/built_collection.dart';
+
 import 'package:taskc/json.dart';
 import 'package:taskc/storage.dart';
 import 'package:taskc/taskc.dart' as taskc show statistics, synchronize;
@@ -25,7 +27,7 @@ class Storage {
 
   Map<String, int> tags() {
     var listOfLists = pendingData().map((task) => task.tags);
-    var listOfTags = listOfLists.expand((tags) => tags ?? []);
+    var listOfTags = listOfLists.expand((tags) => tags ?? BuiltList());
     var setOfTags = listOfTags.toSet();
     return SplayTreeMap.of({
       if (setOfTags.isNotEmpty)
@@ -34,22 +36,24 @@ class Storage {
   }
 
   void updateWaitOrUntil(Iterable<Task> pendingData) {
-    var now = DateTime.now();
+    var now = DateTime.now().toUtc();
     for (var task in pendingData) {
       if (task.until != null && task.until!.isBefore(now)) {
         mergeTask(
-          task.copyWith(
-            status: () => 'deleted',
-            end: () => now,
+          task.rebuild(
+            (b) => b
+              ..status = 'deleted'
+              ..end = now,
           ),
         );
       } else if (task.status == 'waiting' &&
           (task.wait == null || task.wait!.isBefore(now))) {
         _mergeTasks(
           [
-            task.copyWith(
-              status: () => 'pending',
-              wait: () => null,
+            task.rebuild(
+              (b) => b
+                ..status = 'pending'
+                ..wait = null,
             ),
           ],
         );
@@ -73,7 +77,7 @@ class Storage {
         .toList()
         .asMap()
         .entries
-        .map((entry) => entry.value.copyWith(id: () => entry.key + 1))
+        .map((entry) => entry.value.rebuild((b) => b..id = entry.key + 1))
         .toList();
   }
 
@@ -81,7 +85,7 @@ class Storage {
     var data = _allData().where(
         (task) => task.status == 'completed' || task.status == 'deleted');
     return [
-      for (var task in data) task.copyWith(id: () => 0),
+      for (var task in data) task.rebuild((b) => b..id = 0),
     ];
   }
 
@@ -143,7 +147,7 @@ class Storage {
   void mergeTask(Task task) {
     _mergeTasks([task]);
     File('${profile.path}/.task/backlog.data').writeAsStringSync(
-      '${json.encode(task.copyWith(id: () => null).toJson())}\n',
+      '${json.encode(task.rebuild((b) => b..id = null).toJson())}\n',
       mode: FileMode.append,
     );
   }
@@ -164,7 +168,8 @@ class Storage {
           (json.decode(taskLine) as Map)['uuid']: taskLine,
     };
     for (var task in tasks) {
-      taskMap[task.uuid] = json.encode(task.copyWith(id: () => null));
+      taskMap[task.uuid] =
+          json.encode(task.rebuild((b) => b..id = null).toJson());
     }
     File('${profile.path}/.task/all.data').writeAsStringSync('');
     for (var task in taskMap.values) {
@@ -291,7 +296,8 @@ class Storage {
     );
     var tasks = [
       for (var task in response.payload.tasks)
-        Task.fromJson((json.decode(task) as Map)..remove('id')),
+        Task.fromJson(
+            (json.decode(task) as Map<String, dynamic>)..remove('id')),
     ];
     _mergeTasks(tasks);
     File('${profile.path}/.task/backlog.data')

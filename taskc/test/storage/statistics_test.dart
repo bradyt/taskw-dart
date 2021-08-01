@@ -14,7 +14,7 @@ void main() {
   group('Test statistics method;', () {
     var taskd = Taskd(normalize(absolute('../fixture/var/taskd')));
     var uuid = const Uuid().v1();
-    var home = Directory('test/taskd/tmp/$uuid').absolute.path;
+    var home = Directory('test/taskc/tmp/$uuid').absolute.path;
 
     late Storage storage;
 

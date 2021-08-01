@@ -1,8 +1,6 @@
-import 'package:collection/collection.dart';
+import 'package:built_collection/built_collection.dart';
 
 import 'package:taskc/json.dart';
-
-import 'package:taskw/taskw.dart';
 
 class Modify {
   Modify({
@@ -69,7 +67,7 @@ class Modify {
         'new': _draft.priority,
       };
     }
-    if (!(const ListEquality()).equals(_draft.tags, _saved.tags)) {
+    if (_draft.tags != _saved.tags) {
       result['tags'] = {
         'old': _saved.tags,
         'new': _draft.tags,
@@ -79,47 +77,54 @@ class Modify {
   }
 
   void setDescription(String description) {
-    _draft = _draft.copyWith(description: () => description);
+    _draft = _draft.rebuild((b) => b..description = description);
   }
 
   void setStatus(String status) {
     if (status == 'pending') {
-      _draft = _draft.copyWith(
-        status: () => status,
-        end: () => null,
+      _draft = _draft.rebuild(
+        (b) => b
+          ..status = status
+          ..end = null,
       );
     } else {
       var now = DateTime.now().toUtc();
-      _draft = _draft.copyWith(
-        status: () => status,
-        end: () => now,
+      _draft = _draft.rebuild(
+        (b) => b
+          ..status = status
+          ..end = now,
       );
     }
   }
 
   void setDue(DateTime? due) {
-    _draft = _draft.copyWith(due: () => due);
+    _draft = _draft.rebuild((b) => b..due = due);
   }
 
   void setWait(DateTime? wait) {
-    _draft = _draft.copyWith(status: () => 'waiting', wait: () => wait);
+    _draft = _draft.rebuild(
+      (b) => b
+        ..status = 'waiting'
+        ..wait = wait,
+    );
   }
 
   void setUntil(DateTime? until) {
-    _draft = _draft.copyWith(until: () => until);
+    _draft = _draft.rebuild((b) => b..until = until);
   }
 
   void setPriority(String? priority) {
-    _draft = _draft.copyWith(priority: () => priority);
+    _draft = _draft.rebuild((b) => b..priority = priority);
   }
 
   void setTags(List<String>? tags) {
-    _draft = _draft.copyWith(tags: () => tags);
+    _draft = _draft
+        .rebuild((b) => b..tags = (tags == null) ? null : ListBuilder(tags));
   }
 
   void save({required DateTime Function() modified}) {
     _mergeTask(
-      _draft.copyWith(modified: modified),
+      _draft = _draft.rebuild((b) => b..modified = modified()),
     );
     _saved = _getTask(_uuid);
     _draft = _getTask(_uuid);

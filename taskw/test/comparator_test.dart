@@ -1,5 +1,7 @@
 import 'package:test/test.dart';
 
+import 'package:built_collection/built_collection.dart';
+
 import 'package:taskc/json.dart';
 
 import 'package:taskw/taskw.dart';
@@ -7,12 +9,13 @@ import 'package:taskw/taskw.dart';
 void main() {
   Task createTask({DateTime? due, List<String>? tags}) {
     return Task(
-      description: 'foo',
-      uuid: 'bar',
-      status: 'baz',
-      entry: DateTime.now(),
-      due: due,
-      tags: tags,
+      (b) => b
+        ..description = 'foo'
+        ..uuid = 'bar'
+        ..status = 'baz'
+        ..entry = DateTime.now()
+        ..due = due
+        ..tags = (tags == null) ? null : ListBuilder(tags),
     );
   }
 

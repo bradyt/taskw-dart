@@ -2,6 +2,7 @@
 analyzer:
   exclude:
     - test/.test_coverage.dart
+    - '**.g.dart'
 
 # For lint rules and documentation, see http://dart-lang.github.io/linter/lints.
 # Uncomment to specify additional rules.
@@ -14,7 +15,7 @@ linter:
     # - always_specify_types # inconsistent with pedantic
     - always_use_package_imports
     - annotate_overrides
-    - avoid_annotating_with_dynamic
+    # - avoid_annotating_with_dynamic
     - avoid_bool_literals_in_conditional_expressions
     - avoid_catches_without_on_clauses
     - avoid_catching_errors

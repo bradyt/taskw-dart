@@ -11,15 +11,17 @@ import 'package:taskw/taskw.dart';
 void main() {
   test('test profiles', () {
     var uuid = const Uuid().v1();
+    var now = DateTime.now().toUtc();
     var storage = Storage(
       Directory(
         'test/profile-testing/modify/${const Uuid().v1()}',
       ),
     )..mergeTask(Task(
-        uuid: uuid,
-        status: 'pending',
-        description: 'foo',
-        entry: DateTime.now(),
+        (b) => b
+          ..uuid = uuid
+          ..status = 'pending'
+          ..description = 'foo'
+          ..entry = now,
       ));
     Modify(
       getTask: storage.getTask,
@@ -31,12 +33,12 @@ void main() {
       ..setDescription('bar')
       ..setStatus('pending')
       ..setStatus('completed')
-      ..setDue(DateTime.now())
-      ..setWait(DateTime.now())
-      ..setUntil(DateTime.now())
+      ..setDue(now)
+      ..setWait(now)
+      ..setUntil(now)
       ..setPriority('H')
       ..setTags(['baz'])
       ..changes
-      ..save(modified: () => DateTime.now());
+      ..save(modified: () => now);
   });
 }

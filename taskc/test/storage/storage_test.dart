@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:pedantic/pedantic.dart';
@@ -22,7 +23,7 @@ void main() {
   var taskd = Taskd(normalize(absolute('../fixture/var/taskd')));
 
   var uuid = const Uuid().v1();
-  var home = Directory('test/taskd/tmp/$uuid').absolute.path;
+  var home = Directory('test/taskc/tmp/$uuid').absolute.path;
 
   late String credentialsKey;
   late File txData;
@@ -73,30 +74,35 @@ void main() {
         'test/profile-testing/storage/$uuid',
       ),
     );
+    var now = DateTime.now().toUtc();
+    expect(now.isUtc, true);
     [
       Task(
-        uuid: const Uuid().v1(),
-        status: 'pending',
-        description: 'foo',
-        entry: DateTime.now(),
-        modified: DateTime.now(),
-        tags: const ['qux'],
+        (b) => b
+          ..uuid = const Uuid().v1()
+          ..status = 'pending'
+          ..description = 'foo'
+          ..entry = now
+          ..modified = now
+          ..tags = ListBuilder(const ['qux']),
       ),
       Task(
-        uuid: const Uuid().v1(),
-        status: 'waiting',
-        description: 'bar',
-        entry: DateTime.now(),
-        modified: DateTime.now(),
-        wait: DateTime.now(),
+        (b) => b
+          ..uuid = const Uuid().v1()
+          ..status = 'waiting'
+          ..description = 'bar'
+          ..entry = now
+          ..modified = now
+          ..wait = now,
       ),
       Task(
-        uuid: const Uuid().v1(),
-        status: 'pending',
-        description: 'baz',
-        entry: DateTime.now(),
-        modified: DateTime.now(),
-        until: DateTime.now(),
+        (b) => b
+          ..uuid = const Uuid().v1()
+          ..status = 'pending'
+          ..description = 'baz'
+          ..entry = now
+          ..modified = now
+          ..until = now,
       ),
     ].forEach(storage.mergeTask);
     storage

@@ -34,11 +34,12 @@ class AddTaskDialog extends StatelessWidget {
               var now = DateTime.now().toUtc();
               StorageWidget.of(context).mergeTask(
                 Task(
-                  status: 'pending',
-                  uuid: Uuid().v1(),
-                  entry: now,
-                  description: controller.text,
-                  modified: now,
+                  (b) => b
+                    ..status = 'pending'
+                    ..uuid = Uuid().v1()
+                    ..entry = now
+                    ..description = controller.text
+                    ..modified = now,
                 ),
               );
               Navigator.of(context).pop();

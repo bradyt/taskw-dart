@@ -1,206 +1,88 @@
-// ignore_for_file: always_put_control_body_on_new_line
+import 'dart:convert';
 
-import 'package:meta/meta.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
 import 'package:taskc/json.dart';
 
-@immutable
-class Task {
-  const Task({
-    required this.status,
-    required this.uuid,
-    required this.entry,
-    required this.description,
-    this.id,
-    this.start,
-    this.end,
-    this.due,
-    this.until,
-    this.wait,
-    this.modified,
-    this.scheduled,
-    this.recur,
-    this.mask,
-    this.imask,
-    this.parent,
-    this.project,
-    this.priority,
-    this.depends,
-    this.tags,
-    this.annotations,
-    this.udas,
-  });
+part 'task.g.dart';
 
-  factory Task.fromJson(Map rawJson) {
-    var json = {};
-    Map? udas = {};
-    for (var entry in rawJson.entries.toList()
-      ..removeWhere((entry) => entry.value == null)) {
-      if ({'id', 'imask'}.contains(entry.key)) {
-        json[entry.key] = (entry.value as num).round();
-      } else if ({
-        'entry',
-        'start',
-        'end',
-        'due',
-        'until',
-        'scheduled',
-        'wait',
-        'modified',
-      }.contains(entry.key)) {
-        json[entry.key] = DateTime.parse(entry.value);
-      } else if ({
-        'status',
-        'uuid',
-        'description',
-        'recur',
-        'mask',
-        'parent',
-        'project',
-        'priority',
-        'depends',
-        'tags',
-        'annotations',
-      }.contains(entry.key)) {
-        json[entry.key] = entry.value;
-      } else {
-        udas[entry.key] = entry.value;
-      }
-    }
-    udas = (udas.isEmpty) ? null : udas;
+final coreAttributes = [
+  'id',
+  'status',
+  'uuid',
+  'entry',
+  'description',
+  'start',
+  'end',
+  'due',
+  'until',
+  'wait',
+  'modified',
+  'scheduled',
+  'recur',
+  'mask',
+  'imask',
+  'parent',
+  'project',
+  'priority',
+  'depends',
+  'tags',
+  'annotations',
+  'urgency',
+];
 
-    return Task(
-      id: json['id'],
-      status: json['status'],
-      uuid: json['uuid'],
-      entry: json['entry'],
-      description: json['description'],
-      start: json['start'],
-      end: json['end'],
-      due: json['due'],
-      until: json['until'],
-      wait: json['wait'],
-      modified: json['modified'],
-      scheduled: json['scheduled'],
-      recur: json['recur'],
-      mask: json['mask'],
-      imask: json['imask'],
-      parent: json['parent'],
-      project: json['project'],
-      priority: json['priority'],
-      depends: json['depends'],
-      tags: (json['tags'] as List?)?.cast<String>(),
-      annotations: (json['annotations'] as List?)
-          ?.map<Annotation>((annotation) => Annotation.fromJson(annotation))
-          .toList(),
-      udas: udas,
-    );
+abstract class Task implements Built<Task, TaskBuilder> {
+  factory Task([void Function(TaskBuilder) updates]) = _$Task;
+  Task._();
+
+  static Task fromJson(Map json) {
+    var udas = Map.of(json)
+      ..removeWhere((key, _) => coreAttributes.contains(key));
+    var result = Map.of(json)
+      ..removeWhere((key, _) => !coreAttributes.contains(key))
+      ..['udas'] = (udas.isEmpty) ? null : jsonEncode(udas);
+    return serializers.deserializeWith(Task.serializer, result)!;
   }
 
-  final int? id;
-  final String status;
-  final String uuid;
-  final DateTime entry;
-  final String description;
-  final DateTime? start;
-  final DateTime? end;
-  final DateTime? due;
-  final DateTime? until;
-  final DateTime? wait;
-  final DateTime? modified;
-  final DateTime? scheduled;
-  final String? recur;
-  final String? mask;
-  final int? imask;
-  final String? parent;
-  final String? project;
-  final String? priority;
-  final String? depends;
-  final List<String>? tags;
-  final List<Annotation>? annotations;
-  final Map? udas;
+  Map<String, dynamic> toJson() {
+    var result = serializers.serializeWith(Task.serializer, this)!
+        as Map<String, dynamic>;
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'status': status,
-        'uuid': uuid,
-        'entry': entry,
-        'description': description,
-        'start': start,
-        'end': end,
-        'due': due,
-        'until': until,
-        'scheduled': scheduled,
-        'wait': wait,
-        'recur': recur,
-        'mask': mask,
-        'imask': imask,
-        'parent': parent,
-        'annotations':
-            annotations?.map((annotation) => annotation.toJson()).toList(),
-        'project': project,
-        'tags': tags,
-        'priority': priority,
-        'depends': depends,
-        'modified': modified,
-        if (udas != null) ...udas!,
-      }
-        ..removeWhere((_, value) => value == null)
-        ..updateAll((key, value) =>
-            'entry,start,end,due,until,scheduled,wait,modified'.contains(key)
-                ? iso8601Basic.format(value)
-                : value);
-
-  @override
-  int get hashCode => 0;
-
-  @override
-  bool operator ==(Object other) =>
-      other is Task &&
-      id == other.id &&
-      status == other.status &&
-      uuid == other.uuid &&
-      entry == other.entry &&
-      description == other.description &&
-      start == other.start &&
-      end == other.end &&
-      due == other.due &&
-      until == other.until &&
-      scheduled == other.scheduled &&
-      wait == other.wait &&
-      recur == other.recur &&
-      mask == other.mask &&
-      imask == other.imask &&
-      parent == other.parent &&
-      _listEquals(annotations, other.annotations) &&
-      project == other.project &&
-      _listEquals(tags, other.tags) &&
-      priority == other.priority &&
-      depends == other.depends &&
-      modified == other.modified &&
-      _mapEquals(udas, other.udas);
-
-  // copied from 'package:flutter/foundation.dart'
-  bool _listEquals<T>(List<T>? a, List<T>? b) {
-    if (a == null) return b == null;
-    if (b == null || a.length != b.length) return false;
-    if (identical(a, b)) return true;
-    for (var index = 0; index < a.length; index += 1) {
-      if (a[index] != b[index]) return false;
+    if (result['udas'] != null) {
+      var udas = Map<String, dynamic>.of(json.decode(result['udas']));
+      result
+        ..remove('udas')
+        ..addAll(udas);
     }
-    return true;
+
+    return result;
   }
 
-  // copied from 'package:flutter/foundation.dart'
-  bool _mapEquals<T, U>(Map<T, U>? a, Map<T, U>? b) {
-    if (a == null) return b == null;
-    if (b == null || a.length != b.length) return false;
-    if (identical(a, b)) return true;
-    for (var key in a.keys) {
-      if (!b.containsKey(key) || b[key] != a[key]) {
-        return false;
-      }
-    }
-    return true;
-  }
+  int? get id;
+  String get status;
+  String get uuid;
+  DateTime get entry;
+  String get description;
+  DateTime? get start;
+  DateTime? get end;
+  DateTime? get due;
+  DateTime? get until;
+  DateTime? get wait;
+  DateTime? get modified;
+  DateTime? get scheduled;
+  String? get recur;
+  String? get mask;
+  int? get imask;
+  String? get parent;
+  String? get project;
+  String? get priority;
+  String? get depends;
+  BuiltList<String>? get tags;
+  BuiltList<Annotation>? get annotations;
+  String? get udas;
+  double? get urgency;
+
+  static Serializer<Task> get serializer => _$taskSerializer;
 }

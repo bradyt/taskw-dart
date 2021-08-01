@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 
@@ -17,10 +18,12 @@ void main() {
 
     test('test parsing simple json task', () {
       var simpleTask = Task(
-        status: 'pending',
-        uuid: Uuid().v1(),
-        entry: unixEpoch,
-        description: 'test',
+        (b) => b
+          ..status = 'pending'
+          ..uuid = Uuid().v1()
+          ..entry = unixEpoch
+          ..modified = unixEpoch
+          ..description = 'test',
       );
 
       expect(
@@ -31,31 +34,35 @@ void main() {
 
     test('test parsing complex json task', () {
       var complexTask = Task(
-        status: 'pending',
-        uuid: Uuid().v1(),
-        entry: unixEpoch,
-        description: 'test',
-        start: unixEpoch,
-        end: unixEpoch,
-        due: unixEpoch,
-        until: unixEpoch,
-        wait: unixEpoch,
-        modified: unixEpoch,
-        scheduled: unixEpoch,
-        recur: 'yearly',
-        mask: '--',
-        imask: Random().nextInt(pow(2, 32) as int),
-        parent: Uuid().v1(),
-        project: 'some_project',
-        priority: 'H',
-        depends: Uuid().v1(),
-        tags: const ['+some_tag'],
-        annotations: [
-          Annotation(
-            entry: unixEpoch,
-            description: 'some annotation',
+        (b) => b
+          ..status = 'pending'
+          ..uuid = Uuid().v1()
+          ..entry = unixEpoch
+          ..description = 'test'
+          ..start = unixEpoch
+          ..end = unixEpoch
+          ..due = unixEpoch
+          ..until = unixEpoch
+          ..wait = unixEpoch
+          ..modified = unixEpoch
+          ..scheduled = unixEpoch
+          ..recur = 'yearly'
+          ..mask = '--'
+          ..imask = Random().nextInt(pow(2, 32) as int)
+          ..parent = Uuid().v1()
+          ..project = 'some_project'
+          ..priority = 'H'
+          ..depends = Uuid().v1()
+          ..tags = ListBuilder(const ['+some_tag'])
+          ..annotations = ListBuilder(
+            [
+              Annotation(
+                (b) => b
+                  ..entry = unixEpoch
+                  ..description = 'some annotation',
+              ),
+            ],
           ),
-        ],
       );
 
       expect(
@@ -66,11 +73,12 @@ void main() {
 
     test('test parsing task with uda', () {
       var udaTask = Task(
-        status: 'pending',
-        uuid: Uuid().v1(),
-        entry: unixEpoch,
-        description: 'test',
-        udas: const {'estimate': 4},
+        (b) => b
+          ..status = 'pending'
+          ..uuid = Uuid().v1()
+          ..entry = unixEpoch
+          ..description = 'test'
+          ..udas = json.encode(const {'estimate': 4}),
       );
 
       expect(
@@ -80,21 +88,31 @@ void main() {
     });
     test('test parsing json string task with tags', () {
       var uuid = Uuid().v1();
+      var task = Task(
+        (b) => b
+          ..status = 'pending'
+          ..uuid = uuid
+          ..entry = unixEpoch
+          ..description = 'test'
+          ..modified = unixEpoch
+          ..tags = ListBuilder(const ['+foo']),
+      );
+      var jsonTask = '{'
+          '"status":"pending",'
+          '"uuid":"$uuid",'
+          '"entry":"19700101T000000Z",'
+          '"description":"test",'
+          '"modified":"19700101T000000Z",'
+          '"tags":["+foo"]'
+          '}';
+
       expect(
-        Task.fromJson(json.decode('{'
-            '"status":"pending",'
-            '"uuid":"$uuid",'
-            '"entry":"1970-01-01T00:00:00.000Z",'
-            '"description":"test",'
-            '"tags":["+foo"]'
-            '}')),
-        Task(
-          status: 'pending',
-          uuid: uuid,
-          entry: unixEpoch,
-          description: 'test',
-          tags: const ['+foo'],
-        ),
+        Task.fromJson(json.decode(jsonTask)),
+        task,
+      );
+      expect(
+        json.encode(task.toJson()),
+        jsonTask,
       );
     });
     test('test json round trip on cli taskwarrior export with UDAs', () async {
@@ -102,11 +120,39 @@ void main() {
       var home = Directory('test/taskd/tmp/$uuid').absolute.path;
       await Directory(home).create(recursive: true);
       var taskwarrior = Taskwarrior(home);
-      await taskwarrior.config(['uda.estimate.type', 'numeric']);
-      await taskwarrior.add(['foo', 'estimate:4', '+bar']);
+      await taskwarrior.config(['uda.w.type', 'string']);
+      await taskwarrior.config(['uda.x.type', 'numeric']);
+      await taskwarrior.config(['uda.y.type', 'date']);
+      await taskwarrior.config(['uda.z.type', 'duration']);
+      await taskwarrior.add([
+        'foo',
+        'x:42',
+        'y:20210801T000000Z',
+        'z:1s',
+        '+bar',
+      ]);
       var result = await taskwarrior.export();
       var task = (json.decode(result) as List).cast<Map>()[0];
       expect(task is Map, true);
+      expect(
+        Task.fromJson(task),
+        Task(
+          (b) => b
+            ..id = 1
+            ..status = 'pending'
+            ..uuid = task['uuid']
+            ..entry = DateTime.parse(task['entry'])
+            ..description = 'foo'
+            ..tags = ListBuilder(['bar'])
+            ..modified = DateTime.parse(task['modified'])
+            ..urgency = 0.8
+            ..udas = json.encode({
+              'x': 42,
+              'y': '20210801T000000Z',
+              'z': 'PT1S',
+            }),
+        ),
+      );
       expect(
         Task.fromJson(task).toJson(),
         {
@@ -117,7 +163,9 @@ void main() {
           'description': 'foo',
           'tags': ['bar'],
           'modified': task['modified'],
-          'estimate': 4,
+          'x': 42,
+          'y': '20210801T000000Z',
+          'z': 'PT1S',
           'urgency': 0.8,
         },
       );

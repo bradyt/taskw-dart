@@ -1,30 +1,23 @@
-import 'package:meta/meta.dart';
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
 import 'package:taskc/json.dart';
 
-@immutable
-class Annotation {
-  const Annotation({required this.entry, required this.description});
+part 'annotation.g.dart';
 
-  factory Annotation.fromJson(Map annotation) => Annotation(
-        entry: DateTime.parse(annotation['entry']),
-        description: annotation['description'],
-      );
+abstract class Annotation implements Built<Annotation, AnnotationBuilder> {
+  factory Annotation([void Function(AnnotationBuilder) updates]) = _$Annotation;
+  Annotation._();
 
-  final DateTime entry;
-  final String description;
+  static Annotation fromJson(dynamic json) {
+    return serializers.deserializeWith(Annotation.serializer, json)!;
+  }
 
-  Map toJson() => {
-        'entry': iso8601Basic.format(entry),
-        'description': description,
-      };
+  DateTime get entry;
+  String get description;
 
-  @override
-  int get hashCode => 0;
+  Map toJson() =>
+      serializers.serializeWith(Annotation.serializer, this)! as Map;
 
-  @override
-  bool operator ==(Object other) =>
-      other is Annotation &&
-      entry == other.entry &&
-      description == other.description;
+  static Serializer<Annotation> get serializer => _$annotationSerializer;
 }

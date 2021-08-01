@@ -11,11 +11,14 @@ executables:
   taskd-setup: taskd_setup
 
 dependencies:
+  built_value:
   collection:
   intl:
   uuid:
 
 dev_dependencies:
+  build_runner:
+  built_value_generator:
   taskw:
     path: ../taskw
   test:
