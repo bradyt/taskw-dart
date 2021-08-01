@@ -2,6 +2,25 @@ import 'package:taskc/json.dart';
 
 double urgency(Task task) {
   // https://github.com/GothenburgBitFactory/taskwarrior/blob/v2.5.3/src/Task.cpp#L1912-L2031
+  // https://github.com/GothenburgBitFactory/taskwarrior/blob/v2.5.3/src/Context.cpp#L146-L160
+
+  // % task show coefficient
+  //
+  // Config Variable                    Value
+  // urgency.active.coefficient         4.0
+  // urgency.age.coefficient            2.0
+  // urgency.annotations.coefficient    1.0
+  // urgency.blocked.coefficient        -5.0
+  // urgency.blocking.coefficient       8.0
+  // urgency.due.coefficient            12.0
+  // urgency.project.coefficient        1.0
+  // urgency.scheduled.coefficient      5.0
+  // urgency.tags.coefficient           1.0
+  // urgency.uda.priority.H.coefficient 6.0
+  // urgency.uda.priority.L.coefficient 1.8
+  // urgency.uda.priority.M.coefficient 3.9
+  // urgency.user.tag.next.coefficient  15.0
+  // urgency.waiting.coefficient        -3.0
 
   var result = 0.0;
 
