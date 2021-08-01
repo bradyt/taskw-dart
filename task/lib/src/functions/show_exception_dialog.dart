@@ -11,16 +11,15 @@ import 'package:taskc/storage.dart';
 import 'package:task/task.dart';
 
 void showExceptionDialog({context, e, trace}) {
-  stdout.writeln(e);
   if (e.runtimeType == BadCertificateException) {
     String identifier;
     try {
       var re = RegExp(r'(^-----[^-]+-----$)([^-]*)', multiLine: true);
       var normalized =
-          re.firstMatch(e.certificate.sha1)?.group(2)?.replaceAll('\n', '');
+          re.firstMatch(e.certificate.pem)?.group(2)?.replaceAll('\n', '');
       var bytes = base64.decode(normalized!);
       var sha1Digest = sha1.convert(bytes);
-      identifier = '$sha1Digest';
+      identifier = 'SHA-1: $sha1Digest';
       // ignore: avoid_catches_without_on_clauses
     } catch (_) {
       identifier = '${e.certificate}';
@@ -43,6 +42,7 @@ You may export and inspect the certificate. You may indicate that you trust the
 certificate, and it will be saved to this profile to allow future
 connections.'''
                   .replaceAll(RegExp(r'(?<!\n)\n(?!\n)'), ' '),
+              style: GoogleFonts.firaMono(),
             ),
           ],
         ),

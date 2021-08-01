@@ -2,6 +2,7 @@
 
 - Improve feedback for server success or error
 - Update state of cert/key fingerprint in display
+- Fix fingerprint in bad certificate exception
 
 # 0.0.12
 
