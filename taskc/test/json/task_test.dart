@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
+
+import 'package:taskc/taskd.dart';
 
 import 'package:taskc/json.dart';
 
@@ -92,6 +95,35 @@ void main() {
           description: 'test',
           tags: const ['+foo'],
         ),
+      );
+    });
+    test('test json round trip on cli taskwarrior export with UDAs', () async {
+      var uuid = Uuid().v1();
+      var home = Directory('test/taskd/tmp/$uuid').absolute.path;
+      await Directory(home).create(recursive: true);
+      var taskwarrior = Taskwarrior(home);
+      await taskwarrior.config(['uda.estimate.type', 'numeric']);
+      await taskwarrior.add(['foo', 'estimate:4', '+bar']);
+      var result = await taskwarrior.export();
+      var task = (json.decode(result) as List).cast<Map>()[0];
+      expect(task is Map, true);
+      expect(
+        Task.fromJson(task).toJson(),
+        {
+          'id': 1,
+          'status': 'pending',
+          'uuid': task['uuid'],
+          'entry': task['entry'],
+          'description': 'foo',
+          'tags': ['bar'],
+          'modified': task['modified'],
+          'estimate': 4,
+          'urgency': 0.8,
+        },
+      );
+      expect(
+        Task.fromJson(task).toJson(),
+        task,
       );
     });
   });

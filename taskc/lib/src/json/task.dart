@@ -125,7 +125,7 @@ class Task {
   final List<Annotation>? annotations;
   final Map? udas;
 
-  Map toJson() => {
+  Map<String, dynamic> toJson() => {
         'id': id,
         'status': status,
         'uuid': uuid,
