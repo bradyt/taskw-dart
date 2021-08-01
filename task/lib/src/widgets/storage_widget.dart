@@ -131,7 +131,8 @@ class _StorageWidgetState extends State<StorageWidget> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('${header['code']}: ${header['status']}'),
       ));
-    } catch (e, trace) { // ignore: avoid_catches_without_on_clauses
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e, trace) {
       showExceptionDialog(
         context: context,
         e: e,

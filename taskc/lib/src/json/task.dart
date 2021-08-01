@@ -42,7 +42,7 @@ abstract class Task implements Built<Task, TaskBuilder> {
       ..removeWhere((key, _) => coreAttributes.contains(key));
     var result = Map.of(json)
       ..removeWhere((key, _) => !coreAttributes.contains(key))
-      ..['imask'] = json['imask']?.toInt()
+      ..['imask'] = (json['imask'] as num?)?.toInt()
       ..['udas'] = (udas.isEmpty) ? null : jsonEncode(udas);
     return serializers.deserializeWith(Task.serializer, result)!;
   }
