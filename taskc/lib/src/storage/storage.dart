@@ -264,6 +264,18 @@ class Storage {
     return file;
   }
 
+  String? nameByKey(String key) {
+    if (File('${profile.path}/$key').existsSync()) {
+      return File('${profile.path}/$key').readAsStringSync();
+    }
+  }
+
+  void addFileName({required String key, required String name}) {
+    if (key != '.taskrc') {
+      File('${profile.path}/$key').writeAsStringSync(name);
+    }
+  }
+
   void addFileContents({required String key, required String contents}) {
     fileByKey(key).writeAsStringSync(contents);
   }

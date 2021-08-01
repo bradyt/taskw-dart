@@ -1,5 +1,6 @@
 # 0.0.14
 
+- Display filename of pem file
 - Do not show misleading/invented fingerprint for private key
 - Use more reliable fingerprint methods
 

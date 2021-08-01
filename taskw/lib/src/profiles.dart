@@ -32,6 +32,9 @@ class Profiles {
       '.task/ca.cert.pem',
       '.task/first_last.cert.pem',
       '.task/first_last.key.pem',
+      'taskd.ca',
+      'taskd.cert',
+      'taskd.key',
     ]) {
       File('${base.path}/profiles/$profile/$file').copySync(
         '${base.path}/profiles/$newProfile/$file',

@@ -137,23 +137,42 @@ class PemWidget extends StatefulWidget {
 class _PemWidgetState extends State<PemWidget> {
   @override
   Widget build(BuildContext context) {
+    String? contents;
+    if (widget.storage.fileByKey(widget.pem).existsSync()) {
+      contents = widget.storage.fileByKey(widget.pem).readAsStringSync();
+    }
+    var name = widget.storage.nameByKey(widget.pem);
     return ListTile(
-      title: Text(widget.pem),
+      title: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Text(
+          '${widget.pem.padRight(10)} = $name',
+          style: GoogleFonts.firaMono(),
+        ),
+      ),
       subtitle: (key) {
+        if (key == 'taskd.key' || contents == null) {
+          return null;
+        }
         try {
-          var contents = widget.storage.fileByKey(key).readAsStringSync();
           var fingerprints = decodePemBlocks(PemLabel.certificate, contents)
               .map((block) => 'SHA-1: ${sha1.convert(block)}'.toUpperCase())
               .join('\n');
-          return Text(
-            fingerprints,
-            style: GoogleFonts.firaMono(),
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text(
+              fingerprints,
+              style: GoogleFonts.firaMono(),
+            ),
           );
           // ignore: avoid_catches_without_on_clauses
         } catch (e) {
-          return Text(
-            '${e.runtimeType}',
-            style: GoogleFonts.firaMono(),
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text(
+              '${e.runtimeType}',
+              style: GoogleFonts.firaMono(),
+            ),
           );
         }
       }(widget.pem),
