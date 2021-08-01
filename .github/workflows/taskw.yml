@@ -21,6 +21,9 @@ jobs:
     - uses: actions/checkout@v2
     - run: dart --disable-analytics
     - run: dart pub get
-    - run: dart format . --fix --output none --set-exit-if-changed --summary none
+    - run: >
+        dart format \
+        $(find . \( -name '*.dart' ! -name '*.g.dart' \)) \
+        --fix --output none --set-exit-if-changed --summary none
     - run: dart analyze --fatal-infos
     - run: dart test

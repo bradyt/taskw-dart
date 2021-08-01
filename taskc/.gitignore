@@ -14,5 +14,3 @@ doc/api/
 
 /coverage/
 /test/.test_coverage.dart
-
-*.g.dart

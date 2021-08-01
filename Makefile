@@ -16,7 +16,8 @@ task/.packages:
 	cd task && dart pub get
 
 format:
-	dart format . \
+	dart format \
+		$(shell find . \( -name '*.dart' ! -name '*.g.dart' \)) \
 		--fix \
 		--output none \
 		--set-exit-if-changed \
