@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 
@@ -37,7 +38,7 @@ void main() {
       ..setWait(now)
       ..setUntil(now)
       ..setPriority('H')
-      ..setTags(['baz'])
+      ..setTags(ListBuilder(['baz']))
       ..changes
       ..save(modified: () => now);
   });

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:taskw/taskw.dart';
@@ -168,7 +169,9 @@ class AttributeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var localValue = (value is DateTime) ? value.toLocal() : value;
+    var localValue = (value is DateTime)
+        ? value.toLocal()
+        : ((value is BuiltList) ? value.toBuilder() : value);
     switch (name) {
       case 'description':
         return DescriptionWidget(
@@ -473,7 +476,7 @@ class TagsWidget extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                '${'$name:'.padRight(13)}$value',
+                '${'$name:'.padRight(13)}${value?.build()}',
                 style: GoogleFonts.firaMono(),
               ),
             ],

@@ -117,9 +117,8 @@ class Modify {
     _draft = _draft.rebuild((b) => b..priority = priority);
   }
 
-  void setTags(List<String>? tags) {
-    _draft = _draft
-        .rebuild((b) => b..tags = (tags == null) ? null : ListBuilder(tags));
+  void setTags(ListBuilder<String>? tags) {
+    _draft = _draft.rebuild((b) => b..tags = (tags == null) ? null : tags);
   }
 
   void save({required DateTime Function() modified}) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:taskw/taskw.dart';
@@ -9,8 +10,8 @@ import 'package:task/task.dart';
 class TagsRoute extends StatefulWidget {
   const TagsRoute({required this.value, required this.callback});
 
-  final List<String>? value;
-  final void Function(List<String>?) callback;
+  final ListBuilder<String>? value;
+  final void Function(ListBuilder<String>?) callback;
 
   @override
   TagsRouteState createState() => TagsRouteState();
@@ -18,11 +19,11 @@ class TagsRoute extends StatefulWidget {
 
 class TagsRouteState extends State<TagsRoute> {
   Map<String, int>? _globalTags;
-  List<String>? draftTags;
+  ListBuilder<String>? draftTags;
 
   void _addTag(String tag) {
     if (draftTags == null) {
-      draftTags = [tag];
+      draftTags = ListBuilder([tag]);
     } else {
       draftTags!.add(tag);
     }
@@ -72,7 +73,7 @@ class TagsRouteState extends State<TagsRoute> {
               runSpacing: 4,
               children: [
                 if (draftTags != null)
-                  for (var tag in draftTags!)
+                  for (var tag in draftTags!.build())
                     FilterChip(
                       onSelected: (_) => _removeTag(tag),
                       label: Text(
@@ -82,8 +83,8 @@ class TagsRouteState extends State<TagsRoute> {
                     ),
                 Divider(),
                 if (_globalTags != null)
-                  for (var tag in _globalTags!.entries
-                      .where((tag) => !(draftTags?.contains(tag.key) ?? false)))
+                  for (var tag in _globalTags!.entries.where((tag) =>
+                      !(draftTags?.build().contains(tag.key) ?? false)))
                     FilterChip(
                       onSelected: (_) => _addTag(tag.key),
                       label: Text(
