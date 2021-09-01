@@ -21,10 +21,12 @@ class TaskListRoute extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          '$title\n$subtitle',
-          softWrap: false,
-          style: GoogleFonts.firaMono(),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: GoogleFonts.firaMono()),
+            Text(subtitle, style: GoogleFonts.firaMono()),
+          ],
         ),
         actions: [
           Builder(
