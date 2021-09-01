@@ -1,3 +1,8 @@
+# 0.1.1
+
+- Add tabs feature, for persistent shortcuts to sets of sorting and
+  filtering options
+
 # 0.1.0
 
 - Display filename of pem file

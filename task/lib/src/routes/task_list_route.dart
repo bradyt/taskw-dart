@@ -21,6 +21,18 @@ class TaskListRoute extends StatelessWidget {
         actions: [
           Builder(
             builder: (context) => IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () => storageWidget.addTab(),
+            ),
+          ),
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.clear),
+              onPressed: () => storageWidget.removeTab(),
+            ),
+          ),
+          Builder(
+            builder: (context) => IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () => storageWidget.synchronize(context),
             ),
@@ -36,6 +48,33 @@ class TaskListRoute extends StatelessWidget {
             ),
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(kTextTabBarHeight),
+          child: DefaultTabController(
+            length: storageWidget.tabUuids().length,
+            initialIndex: storageWidget.initialTabIndex(),
+            child: Builder(
+              builder: (context) => Align(
+                alignment: Alignment.centerLeft,
+                child: TabBar(
+                  isScrollable: true,
+                  tabs: storageWidget
+                      .tabUuids()
+                      .map(
+                        (text) => Tab(
+                          child: Text(
+                            text.split('-').first,
+                            style: GoogleFonts.firaMono(),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  onTap: (index) => storageWidget.setInitialTabIndex(index),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
       drawer: Drawer(
         child: SafeArea(

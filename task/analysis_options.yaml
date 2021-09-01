@@ -69,7 +69,7 @@ linter:
     - control_flow_in_finally
     - curly_braces_in_flow_control_structures
     # - diagnostic_describe_all_properties
-    - directives_ordering
+    # - directives_ordering
     - do_not_use_environment
     - empty_catches
     - empty_constructor_bodies

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
+// ignore: avoid_classes_with_only_static_members
 class Codec {
   static int fold(Iterable<int> bytes) =>
       bytes.reduce((x, y) => x * pow(2, 8) + y as int);

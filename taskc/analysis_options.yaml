@@ -68,7 +68,7 @@ linter:
     # - deprecated_consistency # undefined_lint_warning
     # - depend_on_referenced_packages # undefined_lint_warning
     - diagnostic_describe_all_properties
-    - directives_ordering
+    # - directives_ordering
     - do_not_use_environment
     - empty_catches
     - empty_constructor_bodies

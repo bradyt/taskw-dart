@@ -49,9 +49,9 @@ class _StorageWidgetState extends State<StorageWidget> {
   }
 
   void _profileSet() {
-    pendingFilter = storage.query.getPendingFilter();
-    selectedSort = storage.query.getSelectedSort();
-    selectedTags = storage.query.getSelectedTags();
+    pendingFilter = Query(storage.tabs.tab()).getPendingFilter();
+    selectedSort = Query(storage.tabs.tab()).getSelectedSort();
+    selectedTags = Query(storage.tabs.tab()).getSelectedTags();
     _refreshTasks();
     globalTags = storage.tags();
   }
@@ -87,15 +87,15 @@ class _StorageWidgetState extends State<StorageWidget> {
   }
 
   void togglePendingFilter() {
-    storage.query.togglePendingFilter();
-    pendingFilter = storage.query.getPendingFilter();
+    Query(storage.tabs.tab()).togglePendingFilter();
+    pendingFilter = Query(storage.tabs.tab()).getPendingFilter();
     _refreshTasks();
     setState(() {});
   }
 
   void selectSort(String sort) {
-    storage.query.setSelectedSort(sort);
-    selectedSort = storage.query.getSelectedSort();
+    Query(storage.tabs.tab()).setSelectedSort(sort);
+    selectedSort = Query(storage.tabs.tab()).getSelectedSort();
     _refreshTasks();
     setState(() {});
   }
@@ -110,8 +110,8 @@ class _StorageWidgetState extends State<StorageWidget> {
     } else {
       selectedTags.add('+$tag');
     }
-    storage.query.toggleTagFilter(tag);
-    selectedTags = storage.query.getSelectedTags();
+    Query(storage.tabs.tab()).toggleTagFilter(tag);
+    selectedTags = Query(storage.tabs.tab()).getSelectedTags();
     _refreshTasks();
     setState(() {});
   }
@@ -150,6 +150,37 @@ class _StorageWidgetState extends State<StorageWidget> {
     setState(() {});
   }
 
+  void setInitialTabIndex(int index) {
+    storage.tabs.setInitialTabIndex(index);
+    pendingFilter = Query(storage.tabs.tab()).getPendingFilter();
+    selectedSort = Query(storage.tabs.tab()).getSelectedSort();
+    selectedTags = Query(storage.tabs.tab()).getSelectedTags();
+    _refreshTasks();
+    setState(() {});
+  }
+
+  void addTab() {
+    storage.tabs.addTab();
+    setState(() {});
+  }
+
+  List<String> tabUuids() {
+    return storage.tabs.tabUuids();
+  }
+
+  int initialTabIndex() {
+    return storage.tabs.initialTabIndex();
+  }
+
+  void removeTab() {
+    storage.tabs.removeTab();
+    pendingFilter = Query(storage.tabs.tab()).getPendingFilter();
+    selectedSort = Query(storage.tabs.tab()).getSelectedSort();
+    selectedTags = Query(storage.tabs.tab()).getSelectedTags();
+    _refreshTasks();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return _InheritedStorage(
@@ -166,6 +197,11 @@ class _StorageWidgetState extends State<StorageWidget> {
       selectedTags: selectedTags,
       sortHeaderVisible: sortHeaderVisible,
       toggleSortHeader: toggleSortHeader,
+      setInitialTabIndex: setInitialTabIndex,
+      addTab: addTab,
+      tabUuids: tabUuids,
+      initialTabIndex: initialTabIndex,
+      removeTab: removeTab,
       child: widget.child,
     );
   }
@@ -186,6 +222,11 @@ class _InheritedStorage extends InheritedModel<String> {
     required this.selectSort,
     required this.sortHeaderVisible,
     required this.toggleSortHeader,
+    required this.setInitialTabIndex,
+    required this.addTab,
+    required this.tabUuids,
+    required this.initialTabIndex,
+    required this.removeTab,
     required Widget child,
   }) : super(child: child);
 
@@ -202,6 +243,11 @@ class _InheritedStorage extends InheritedModel<String> {
   final void Function(String) toggleTagFilter;
   final bool sortHeaderVisible;
   final Function() toggleSortHeader;
+  final void Function(int) setInitialTabIndex;
+  final void Function() addTab;
+  final List<String> Function() tabUuids;
+  final int Function() initialTabIndex;
+  final void Function() removeTab;
 
   @override
   bool updateShouldNotify(_InheritedStorage oldWidget) {

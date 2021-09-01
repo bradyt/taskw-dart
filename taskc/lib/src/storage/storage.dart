@@ -6,6 +6,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:taskw/taskw.dart';
 
 import 'package:taskc/home.dart';
+import 'package:taskc/storage.dart';
 
 class Storage {
   const Storage(this.profile);
@@ -14,6 +15,7 @@ class Storage {
 
   Home get home => Home(profile);
   Query get query => Query(profile);
+  Tabs get tabs => Tabs(profile);
 
   Map<String, int> tags() {
     var listOfLists = Home(profile).pendingData().map((task) => task.tags);
