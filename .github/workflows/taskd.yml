@@ -2,7 +2,7 @@ name: beginning of CI that requires taskd on localhost
 
 defaults:
   run:
-    working-directory: taskw
+    working-directory: taskc
 
 on:
   pull_request:
