@@ -29,7 +29,7 @@ int Function(Task, Task) compareTasks(String column) {
             (compare[a.priority] ?? -1).compareTo(compare[b.priority] ?? -1);
         break;
       case 'project':
-        return (a.project ?? '').compareTo(b.project ?? '');
+        result = (a.project ?? '').compareTo(b.project ?? '');
         break;
       case 'tags':
         for (var i = 0;

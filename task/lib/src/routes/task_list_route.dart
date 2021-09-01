@@ -124,7 +124,8 @@ class TaskListRoute extends StatelessWidget {
                   children: [
                     for (var entry in storageWidget.projects.entries)
                       ListTile(
-                        onTap: () => storageWidget.toggleProjectFilter(entry.key),
+                        onTap: () =>
+                            storageWidget.toggleProjectFilter(entry.key),
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -146,7 +147,6 @@ class TaskListRoute extends StatelessWidget {
                 Divider(),
                 Wrap(
                   spacing: 4,
-                  runSpacing: 0,
                   children: [
                     FilterChip(
                       onSelected: (_) => storageWidget.toggleTagUnion(),

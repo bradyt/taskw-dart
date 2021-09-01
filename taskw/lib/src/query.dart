@@ -51,7 +51,7 @@ class Query {
 
   String projectFilter() {
     if (!_projectFilter.existsSync()) {
-      _projectFilter..createSync(recursive: true);
+      _projectFilter.createSync(recursive: true);
     }
     return _projectFilter.readAsStringSync();
   }
