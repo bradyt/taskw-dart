@@ -1,14 +1,11 @@
-name: taskc
-description: Provides Dart libraries for developing a Taskwarrior client to your Taskserver
+name: taskj
+description: Provides Task objects generated with built_value
 version: 0.0.0-alpha.0
 
 publish_to: none
 
 environment:
   sdk: '>=2.13.0 <3.0.0'
-
-executables:
-  taskd-setup: taskd_setup
 
 dependencies:
   built_value:
@@ -19,8 +16,6 @@ dependencies:
 dev_dependencies:
   build_runner:
   built_value_generator:
-  taskj:
-    path: ../taskj
-  taskw:
-    path: ../taskw
+  taskc:
+    path: ../taskc
   test:

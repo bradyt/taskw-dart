@@ -27,6 +27,8 @@ dependencies:
   pem:
   taskc:
     path: ../taskc
+  taskj:
+    path: ../taskj
   taskw:
     path: ../taskw
   url_launcher:

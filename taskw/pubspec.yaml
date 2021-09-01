@@ -15,6 +15,8 @@ dependencies:
   intl:
   taskc:
     path: ../taskc
+  taskj:
+    path: ../taskj
   uuid:
 
 dev_dependencies:

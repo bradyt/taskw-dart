@@ -1,7 +1,7 @@
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
-import 'package:taskc/json.dart';
+import 'package:taskj/json.dart';
 
 part 'annotation.g.dart';
 

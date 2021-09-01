@@ -525,6 +525,13 @@ packages:
       relative: true
     source: path
     version: "0.0.0-alpha.0"
+  taskj:
+    dependency: "direct main"
+    description:
+      path: "../taskj"
+      relative: true
+    source: path
+    version: "0.0.0-alpha.0"
   taskw:
     dependency: "direct main"
     description:

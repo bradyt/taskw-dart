@@ -6,7 +6,7 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:taskc/json.dart';
+import 'package:taskj/json.dart';
 
 class AnnotationsRoute extends StatefulWidget {
   const AnnotationsRoute({required this.value, required this.callback});
