@@ -49,7 +49,7 @@ class Profiles {
         .map((entity) =>
             entity.uri.pathSegments.lastWhere((segment) => segment.isNotEmpty))
         .toList()
-          ..sort(comparator);
+      ..sort(comparator);
     return dirs;
   }
 
