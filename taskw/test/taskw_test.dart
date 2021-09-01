@@ -33,10 +33,10 @@ void main() {
 
       var storage = profiles.getCurrentStorage()!;
 
-      expect(() => storage.pendingData(), returnsNormally);
+      expect(() => storage.home.pendingData(), returnsNormally);
 
       for (var description in ['foo', 'bar']) {
-        storage.mergeTask(
+        storage.home.mergeTask(
           Task(
             (b) => b
               ..status = 'pending'
@@ -50,7 +50,7 @@ void main() {
         );
       }
 
-      var tasks = storage.pendingData();
+      var tasks = storage.home.pendingData();
 
       expect(tasks.length, 2);
       expect(tasks[0].description, 'foo');

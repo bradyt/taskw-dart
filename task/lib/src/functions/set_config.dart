@@ -11,19 +11,20 @@ Future<void> setConfig({required Storage storage, required String key}) async {
     var file = await openFile(acceptedTypeGroups: [typeGroup]);
     if (file != null) {
       var contents = await file.readAsString();
-      storage
-        ..addFileContents(key: key, contents: contents)
-        ..addFileName(key: key, name: file.name);
+      storage.home.addPemFile(
+        key: key,
+        contents: contents,
+        name: file.name,
+      );
     }
   } else {
     await FilePickerWritable().openFile((fileInfo, file) async {
       var contents = file.readAsStringSync();
-      storage
-        ..addFileContents(key: key, contents: contents)
-        ..addFileName(
-          key: key,
-          name: fileInfo.fileName ?? Uri.parse(fileInfo.uri).pathSegments.last,
-        );
+      storage.home.addPemFile(
+        key: key,
+        contents: contents,
+        name: fileInfo.fileName ?? Uri.parse(fileInfo.uri).pathSegments.last,
+      );
     });
   }
 }

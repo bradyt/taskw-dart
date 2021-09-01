@@ -2,10 +2,10 @@ import 'dart:io';
 
 class BadCertificateException implements Exception {
   BadCertificateException({
-    required this.profile,
+    required this.home,
     required this.certificate,
   });
 
-  Directory profile;
+  Directory home;
   X509Certificate certificate;
 }

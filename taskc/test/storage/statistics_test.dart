@@ -53,20 +53,20 @@ void main() {
         'taskd.cert': '.task/first_last.cert.pem',
         'taskd.key': '.task/first_last.key.pem',
       }.entries) {
-        storage.addFileContents(
+        storage.home.addPemFile(
           key: entry.key,
           contents: File('$home/${entry.value}').readAsStringSync(),
         );
       }
       try {
-        await storage.statistics();
+        await storage.home.statistics();
       } on BadCertificateException catch (e) {
-        storage.addFileContents(
+        storage.home.addPemFile(
           key: 'server.cert',
           contents: e.certificate.pem,
         );
       }
-      var header = await storage.statistics();
+      var header = await storage.home.statistics();
       expect(header['code'], '200');
     });
   });

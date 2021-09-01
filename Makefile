@@ -15,6 +15,11 @@ taskw/pubspec.lock:
 task/.packages:
 	cd task && dart pub get
 
+docs: get
+	cd taskw && dartdoc .
+	cd taskc && dartdoc .
+	cd task && dartdoc .
+
 format:
 	dart format \
 		$(shell find . \( -name '*.dart' ! -name '*.g.dart' \)) \

@@ -58,12 +58,12 @@ class _StorageWidgetState extends State<StorageWidget> {
 
   void _refreshTasks() {
     if (pendingFilter) {
-      tasks = storage
+      tasks = storage.home
           .pendingData()
           .where((task) => task.status == 'pending')
           .toList();
     } else {
-      tasks = storage.allData();
+      tasks = storage.home.allData();
     }
 
     tasks = tasks.where((task) {
@@ -117,18 +117,18 @@ class _StorageWidgetState extends State<StorageWidget> {
   }
 
   Task getTask(String uuid) {
-    return storage.getTask(uuid);
+    return storage.home.getTask(uuid);
   }
 
   void mergeTask(Task task) {
-    storage.mergeTask(task);
+    storage.home.mergeTask(task);
     _refreshTasks();
     setState(() {});
   }
 
   Future<void> synchronize(BuildContext context) async {
     try {
-      var header = await storage.synchronize();
+      var header = await storage.home.synchronize();
       _refreshTasks();
       globalTags = storage.tags();
       setState(() {});

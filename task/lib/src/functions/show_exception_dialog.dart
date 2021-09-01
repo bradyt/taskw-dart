@@ -46,10 +46,10 @@ connections.'''
         actions: [
           TextButton(
             onPressed: () {
-              Storage(e.profile).addFileContents(
-                key: 'server.cert',
-                contents: e.certificate.pem,
-              );
+              Storage(e.profile).home.addPemFile(
+                    key: 'server.cert',
+                    contents: e.certificate.pem,
+                  );
               Navigator.of(context).pop();
             },
             child: Text('Trust'),

@@ -28,15 +28,16 @@ class ConfigureTaskserverRoute extends StatelessWidget {
       // 'server.cert': '.task/server.cert.pem',
     }.entries) {
       var contents = await rootBundle.loadString('assets/${entry.value}');
-      storage.addFileContents(
+      storage.home.addPemFile(
         key: entry.key,
         contents: contents,
+        name: entry.value.split('/').last,
       );
     }
   }
 
   Future<void> _showStatistics(BuildContext context) async {
-    await storage.statistics().then(
+    await storage.home.statistics().then(
       (header) {
         var maxKeyLength =
             header.keys.map<int>((key) => key.length).reduce(max);
@@ -137,11 +138,8 @@ class PemWidget extends StatefulWidget {
 class _PemWidgetState extends State<PemWidget> {
   @override
   Widget build(BuildContext context) {
-    String? contents;
-    if (widget.storage.fileByKey(widget.pem).existsSync()) {
-      contents = widget.storage.fileByKey(widget.pem).readAsStringSync();
-    }
-    var name = widget.storage.nameByKey(widget.pem);
+    var contents = widget.storage.home.pemContents(widget.pem);
+    var name = widget.storage.home.pemFilename(widget.pem);
     return ListTile(
       title: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -214,7 +212,7 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
 
   Future<void> _getConfig() async {
     var config =
-        ProfilesWidget.of(context).getStorage(widget.profile).getConfig();
+        ProfilesWidget.of(context).getStorage(widget.profile).home.getConfig();
     server = config['taskd.server'];
     credentials = Credentials.fromString(config['taskd.credentials']);
     setState(() {});

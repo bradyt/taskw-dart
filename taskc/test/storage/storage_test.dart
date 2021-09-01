@@ -104,19 +104,19 @@ void main() {
           ..modified = now
           ..until = now,
       ),
-    ].forEach(storage.mergeTask);
+    ].forEach(storage.home.mergeTask);
     storage
       ..tags()
-      ..allData();
+      ..home.allData();
     for (var entry in {
       '.taskrc': '.taskrc',
       'taskd.ca': '.task/ca.cert.pem',
       'taskd.cert': '.task/first_last.cert.pem',
       'taskd.key': '.task/first_last.key.pem',
     }.entries) {
-      expect(() => storage.synchronize(),
+      expect(() => storage.home.synchronize(),
           throwsA(isA<TaskserverConfigurationException>()));
-      storage.addFileContents(
+      storage.home.addPemFile(
         key: entry.key,
         contents: File('$home/${entry.value}').readAsStringSync(),
       );
@@ -134,18 +134,18 @@ void main() {
       await taskwarrior.diagnostics();
       var exitCode = await taskwarrior.synchronize();
       stdout.writeln(exitCode);
-      await storage.statistics();
-      await storage.synchronize();
+      await storage.home.statistics();
+      await storage.home.synchronize();
     } on BadCertificateException catch (e) {
       await null;
-      storage.addFileContents(
+      storage.home.addPemFile(
         key: 'server.cert',
         contents: e.certificate.pem,
       );
       await null;
     }
 
-    await storage.synchronize();
+    await storage.home.synchronize();
 
     for (var data in ['backlog', 'pending', 'completed']) {
       var dataFile = File('$home/.task/$data.data');
@@ -163,9 +163,9 @@ void main() {
         Process.runSync('task', ['export'], environment: {'HOME': home}).stdout;
     Process.runSync('task', ['sync'], environment: {'HOME': home});
 
-    await storage.synchronize();
+    await storage.home.synchronize();
 
-    var libExport = storage.export();
+    var libExport = storage.home.export();
 
     expect(json.decode(libExport), json.decode(cliExport));
     expect(libExport, cliExport);

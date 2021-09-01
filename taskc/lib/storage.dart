@@ -1,7 +1,6 @@
-/// This library acts as a small wrapper around the [taskc] library, to
-/// implement a notion of [Storage] of tasks consistent with a method to
-/// synchronize tasks with a
-/// [Taskserver](https://github.com/GothenburgBitFactory/taskserver).
+/// Currently, this library has been refactored, mostly redirecting calls to the
+/// [home] library. The sort and filter options may be factored out soon. A tabs
+/// feature is being planned.
 
 library storage;
 
