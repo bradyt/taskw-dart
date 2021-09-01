@@ -1,6 +1,10 @@
+import 'dart:collection';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+
+import 'package:built_collection/built_collection.dart';
 
 import 'package:taskc/json.dart';
 import 'package:taskc/storage.dart';
@@ -8,6 +12,18 @@ import 'package:taskc/storage.dart';
 import 'package:taskw/taskw.dart';
 
 import 'package:task/task.dart';
+
+class TagMetadata {
+  TagMetadata({
+    required this.lastModified,
+    required this.frequency,
+    required this.selected,
+  });
+
+  final DateTime lastModified;
+  final int frequency;
+  final bool selected;
+}
 
 class StorageWidget extends StatefulWidget {
   const StorageWidget({required this.profile, required this.child});
@@ -29,8 +45,8 @@ class _StorageWidgetState extends State<StorageWidget> {
   late bool tagUnion;
   late String selectedSort;
   late Set<String> selectedTags;
-  late List<Task> tasks;
-  late Map<String, int> globalTags;
+  late List<Task> queriedTasks;
+  late Map<String, TagMetadata> globalTags;
   bool sortHeaderVisible = false;
 
   @override
@@ -55,22 +71,25 @@ class _StorageWidgetState extends State<StorageWidget> {
     selectedSort = Query(storage.tabs.tab()).getSelectedSort();
     selectedTags = Query(storage.tabs.tab()).getSelectedTags();
     _refreshTasks();
-    globalTags = storage.tags();
+    globalTags = tags();
   }
 
   void _refreshTasks() {
     if (pendingFilter) {
-      tasks = storage.home
+      queriedTasks = storage.home
           .pendingData()
           .where((task) => task.status == 'pending')
           .toList();
     } else {
-      tasks = storage.home.allData();
+      queriedTasks = storage.home.allData();
     }
 
-    tasks = tasks.where((task) {
+    queriedTasks = queriedTasks.where((task) {
       var tags = task.tags?.toSet() ?? {};
       if (tagUnion) {
+        if (selectedTags.isEmpty) {
+          return true;
+        }
         return selectedTags.any((tag) => (tag.startsWith('+'))
             ? tags.contains(tag.substring(1))
             : !tags.contains(tag.substring(1)));
@@ -83,7 +102,7 @@ class _StorageWidgetState extends State<StorageWidget> {
 
     var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
     var ascending = selectedSort.endsWith('+');
-    tasks.sort((a, b) {
+    queriedTasks.sort((a, b) {
       int result;
       if (sortColumn == 'id') {
         result = a.id!.compareTo(b.id!);
@@ -91,6 +110,56 @@ class _StorageWidgetState extends State<StorageWidget> {
         result = compareTasks(sortColumn)(a, b);
       }
       return ascending ? result : -result;
+    });
+    globalTags = tags();
+  }
+
+  Map<String, TagMetadata> tags() {
+    var frequency = <String, int>{};
+    for (var task in storage.home.pendingData()) {
+      for (var tag in task.tags?.asList() ?? []) {
+        if (frequency.containsKey(tag)) {
+          frequency[tag] = (frequency[tag] ?? 0) + 1;
+        } else {
+          frequency[tag] = 1;
+        }
+      }
+    }
+    var modified = <String, DateTime>{};
+    for (var task in storage.home.allData()) {
+      var _modified = task.modified ?? DateTime.now().toUtc();
+      for (var tag in task.tags?.asList() ?? []) {
+        if (modified.containsKey(tag)) {
+          modified[tag] = DateTime.fromMicrosecondsSinceEpoch(
+            max(
+              _modified.microsecondsSinceEpoch,
+              modified[tag]?.microsecondsSinceEpoch ??
+                  DateTime.now().toUtc().microsecondsSinceEpoch,
+            ),
+            isUtc: true,
+          );
+        } else {
+          modified[tag] = _modified;
+        }
+      }
+    }
+    var setOfTags = storage.home
+        .allData()
+        .map((task) => task.tags)
+        .expand((tags) => tags ?? BuiltList())
+        .toSet();
+    return SplayTreeMap.of({
+      if (setOfTags.isNotEmpty)
+        for (var tag in setOfTags)
+          tag: TagMetadata(
+            frequency: frequency[tag] ?? 0,
+            lastModified: modified[tag]!,
+            selected: selectedTags
+                .map(
+                  (filter) => filter.substring(1),
+                )
+                .contains(tag),
+          ),
     });
   }
 
@@ -145,7 +214,7 @@ class _StorageWidgetState extends State<StorageWidget> {
     try {
       var header = await storage.home.synchronize();
       _refreshTasks();
-      globalTags = storage.tags();
+      globalTags = tags();
       setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('${header['code']}: ${header['status']}'),
@@ -211,7 +280,7 @@ class _StorageWidgetState extends State<StorageWidget> {
   @override
   Widget build(BuildContext context) {
     return _InheritedStorage(
-      tasks: tasks,
+      tasks: queriedTasks,
       globalTags: globalTags,
       pendingFilter: pendingFilter,
       tagUnion: tagUnion,
@@ -266,7 +335,7 @@ class _InheritedStorage extends InheritedModel<String> {
   }) : super(child: child);
 
   final List<Task> tasks;
-  final Map<String, int> globalTags;
+  final Map<String, TagMetadata> globalTags;
   final bool pendingFilter;
   final bool tagUnion;
   final String selectedSort;

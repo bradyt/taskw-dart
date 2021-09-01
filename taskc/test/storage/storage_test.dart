@@ -105,9 +105,7 @@ void main() {
           ..until = now,
       ),
     ].forEach(storage.home.mergeTask);
-    storage
-      ..tags()
-      ..home.allData();
+    storage.home.allData();
     for (var entry in {
       '.taskrc': '.taskrc',
       'taskd.ca': '.task/ca.cert.pem',

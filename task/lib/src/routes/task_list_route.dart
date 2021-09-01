@@ -115,27 +115,32 @@ class TaskListRoute extends StatelessWidget {
                   ),
                 ),
                 Divider(),
-                FilterChip(
-                  onSelected: (_) => storageWidget.toggleTagUnion(),
-                  label: Text(storageWidget.tagUnion ? 'or' : 'and'),
-                ),
-                Divider(),
                 Wrap(
-                  spacing: 8,
-                  runSpacing: 4,
+                  spacing: 4,
+                  runSpacing: 0,
                   children: [
+                    FilterChip(
+                      onSelected: (_) => storageWidget.toggleTagUnion(),
+                      label: Text(
+                        storageWidget.tagUnion ? 'OR' : 'AND',
+                        style: GoogleFonts.firaMono(),
+                      ),
+                    ),
                     // ignore: unnecessary_null_comparison
                     if (storageWidget.globalTags != null)
-                      for (var tag in storageWidget.globalTags.entries)
+                      for (var tag in storageWidget.globalTags.entries.where(
+                          (entry) =>
+                              entry.value.frequency > 0 ||
+                              entry.value.selected))
                         FilterChip(
                           onSelected: (_) =>
                               storageWidget.toggleTagFilter(tag.key),
                           label: Text(
-                            storageWidget.selectedTags.firstWhere(
+                            '${storageWidget.selectedTags.firstWhere(
                               (selectedTag) =>
                                   selectedTag.substring(1) == tag.key,
                               orElse: () => tag.key,
-                            ),
+                            )} ${tag.value.frequency}',
                             style: GoogleFonts.firaMono(
                               fontWeight: storageWidget.selectedTags.any(
                                       (selectedTag) =>

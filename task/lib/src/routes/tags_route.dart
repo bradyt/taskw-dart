@@ -18,7 +18,7 @@ class TagsRoute extends StatefulWidget {
 }
 
 class TagsRouteState extends State<TagsRoute> {
-  Map<String, int>? _globalTags;
+  Map<String, TagMetadata>? _globalTags;
   ListBuilder<String>? draftTags;
 
   void _addTag(String tag) {
@@ -50,11 +50,7 @@ class TagsRouteState extends State<TagsRoute> {
   }
 
   Future<void> _initialize() async {
-    _globalTags = StorageWidget.of(context).globalTags
-      ..putIfAbsent(
-        'next',
-        () => 0,
-      );
+    _globalTags = StorageWidget.of(context).globalTags;
     setState(() {});
   }
 
