@@ -15,22 +15,18 @@ class TaskListRoute extends StatelessWidget {
     var profilesMap = profilesWidget.profilesMap;
     var currentProfile = profilesWidget.currentProfile;
 
+    var tabUuid = storageWidget.tabUuids()[storageWidget.initialTabIndex()];
+    var title = profilesMap[currentProfile] ?? currentProfile;
+    var subtitle = storageWidget.tabAlias(tabUuid) ?? tabUuid;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(profilesMap[currentProfile] ?? currentProfile),
+        title: Text(
+          '$title\n$subtitle',
+          softWrap: false,
+          style: GoogleFonts.firaMono(),
+        ),
         actions: [
-          Builder(
-            builder: (context) => IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => storageWidget.addTab(),
-            ),
-          ),
-          Builder(
-            builder: (context) => IconButton(
-              icon: Icon(Icons.clear),
-              onPressed: () => storageWidget.removeTab(),
-            ),
-          ),
           Builder(
             builder: (context) => IconButton(
               icon: Icon(Icons.refresh),
@@ -48,33 +44,6 @@ class TaskListRoute extends StatelessWidget {
             ),
           ),
         ],
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(kTextTabBarHeight),
-          child: DefaultTabController(
-            length: storageWidget.tabUuids().length,
-            initialIndex: storageWidget.initialTabIndex(),
-            child: Builder(
-              builder: (context) => Align(
-                alignment: Alignment.centerLeft,
-                child: TabBar(
-                  isScrollable: true,
-                  tabs: storageWidget
-                      .tabUuids()
-                      .map(
-                        (text) => Tab(
-                          child: Text(
-                            text.split('-').first,
-                            style: GoogleFonts.firaMono(),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                  onTap: (index) => storageWidget.setInitialTabIndex(index),
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
       drawer: Drawer(
         child: SafeArea(
@@ -198,6 +167,10 @@ class ProfilesColumn extends StatelessWidget {
     var profilesMap = profilesWidget.profilesMap;
     var currentProfile = profilesWidget.currentProfile;
 
+    var storageWidget = StorageWidget.of(context);
+
+    var tabUuids = storageWidget.tabUuids();
+
     return Column(
       children: [
         Expanded(
@@ -303,6 +276,58 @@ class ProfilesColumn extends StatelessWidget {
                           context: context,
                         ),
                       ),
+                    ),
+                  ],
+                ),
+              Divider(),
+              ListTile(
+                title: Text('Queries'),
+                trailing: IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () => storageWidget.addTab(),
+                ),
+              ),
+              for (var entry in tabUuids.asMap().entries)
+                ExpansionTile(
+                  key: PageStorageKey<String>('exp-${entry.value}'),
+                  leading: Radio<int>(
+                    value: entry.key,
+                    groupValue: storageWidget.initialTabIndex(),
+                    onChanged: (tabUuid) =>
+                        storageWidget.setInitialTabIndex(entry.key),
+                  ),
+                  title: SingleChildScrollView(
+                    key: PageStorageKey<String>('scroll-${entry.key}'),
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      StorageWidget.of(context).tabAlias(entry.value) ??
+                          entry.value,
+                      style: GoogleFonts.firaMono(),
+                    ),
+                  ),
+                  children: [
+                    ListTile(
+                      leading: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Icon(Icons.edit),
+                      ),
+                      title: Text('Rename query'),
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (context) => RenameTabDialog(
+                          tab: entry.value,
+                          alias: null,
+                          context: context,
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      leading: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Icon(Icons.delete),
+                      ),
+                      title: Text('Delete query'),
+                      onTap: () => storageWidget.removeTab(entry.key),
                     ),
                   ],
                 ),

@@ -51,12 +51,28 @@ class Tabs {
     return dirs.map((dir) => basename(dir.path)).toList();
   }
 
-  void removeTab() {
-    var uuid = tabUuids().last;
+  void removeTab(int index) {
+    var uuid = tabUuids()[index];
     Directory('${_tabs.path}/$uuid').deleteSync(recursive: true);
     setInitialTabIndex(max(0, min(initialTabIndex(), tabUuids().length - 1)));
     if (tabUuids().isEmpty) {
       addTab();
+    }
+  }
+
+  void renameTab({
+    required String tab,
+    required String name,
+  }) {
+    File('${_tabs.path}/$tab/alias').writeAsStringSync(name);
+  }
+
+  String? alias(String tabUuid) {
+    if (File('${_tabs.path}/$tabUuid/alias').existsSync()) {
+      var result = File('${_tabs.path}/$tabUuid/alias').readAsStringSync();
+      if (result.isNotEmpty) {
+        return result;
+      }
     }
   }
 }

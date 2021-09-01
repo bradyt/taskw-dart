@@ -1,7 +1,7 @@
 # 0.1.1
 
-- Add tabs feature, for persistent shortcuts to sets of sorting and
-  filtering options
+- Add notion of queries, persistent shortcuts to snapshots of sorting
+  and filtering options selected from UI
 
 # 0.1.0
 

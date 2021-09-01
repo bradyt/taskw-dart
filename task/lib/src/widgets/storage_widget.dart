@@ -172,13 +172,25 @@ class _StorageWidgetState extends State<StorageWidget> {
     return storage.tabs.initialTabIndex();
   }
 
-  void removeTab() {
-    storage.tabs.removeTab();
+  void removeTab(int index) {
+    storage.tabs.removeTab(index);
     pendingFilter = Query(storage.tabs.tab()).getPendingFilter();
     selectedSort = Query(storage.tabs.tab()).getSelectedSort();
     selectedTags = Query(storage.tabs.tab()).getSelectedTags();
     _refreshTasks();
     setState(() {});
+  }
+
+  void renameTab({
+    required String tab,
+    required String name,
+  }) {
+    storage.tabs.renameTab(tab: tab, name: name);
+    setState(() {});
+  }
+
+  String? tabAlias(String tabUuid) {
+    return storage.tabs.alias(tabUuid);
   }
 
   @override
@@ -202,6 +214,8 @@ class _StorageWidgetState extends State<StorageWidget> {
       tabUuids: tabUuids,
       initialTabIndex: initialTabIndex,
       removeTab: removeTab,
+      renameTab: renameTab,
+      tabAlias: tabAlias,
       child: widget.child,
     );
   }
@@ -227,6 +241,8 @@ class _InheritedStorage extends InheritedModel<String> {
     required this.tabUuids,
     required this.initialTabIndex,
     required this.removeTab,
+    required this.renameTab,
+    required this.tabAlias,
     required Widget child,
   }) : super(child: child);
 
@@ -247,7 +263,9 @@ class _InheritedStorage extends InheritedModel<String> {
   final void Function() addTab;
   final List<String> Function() tabUuids;
   final int Function() initialTabIndex;
-  final void Function() removeTab;
+  final void Function(int) removeTab;
+  final String? Function(String) tabAlias;
+  final void Function({required String tab, required String name}) renameTab;
 
   @override
   bool updateShouldNotify(_InheritedStorage oldWidget) {
