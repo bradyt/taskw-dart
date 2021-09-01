@@ -49,6 +49,19 @@ class Taskwarrior {
     return result.exitCode;
   }
 
+  Future<int> modify(List<String> rest) async {
+    var result = await Process.start(
+        'task', ['rc.confirmation:no', 'modify', ...rest],
+        environment: {'HOME': _home});
+    await result.stdout.transform(utf8.decoder).forEach((element) {
+      _log.info(element);
+    });
+    await result.stderr.transform(utf8.decoder).forEach((element) {
+      _log.info(element);
+    });
+    return result.exitCode;
+  }
+
   Future<int> synchronize() async {
     var result = await Process.start('task', ['synchronize'],
         environment: {'HOME': _home});

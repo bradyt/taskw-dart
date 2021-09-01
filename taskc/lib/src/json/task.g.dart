@@ -132,7 +132,8 @@ class _$TaskSerializer implements StructuredSerializer<Task> {
       result
         ..add('depends')
         ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
+            specifiedType:
+                const FullType(BuiltList, const [const FullType(String)])));
     }
     value = object.tags;
     if (value != null) {
@@ -251,8 +252,10 @@ class _$TaskSerializer implements StructuredSerializer<Task> {
               specifiedType: const FullType(String)) as String?;
           break;
         case 'depends':
-          result.depends = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
+          result.depends.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(String)]))!
+              as BuiltList<Object?>);
           break;
         case 'tags':
           result.tags.replace(serializers.deserialize(value,
@@ -319,7 +322,7 @@ class _$Task extends Task {
   @override
   final String? priority;
   @override
-  final String? depends;
+  final BuiltList<String>? depends;
   @override
   final BuiltList<String>? tags;
   @override
@@ -546,9 +549,10 @@ class TaskBuilder implements Builder<Task, TaskBuilder> {
   String? get priority => _$this._priority;
   set priority(String? priority) => _$this._priority = priority;
 
-  String? _depends;
-  String? get depends => _$this._depends;
-  set depends(String? depends) => _$this._depends = depends;
+  ListBuilder<String>? _depends;
+  ListBuilder<String> get depends =>
+      _$this._depends ??= new ListBuilder<String>();
+  set depends(ListBuilder<String>? depends) => _$this._depends = depends;
 
   ListBuilder<String>? _tags;
   ListBuilder<String> get tags => _$this._tags ??= new ListBuilder<String>();
@@ -591,7 +595,7 @@ class TaskBuilder implements Builder<Task, TaskBuilder> {
       _parent = $v.parent;
       _project = $v.project;
       _priority = $v.priority;
-      _depends = $v.depends;
+      _depends = $v.depends?.toBuilder();
       _tags = $v.tags?.toBuilder();
       _annotations = $v.annotations?.toBuilder();
       _udas = $v.udas;
@@ -639,7 +643,7 @@ class TaskBuilder implements Builder<Task, TaskBuilder> {
               parent: parent,
               project: project,
               priority: priority,
-              depends: depends,
+              depends: _depends?.build(),
               tags: _tags?.build(),
               annotations: _annotations?.build(),
               udas: udas,
@@ -647,6 +651,8 @@ class TaskBuilder implements Builder<Task, TaskBuilder> {
     } catch (_) {
       late String _$failedField;
       try {
+        _$failedField = 'depends';
+        _depends?.build();
         _$failedField = 'tags';
         _tags?.build();
         _$failedField = 'annotations';

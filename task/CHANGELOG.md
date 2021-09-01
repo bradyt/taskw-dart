@@ -3,6 +3,7 @@
 - Display filename of pem file
 - Do not show misleading/invented fingerprint for private key
 - Use more reliable fingerprint methods
+- Fix for error on arrayed dependencies
 
 # 0.0.13
 

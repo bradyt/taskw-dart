@@ -42,6 +42,7 @@ abstract class Task implements Built<Task, TaskBuilder> {
       ..removeWhere((key, _) => coreAttributes.contains(key));
     var result = Map.of(json)
       ..removeWhere((key, _) => !coreAttributes.contains(key))
+      ..['depends'] = ((x) => (x is String) ? x.split(',') : x)(json['depends'])
       ..['imask'] = (json['imask'] as num?)?.toInt()
       ..['udas'] = (udas.isEmpty) ? null : jsonEncode(udas);
     return serializers.deserializeWith(Task.serializer, result)!;
@@ -50,6 +51,10 @@ abstract class Task implements Built<Task, TaskBuilder> {
   Map<String, dynamic> toJson() {
     var result = serializers.serializeWith(Task.serializer, this)!
         as Map<String, dynamic>;
+
+    if (result['depends'] != null) {
+      result['depends'] = (result['depends'] as List).join(',');
+    }
 
     if (result['udas'] != null) {
       var udas = Map<String, dynamic>.of(json.decode(result['udas']));
@@ -79,7 +84,7 @@ abstract class Task implements Built<Task, TaskBuilder> {
   String? get parent;
   String? get project;
   String? get priority;
-  String? get depends;
+  BuiltList<String>? get depends;
   BuiltList<String>? get tags;
   BuiltList<Annotation>? get annotations;
   String? get udas;

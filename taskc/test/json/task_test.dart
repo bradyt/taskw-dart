@@ -52,7 +52,7 @@ void main() {
           ..parent = Uuid().v1()
           ..project = 'some_project'
           ..priority = 'H'
-          ..depends = Uuid().v1()
+          ..depends = ListBuilder([Uuid().v1()])
           ..tags = ListBuilder(const ['+some_tag'])
           ..annotations = ListBuilder(
             [
@@ -173,6 +173,59 @@ void main() {
         Task.fromJson(task).toJson(),
         task,
       );
+    });
+    test('test dependency strings and arrays (with executable)', () async {
+      var uuid = Uuid().v1();
+      var home = Directory('test/taskd/tmp/$uuid').absolute.path;
+      await Directory(home).create(recursive: true);
+      var taskwarrior = Taskwarrior(home);
+
+      await taskwarrior.add(['w']);
+      await taskwarrior.add(['x']);
+      await taskwarrior.add(['y']);
+      await taskwarrior.add(['z']);
+
+      // Assumes task executable before
+      // <https://github.com/GothenburgBitFactory/taskwarrior/commit/20af583e21666d4825bfb81fcd1264c786bf4d01>.
+      // Tests may be improved to detect task executable version. Such an
+      // improvement may be postponed until either the commit is on stable, or
+      // someone wants to run tests where bleeding edge Taskwarrior is
+      // installed, either in CI or personal computer.
+      await taskwarrior.modify(['1', 'dep:2,3,4']);
+      var string = (json.decode(await taskwarrior.export()) as List)[0];
+      expect((string as Map)['depends'], isA<String>());
+      expect((string['depends'] as String).split(',').length, 3);
+      expect(Task.fromJson(string).toJson(), string);
+
+      // I expect the rest of the tests to work for stable and bleeding edge
+      // Taskwarrior.
+
+      await taskwarrior.modify(['1', 'dep:']);
+      var empty = (json.decode(await taskwarrior.export()) as List)[0];
+      expect((empty as Map).containsKey('depends'), false);
+      expect(Task.fromJson(empty).toJson(), empty);
+
+      await taskwarrior.config(['json.depends.array', '1']);
+      await taskwarrior.modify(['1', 'dep:2,3,4']);
+      var array = (json.decode(await taskwarrior.export()) as List)[0];
+      expect((array as Map)['depends'], isA<List>());
+      expect((array['depends'] as List).length, 3);
+      expect((array['depends'] as List).first, isA<String>());
+      expect(Task.fromJson(array).toJson()['depends'], string['depends']);
+    });
+    test('test dependency strings and arrays (without executable)', () async {
+      var nullDeps = {
+        'status': 'p',
+        'uuid': 'g',
+        'entry': '20210901T000000Z',
+        'description': 'x',
+      };
+      var stringDeps = {...nullDeps, 'depends': 'a,b,c'};
+      var arrayDeps = {...nullDeps, 'depends': 'a,b,c'.split(',')};
+
+      expect(Task.fromJson(nullDeps).toJson(), nullDeps);
+      expect(Task.fromJson(stringDeps).toJson(), stringDeps);
+      expect(Task.fromJson(arrayDeps).toJson(), stringDeps);
     });
   });
 }
