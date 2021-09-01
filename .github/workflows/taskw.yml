@@ -1,8 +1,4 @@
-name: dart-only CI for taskw
-
-defaults:
-  run:
-    working-directory: taskw
+name: taskd-free CI testing
 
 on:
   pull_request:
@@ -17,8 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: bradyt/dart-task
+    strategy:
+      matrix:
+        working-directory: [taskj, taskw]
     steps:
     - uses: actions/checkout@v2
     - run: dart --disable-analytics
     - run: dart pub get
+      working-directory: ${{ matrix.working-directory }}
     - run: dart test
+      working-directory: ${{ matrix.working-directory }}
