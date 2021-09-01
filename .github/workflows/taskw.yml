@@ -16,7 +16,7 @@ jobs:
   taskw:
     runs-on: ubuntu-latest
     container:
-      image: google/dart
+      image: bradyt/dart-task
     steps:
     - uses: actions/checkout@v2
     - run: dart --disable-analytics
