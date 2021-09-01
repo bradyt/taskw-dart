@@ -31,3 +31,8 @@ format:
 
 install:
 	dart pub global activate -spath taskc
+
+test: get
+	cd taskj && dart test
+	cd taskc && dart test -j 1
+	cd taskw && dart test
