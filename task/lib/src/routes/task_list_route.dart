@@ -29,6 +29,12 @@ class TaskListRoute extends StatelessWidget {
           ],
         ),
         actions: [
+          IconButton(
+            icon: (storageWidget.searchVisible)
+                ? Icon(Icons.cancel)
+                : Icon(Icons.search),
+            onPressed: storageWidget.toggleSearch,
+          ),
           Builder(
             builder: (context) => IconButton(
               icon: Icon(Icons.refresh),
@@ -54,6 +60,16 @@ class TaskListRoute extends StatelessWidget {
       ),
       body: Column(
         children: [
+          if (storageWidget.searchVisible)
+            Card(
+              child: TextField(
+                style: GoogleFonts.firaMono(),
+                onChanged: (value) {
+                  storageWidget.search(value);
+                },
+                controller: storageWidget.searchController,
+              ),
+            ),
           if (storageWidget.sortHeaderVisible)
             Align(
               alignment: AlignmentDirectional.centerStart,

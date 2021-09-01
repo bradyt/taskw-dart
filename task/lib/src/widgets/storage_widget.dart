@@ -57,9 +57,12 @@ class _StorageWidgetState extends State<StorageWidget> {
   late String selectedSort;
   late Set<String> selectedTags;
   late List<Task> queriedTasks;
+  late List<Task> searchedTasks;
   late Map<String, TagMetadata> globalTags;
   late Map<String, ProjectMetadata> projects;
   bool sortHeaderVisible = false;
+  bool searchVisible = false;
+  var searchController = TextEditingController();
 
   @override
   void initState() {
@@ -86,6 +89,9 @@ class _StorageWidgetState extends State<StorageWidget> {
     _refreshTasks();
     globalTags = tags();
     projects = _projects();
+    if (searchVisible) {
+      toggleSearch();
+    }
   }
 
   void _refreshTasks() {
@@ -135,6 +141,16 @@ class _StorageWidgetState extends State<StorageWidget> {
       }
       return ascending ? result : -result;
     });
+    searchedTasks = queriedTasks;
+    var searchTerm = searchController.text;
+    if (searchVisible) {
+      searchedTasks = searchedTasks
+          .where((task) =>
+              task.description.contains(searchTerm) ||
+              (task.annotations?.asList() ?? []).any(
+                  (annotation) => annotation.description.contains(searchTerm)))
+          .toList();
+    }
     globalTags = tags();
     projects = _projects();
   }
@@ -289,6 +305,24 @@ class _StorageWidgetState extends State<StorageWidget> {
     setState(() {});
   }
 
+  void toggleSearch() {
+    searchVisible = !searchVisible;
+    if (!searchVisible) {
+      searchedTasks = queriedTasks;
+      searchController.text = '';
+    }
+    setState(() {});
+  }
+
+  void search(String term) {
+    searchedTasks = queriedTasks
+        .where(
+          (task) => task.description.contains(term),
+        )
+        .toList();
+    setState(() {});
+  }
+
   void setInitialTabIndex(int index) {
     storage.tabs.setInitialTabIndex(index);
     pendingFilter = Query(storage.tabs.tab()).getPendingFilter();
@@ -335,7 +369,7 @@ class _StorageWidgetState extends State<StorageWidget> {
   @override
   Widget build(BuildContext context) {
     return _InheritedStorage(
-      tasks: queriedTasks,
+      tasks: searchedTasks,
       globalTags: globalTags,
       projects: projects,
       pendingFilter: pendingFilter,
@@ -352,7 +386,11 @@ class _StorageWidgetState extends State<StorageWidget> {
       toggleTagFilter: toggleTagFilter,
       selectedTags: selectedTags,
       sortHeaderVisible: sortHeaderVisible,
+      searchVisible: searchVisible,
       toggleSortHeader: toggleSortHeader,
+      toggleSearch: toggleSearch,
+      search: search,
+      searchController: searchController,
       setInitialTabIndex: setInitialTabIndex,
       addTab: addTab,
       tabUuids: tabUuids,
@@ -384,7 +422,11 @@ class _InheritedStorage extends InheritedModel<String> {
     required this.toggleTagFilter,
     required this.selectSort,
     required this.sortHeaderVisible,
+    required this.searchVisible,
     required this.toggleSortHeader,
+    required this.toggleSearch,
+    required this.search,
+    required this.searchController,
     required this.setInitialTabIndex,
     required this.addTab,
     required this.tabUuids,
@@ -412,13 +454,17 @@ class _InheritedStorage extends InheritedModel<String> {
   final void Function(String) selectSort;
   final void Function(String) toggleTagFilter;
   final bool sortHeaderVisible;
-  final Function() toggleSortHeader;
+  final bool searchVisible;
+  final void Function() toggleSortHeader;
   final void Function(int) setInitialTabIndex;
   final void Function() addTab;
   final List<String> Function() tabUuids;
   final int Function() initialTabIndex;
   final void Function(int) removeTab;
   final String? Function(String) tabAlias;
+  final void Function() toggleSearch;
+  final void Function(String) search;
+  final TextEditingController searchController;
   final void Function({required String tab, required String name}) renameTab;
 
   @override

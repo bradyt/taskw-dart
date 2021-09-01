@@ -5,6 +5,7 @@
   + Simple UI to edit project field
   + Sort by project
   + Very basic project filter
+- Add search feature
 
 # 0.1.1
 
