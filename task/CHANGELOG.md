@@ -1,3 +1,8 @@
+# 0.1.3
+
+- Fix bug where BadCertificateException's Trust button was broken
+- Add project and annotations to urgency calculation
+
 # 0.1.2
 
 - Add projects feature
