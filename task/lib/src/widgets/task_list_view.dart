@@ -56,6 +56,7 @@ class TaskListView extends StatelessWidget {
                                   '${age(task.entry)} '
                                   '${(task.due != null) ? when(task.due!) : ''} '
                                   '${task.priority ?? ''} '
+                                  '${task.project ?? ''} '
                                   '[${task.tags?.join(',') ?? ''}]'
                               .replaceFirst(RegExp(r' \[\]$'), '')
                               .replaceAll(RegExp(r' +'), ' '),

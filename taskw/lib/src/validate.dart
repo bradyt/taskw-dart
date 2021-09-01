@@ -15,6 +15,16 @@ void validateTaskDescription(String description) {
   }
 }
 
+void validateTaskProject(String project) {
+  if (project.substring(project.length - 1) == r'\') {
+    throw FormatException(
+      'Trailing backslashes may corrupt your Taskserver account.',
+      project,
+      project.length - 1,
+    );
+  }
+}
+
 void validateTaskTags(String tag) {
   if (tag.contains(' ')) {
     throw FormatException(

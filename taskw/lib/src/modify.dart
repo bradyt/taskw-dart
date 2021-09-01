@@ -67,6 +67,12 @@ class Modify {
         'new': _draft.priority,
       };
     }
+    if (_draft.project != _saved.project) {
+      result['project'] = {
+        'old': _saved.project,
+        'new': _draft.project,
+      };
+    }
     if (_draft.tags != _saved.tags) {
       result['tags'] = {
         'old': _saved.tags,
@@ -121,6 +127,10 @@ class Modify {
 
   void setPriority(String? priority) {
     _draft = _draft.rebuild((b) => b..priority = priority);
+  }
+
+  void setProject(String? project) {
+    _draft = _draft.rebuild((b) => b..project = project);
   }
 
   void setTags(ListBuilder<String>? tags) {

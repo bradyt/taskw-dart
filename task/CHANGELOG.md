@@ -1,3 +1,11 @@
+# 0.1.2
+
+- Add projects feature
+  + Project is displayed in list and detail views
+  + Simple UI to edit project field
+  + Sort by project
+  + Very basic project filter
+
 # 0.1.1
 
 - Add notion of queries, persistent shortcuts to snapshots of sorting

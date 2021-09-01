@@ -68,6 +68,7 @@ class TaskListRoute extends StatelessWidget {
                       'entry',
                       'due',
                       'priority',
+                      'project',
                       'tags',
                       'urgency',
                     ])
@@ -115,6 +116,32 @@ class TaskListRoute extends StatelessWidget {
                     ),
                     onTap: storageWidget.togglePendingFilter,
                   ),
+                ),
+                Divider(),
+                ExpansionTile(
+                  key: PageStorageKey('project-filter'),
+                  title: Text('project:${storageWidget.projectFilter}'),
+                  children: [
+                    for (var entry in storageWidget.projects.entries)
+                      ListTile(
+                        onTap: () => storageWidget.toggleProjectFilter(entry.key),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                entry.key,
+                                style: GoogleFonts.firaMono(),
+                              ),
+                            ),
+                            Text(
+                              '${entry.value.frequency}',
+                              style: GoogleFonts.firaMono(),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 ),
                 Divider(),
                 Wrap(

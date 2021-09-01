@@ -8,6 +8,7 @@ class Query {
 
   File get _selectedSort => File('${_queryStorage.path}/selectedSort');
   File get _pendingFilter => File('${_queryStorage.path}/pendingFilter');
+  File get _projectFilter => File('${_queryStorage.path}/projectFilter');
   File get _tagUnion => File('${_queryStorage.path}/tagUnion');
   File get _selectedTags => File('${_queryStorage.path}/selectedTags');
 
@@ -40,6 +41,19 @@ class Query {
         ..writeAsStringSync('true');
     }
     return json.decode(_pendingFilter.readAsStringSync());
+  }
+
+  void toggleProjectFilter(String project) {
+    _projectFilter.writeAsStringSync(
+      (project == projectFilter()) ? '' : project,
+    );
+  }
+
+  String projectFilter() {
+    if (!_projectFilter.existsSync()) {
+      _projectFilter..createSync(recursive: true);
+    }
+    return _projectFilter.readAsStringSync();
   }
 
   void toggleTagUnion() {

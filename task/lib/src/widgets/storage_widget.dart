@@ -25,6 +25,16 @@ class TagMetadata {
   final bool selected;
 }
 
+class ProjectMetadata {
+  ProjectMetadata({
+    required this.frequency,
+    required this.selected,
+  });
+
+  final int frequency;
+  final bool selected;
+}
+
 class StorageWidget extends StatefulWidget {
   const StorageWidget({required this.profile, required this.child});
 
@@ -42,11 +52,13 @@ class StorageWidget extends StatefulWidget {
 class _StorageWidgetState extends State<StorageWidget> {
   late Storage storage;
   late bool pendingFilter;
+  late String projectFilter;
   late bool tagUnion;
   late String selectedSort;
   late Set<String> selectedTags;
   late List<Task> queriedTasks;
   late Map<String, TagMetadata> globalTags;
+  late Map<String, ProjectMetadata> projects;
   bool sortHeaderVisible = false;
 
   @override
@@ -67,11 +79,13 @@ class _StorageWidgetState extends State<StorageWidget> {
 
   void _profileSet() {
     pendingFilter = Query(storage.tabs.tab()).getPendingFilter();
+    projectFilter = Query(storage.tabs.tab()).projectFilter();
     tagUnion = Query(storage.tabs.tab()).tagUnion();
     selectedSort = Query(storage.tabs.tab()).getSelectedSort();
     selectedTags = Query(storage.tabs.tab()).getSelectedTags();
     _refreshTasks();
     globalTags = tags();
+    projects = _projects();
   }
 
   void _refreshTasks() {
@@ -82,6 +96,16 @@ class _StorageWidgetState extends State<StorageWidget> {
           .toList();
     } else {
       queriedTasks = storage.home.allData();
+    }
+
+    if (projectFilter.isNotEmpty) {
+      queriedTasks = queriedTasks.where((task) {
+        if (task.project == null) {
+          return false;
+        } else {
+          return task.project!.startsWith(projectFilter);
+        }
+      }).toList();
     }
 
     queriedTasks = queriedTasks.where((task) {
@@ -112,6 +136,7 @@ class _StorageWidgetState extends State<StorageWidget> {
       return ascending ? result : -result;
     });
     globalTags = tags();
+    projects = _projects();
   }
 
   Map<String, TagMetadata> tags() {
@@ -163,9 +188,38 @@ class _StorageWidgetState extends State<StorageWidget> {
     });
   }
 
+  Map<String, ProjectMetadata> _projects() {
+    var frequency = <String, int>{};
+    for (var task in storage.home.pendingData()) {
+      if (task.project != null) {
+        if (frequency.containsKey(task.project)) {
+          frequency[task.project!] = (frequency[task.project] ?? 0) + 1;
+        } else {
+          frequency[task.project!] = 1;
+        }
+      }
+    }
+    return SplayTreeMap.of(
+      {
+        for (var entry in frequency.entries)
+          entry.key: ProjectMetadata(
+            frequency: entry.value,
+            selected: false,
+          ),
+      },
+    );
+  }
+
   void togglePendingFilter() {
     Query(storage.tabs.tab()).togglePendingFilter();
     pendingFilter = Query(storage.tabs.tab()).getPendingFilter();
+    _refreshTasks();
+    setState(() {});
+  }
+
+  void toggleProjectFilter(String project) {
+    Query(storage.tabs.tab()).toggleProjectFilter(project);
+    projectFilter = Query(storage.tabs.tab()).projectFilter();
     _refreshTasks();
     setState(() {});
   }
@@ -215,6 +269,7 @@ class _StorageWidgetState extends State<StorageWidget> {
       var header = await storage.home.synchronize();
       _refreshTasks();
       globalTags = tags();
+      projects = _projects();
       setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('${header['code']}: ${header['status']}'),
@@ -282,13 +337,16 @@ class _StorageWidgetState extends State<StorageWidget> {
     return _InheritedStorage(
       tasks: queriedTasks,
       globalTags: globalTags,
+      projects: projects,
       pendingFilter: pendingFilter,
+      projectFilter: projectFilter,
       tagUnion: tagUnion,
       selectedSort: selectedSort,
       getTask: getTask,
       mergeTask: mergeTask,
       synchronize: synchronize,
       togglePendingFilter: togglePendingFilter,
+      toggleProjectFilter: toggleProjectFilter,
       toggleTagUnion: toggleTagUnion,
       selectSort: selectSort,
       toggleTagFilter: toggleTagFilter,
@@ -311,7 +369,9 @@ class _InheritedStorage extends InheritedModel<String> {
   const _InheritedStorage({
     required this.tasks,
     required this.globalTags,
+    required this.projects,
     required this.pendingFilter,
+    required this.projectFilter,
     required this.tagUnion,
     required this.selectedSort,
     required this.selectedTags,
@@ -319,6 +379,7 @@ class _InheritedStorage extends InheritedModel<String> {
     required this.mergeTask,
     required this.synchronize,
     required this.togglePendingFilter,
+    required this.toggleProjectFilter,
     required this.toggleTagUnion,
     required this.toggleTagFilter,
     required this.selectSort,
@@ -336,7 +397,9 @@ class _InheritedStorage extends InheritedModel<String> {
 
   final List<Task> tasks;
   final Map<String, TagMetadata> globalTags;
+  final Map<String, ProjectMetadata> projects;
   final bool pendingFilter;
+  final String projectFilter;
   final bool tagUnion;
   final String selectedSort;
   final Set<String> selectedTags;
@@ -344,6 +407,7 @@ class _InheritedStorage extends InheritedModel<String> {
   final void Function(Task) mergeTask;
   final void Function(BuildContext) synchronize;
   final void Function() togglePendingFilter;
+  final void Function(String) toggleProjectFilter;
   final void Function() toggleTagUnion;
   final void Function(String) selectSort;
   final void Function(String) toggleTagFilter;

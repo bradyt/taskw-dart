@@ -51,6 +51,9 @@ class _DetailRouteState extends State<DetailRoute> {
         case 'priority':
           modify.setPriority(newValue);
           break;
+        case 'project':
+          modify.setProject(newValue);
+          break;
         case 'tags':
           modify.setTags(newValue);
           break;
@@ -84,6 +87,7 @@ class _DetailRouteState extends State<DetailRoute> {
             'wait': modify.draft.wait,
             'until': modify.draft.until,
             'priority': modify.draft.priority,
+            'project': modify.draft.project,
             'tags': modify.draft.tags,
             'annotations': modify.draft.annotations,
             'udas': modify.draft.udas,
@@ -210,6 +214,12 @@ class AttributeWidget extends StatelessWidget {
         );
       case 'priority':
         return PriorityWidget(
+          name: name,
+          value: localValue,
+          callback: callback,
+        );
+      case 'project':
+        return ProjectWidget(
           name: name,
           value: localValue,
           callback: callback,
@@ -461,6 +471,78 @@ class PriorityWidget extends StatelessWidget {
             default:
               return callback('H');
           }
+        },
+      ),
+    );
+  }
+}
+
+class ProjectWidget extends StatelessWidget {
+  const ProjectWidget({
+    required this.name,
+    required this.value,
+    required this.callback,
+  });
+
+  final String name;
+  final dynamic value;
+  final void Function(dynamic) callback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              Text(
+                '${'$name:'.padRight(13)}$value',
+                style: GoogleFonts.firaMono(),
+              ),
+            ],
+          ),
+        ),
+        onTap: () {
+          var controller = TextEditingController(
+            text: value,
+          );
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              scrollable: true,
+              title: Text('Edit project'),
+              content: TextField(
+                autofocus: true,
+                maxLines: null,
+                controller: controller,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    try {
+                      validateTaskProject(controller.text);
+                      callback(controller.text);
+                      Navigator.of(context).pop();
+                    } on FormatException catch (e, trace) {
+                      showExceptionDialog(
+                        context: context,
+                        e: e,
+                        trace: trace,
+                      );
+                    }
+                  },
+                  child: Text('Submit'),
+                ),
+              ],
+            ),
+          );
         },
       ),
     );
