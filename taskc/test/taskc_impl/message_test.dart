@@ -152,18 +152,24 @@ void main() {
     test('too many tasks', () async {
       var payload = '{"description":"foo"}\n' * (pow(2, 16) as int);
 
-      var response = await synchronize(
-        connection: connection,
-        credentials: credentials,
-        payload: payload,
-      );
-
-      expect(response.header['code'], '504');
-      expect(response.header['status'], 'Request too big');
+      try {
+        await synchronize(
+          connection: connection,
+          credentials: credentials,
+          payload: payload,
+        );
+        expect(true, false);
+      } on TaskserverResponseException catch (e) {
+        expect(e.header, {
+          'client': 'taskd 1.1.0',
+          'code': '504',
+          'status': 'Request too big',
+        });
+      }
 
       payload = '{"description":"foo"}\n' * (pow(2, 15) as int);
 
-      response = await synchronize(
+      var response = await synchronize(
         connection: connection,
         credentials: credentials,
         payload: payload,
