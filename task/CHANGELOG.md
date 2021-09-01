@@ -2,6 +2,7 @@
 
 - Add notion of queries, persistent shortcuts to snapshots of sorting
   and filtering options selected from UI
+- Rudimentary support to apply union to tag filters
 
 # 0.1.0
 

@@ -8,6 +8,7 @@ class Query {
 
   File get _selectedSort => File('${_queryStorage.path}/selectedSort');
   File get _pendingFilter => File('${_queryStorage.path}/pendingFilter');
+  File get _tagUnion => File('${_queryStorage.path}/tagUnion');
   File get _selectedTags => File('${_queryStorage.path}/selectedTags');
 
   void setSelectedSort(String selectedSort) {
@@ -39,6 +40,21 @@ class Query {
         ..writeAsStringSync('true');
     }
     return json.decode(_pendingFilter.readAsStringSync());
+  }
+
+  void toggleTagUnion() {
+    _tagUnion.writeAsStringSync(
+      json.encode(!tagUnion()),
+    );
+  }
+
+  bool tagUnion() {
+    if (!_tagUnion.existsSync()) {
+      _tagUnion
+        ..createSync(recursive: true)
+        ..writeAsStringSync('false');
+    }
+    return json.decode(_tagUnion.readAsStringSync());
   }
 
   void toggleTagFilter(String tag) {

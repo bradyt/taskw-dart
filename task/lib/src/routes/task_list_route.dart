@@ -115,6 +115,11 @@ class TaskListRoute extends StatelessWidget {
                   ),
                 ),
                 Divider(),
+                FilterChip(
+                  onSelected: (_) => storageWidget.toggleTagUnion(),
+                  label: Text(storageWidget.tagUnion ? 'or' : 'and'),
+                ),
+                Divider(),
                 Wrap(
                   spacing: 8,
                   runSpacing: 4,

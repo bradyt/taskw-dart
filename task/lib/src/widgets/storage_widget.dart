@@ -26,6 +26,7 @@ class StorageWidget extends StatefulWidget {
 class _StorageWidgetState extends State<StorageWidget> {
   late Storage storage;
   late bool pendingFilter;
+  late bool tagUnion;
   late String selectedSort;
   late Set<String> selectedTags;
   late List<Task> tasks;
@@ -50,6 +51,7 @@ class _StorageWidgetState extends State<StorageWidget> {
 
   void _profileSet() {
     pendingFilter = Query(storage.tabs.tab()).getPendingFilter();
+    tagUnion = Query(storage.tabs.tab()).tagUnion();
     selectedSort = Query(storage.tabs.tab()).getSelectedSort();
     selectedTags = Query(storage.tabs.tab()).getSelectedTags();
     _refreshTasks();
@@ -68,9 +70,15 @@ class _StorageWidgetState extends State<StorageWidget> {
 
     tasks = tasks.where((task) {
       var tags = task.tags?.toSet() ?? {};
-      return selectedTags.every((tag) => (tag.startsWith('+'))
-          ? tags.contains(tag.substring(1))
-          : !tags.contains(tag.substring(1)));
+      if (tagUnion) {
+        return selectedTags.any((tag) => (tag.startsWith('+'))
+            ? tags.contains(tag.substring(1))
+            : !tags.contains(tag.substring(1)));
+      } else {
+        return selectedTags.every((tag) => (tag.startsWith('+'))
+            ? tags.contains(tag.substring(1))
+            : !tags.contains(tag.substring(1)));
+      }
     }).toList();
 
     var sortColumn = selectedSort.substring(0, selectedSort.length - 1);
@@ -89,6 +97,13 @@ class _StorageWidgetState extends State<StorageWidget> {
   void togglePendingFilter() {
     Query(storage.tabs.tab()).togglePendingFilter();
     pendingFilter = Query(storage.tabs.tab()).getPendingFilter();
+    _refreshTasks();
+    setState(() {});
+  }
+
+  void toggleTagUnion() {
+    Query(storage.tabs.tab()).toggleTagUnion();
+    tagUnion = Query(storage.tabs.tab()).tagUnion();
     _refreshTasks();
     setState(() {});
   }
@@ -199,11 +214,13 @@ class _StorageWidgetState extends State<StorageWidget> {
       tasks: tasks,
       globalTags: globalTags,
       pendingFilter: pendingFilter,
+      tagUnion: tagUnion,
       selectedSort: selectedSort,
       getTask: getTask,
       mergeTask: mergeTask,
       synchronize: synchronize,
       togglePendingFilter: togglePendingFilter,
+      toggleTagUnion: toggleTagUnion,
       selectSort: selectSort,
       toggleTagFilter: toggleTagFilter,
       selectedTags: selectedTags,
@@ -226,12 +243,14 @@ class _InheritedStorage extends InheritedModel<String> {
     required this.tasks,
     required this.globalTags,
     required this.pendingFilter,
+    required this.tagUnion,
     required this.selectedSort,
     required this.selectedTags,
     required this.getTask,
     required this.mergeTask,
     required this.synchronize,
     required this.togglePendingFilter,
+    required this.toggleTagUnion,
     required this.toggleTagFilter,
     required this.selectSort,
     required this.sortHeaderVisible,
@@ -249,12 +268,14 @@ class _InheritedStorage extends InheritedModel<String> {
   final List<Task> tasks;
   final Map<String, int> globalTags;
   final bool pendingFilter;
+  final bool tagUnion;
   final String selectedSort;
   final Set<String> selectedTags;
   final Task Function(String) getTask;
   final void Function(Task) mergeTask;
   final void Function(BuildContext) synchronize;
   final void Function() togglePendingFilter;
+  final void Function() toggleTagUnion;
   final void Function(String) selectSort;
   final void Function(String) toggleTagFilter;
   final bool sortHeaderVisible;
