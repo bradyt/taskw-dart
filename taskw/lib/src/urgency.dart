@@ -41,8 +41,10 @@ double urgency(Task task) {
     default:
   }
 
+  result += 1.0 * urgencyProject(task);
   result += 5.0 * urgencyScheduled(task);
   result += -3.0 * urgencyWaiting(task);
+  result += 1.0 * urgencyAnnotations(task);
   result += 1.0 * urgencyTags(task);
   result += 12.0 * urgencyDue(task);
   result += 2.0 * urgencyAge(task);
@@ -50,12 +52,27 @@ double urgency(Task task) {
   return double.parse(result.toStringAsFixed(3));
 }
 
+double urgencyProject(Task task) => (task.project != null) ? 1 : 0;
+
 double urgencyScheduled(Task task) =>
     (task.scheduled != null && task.scheduled!.isBefore(DateTime.now()))
         ? 1
         : 0;
 
 double urgencyWaiting(Task task) => (task.status == 'waiting') ? 1 : 0;
+
+double urgencyAnnotations(Task task) {
+  if (task.annotations?.isNotEmpty ?? false) {
+    if (task.annotations!.length == 1) {
+      return 0.8;
+    } else if (task.annotations!.length == 2) {
+      return 0.9;
+    } else if (task.annotations!.length > 2) {
+      return 1;
+    }
+  }
+  return 0;
+}
 
 double urgencyTags(Task task) {
   if (task.tags?.isNotEmpty ?? false) {
