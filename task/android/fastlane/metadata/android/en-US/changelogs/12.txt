@@ -1,3 +1,10 @@
+- Add notion of queries, persistent shortcuts to snapshots of sorting
+  and filtering options selected from UI
+- Rudimentary support to apply union to tag filters
+- Fix two issues in tag filter UI
+  - list of tag filters were not updating after updating task list
+  - a selected tag filter was active but hidden if its only tasks were
+    filtered out
 - Display filename of pem file
 - Do not show misleading/invented fingerprint for private key
 - Use more reliable fingerprint methods
