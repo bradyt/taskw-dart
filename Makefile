@@ -25,9 +25,9 @@ docs: get
 	cd task && dartdoc .
 
 format:
-	dart format taskc --fix  --output none  --set-exit-if-changed  --summary none
-	dart format taskw --fix  --output none  --set-exit-if-changed  --summary none
-	dart format task --fix  --output none  --set-exit-if-changed  --summary none
+	dart format taskc --fix --output none --set-exit-if-changed --summary none
+	dart format taskw --fix --output none --set-exit-if-changed --summary none
+	dart format task --fix --output none --set-exit-if-changed --summary none
 
 install:
 	dart pub global activate -spath taskc
