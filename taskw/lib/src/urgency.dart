@@ -59,7 +59,10 @@ double urgencyScheduled(Task task) =>
         ? 1
         : 0;
 
-double urgencyWaiting(Task task) => (task.status == 'waiting') ? 1 : 0;
+double urgencyWaiting(Task task) => (task.status == 'waiting' ||
+        (task.wait != null && task.wait!.isAfter(DateTime.now())))
+    ? 1
+    : 0;
 
 double urgencyAnnotations(Task task) {
   if (task.annotations?.isNotEmpty ?? false) {
