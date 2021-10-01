@@ -139,7 +139,10 @@ class TaskListRoute extends StatelessWidget {
                 const Divider(),
                 ExpansionTile(
                   key: const PageStorageKey('project-filter'),
-                  title: Text('project:${storageWidget.projectFilter}'),
+                  title: Text(
+                    'project:${storageWidget.projectFilter}',
+                    style: GoogleFonts.firaMono(),
+                  ),
                   children: [
                     for (var entry in storageWidget.projects.entries)
                       ListTile(
