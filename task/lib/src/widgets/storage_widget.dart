@@ -43,10 +43,10 @@ class StorageWidget extends StatefulWidget {
   final Widget child;
 
   @override
-  _StorageWidgetState createState() => _StorageWidgetState();
+  State<StorageWidget> createState() => _StorageWidgetState();
 
-  static _InheritedStorage of(BuildContext context) {
-    return InheritedModel.inheritFrom<_InheritedStorage>(context)!;
+  static InheritedStorage of(BuildContext context) {
+    return InheritedModel.inheritFrom<InheritedStorage>(context)!;
   }
 }
 
@@ -369,7 +369,7 @@ class _StorageWidgetState extends State<StorageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _InheritedStorage(
+    return InheritedStorage(
       tasks: searchedTasks,
       globalTags: globalTags,
       projects: projects,
@@ -404,8 +404,8 @@ class _StorageWidgetState extends State<StorageWidget> {
   }
 }
 
-class _InheritedStorage extends InheritedModel<String> {
-  const _InheritedStorage({
+class InheritedStorage extends InheritedModel<String> {
+  const InheritedStorage({
     required this.tasks,
     required this.globalTags,
     required this.projects,
@@ -470,13 +470,13 @@ class _InheritedStorage extends InheritedModel<String> {
   final void Function({required String tab, required String name}) renameTab;
 
   @override
-  bool updateShouldNotify(_InheritedStorage oldWidget) {
+  bool updateShouldNotify(InheritedStorage oldWidget) {
     return true;
   }
 
   @override
   bool updateShouldNotifyDependent(
-      _InheritedStorage oldWidget, Set<String> dependencies) {
+      InheritedStorage oldWidget, Set<String> dependencies) {
     return true;
   }
 }

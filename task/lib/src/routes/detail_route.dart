@@ -13,7 +13,7 @@ class DetailRoute extends StatefulWidget {
   final String uuid;
 
   @override
-  _DetailRouteState createState() => _DetailRouteState();
+  State<DetailRoute> createState() => _DetailRouteState();
 }
 
 class _DetailRouteState extends State<DetailRoute> {

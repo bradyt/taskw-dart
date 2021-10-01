@@ -133,7 +133,7 @@ class PemWidget extends StatefulWidget {
   final String pem;
 
   @override
-  _PemWidgetState createState() => _PemWidgetState();
+  State<PemWidget> createState() => _PemWidgetState();
 }
 
 class _PemWidgetState extends State<PemWidget> {
@@ -189,7 +189,7 @@ class TaskrcWidget extends StatefulWidget {
   final String profile;
 
   @override
-  _TaskrcWidgetState createState() => _TaskrcWidgetState();
+  State<TaskrcWidget> createState() => _TaskrcWidgetState();
 }
 
 class _TaskrcWidgetState extends State<TaskrcWidget> {

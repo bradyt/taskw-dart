@@ -18,10 +18,10 @@ class ProfilesWidget extends StatefulWidget {
   final Widget child;
 
   @override
-  _ProfilesWidgetState createState() => _ProfilesWidgetState();
+  State<ProfilesWidget> createState() => _ProfilesWidgetState();
 
-  static _InheritedProfiles of(BuildContext context) {
-    return InheritedModel.inheritFrom<_InheritedProfiles>(context)!;
+  static InheritedProfiles of(BuildContext context) {
+    return InheritedModel.inheritFrom<InheritedProfiles>(context)!;
   }
 }
 
@@ -88,7 +88,7 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _InheritedProfiles(
+    return InheritedProfiles(
       addProfile: addProfile,
       copyConfigToNewProfile: copyConfigToNewProfile,
       deleteProfile: deleteProfile,
@@ -107,8 +107,8 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
   }
 }
 
-class _InheritedProfiles extends InheritedModel<String> {
-  const _InheritedProfiles({
+class InheritedProfiles extends InheritedModel<String> {
+  const InheritedProfiles({
     required this.addProfile,
     required this.copyConfigToNewProfile,
     required this.deleteProfile,
@@ -134,13 +134,13 @@ class _InheritedProfiles extends InheritedModel<String> {
   final Storage Function(String) getStorage;
 
   @override
-  bool updateShouldNotify(_InheritedProfiles oldWidget) {
+  bool updateShouldNotify(InheritedProfiles oldWidget) {
     return true;
   }
 
   @override
   bool updateShouldNotifyDependent(
-      _InheritedProfiles oldWidget, Set<String> dependencies) {
+      InheritedProfiles oldWidget, Set<String> dependencies) {
     return true;
   }
 }
