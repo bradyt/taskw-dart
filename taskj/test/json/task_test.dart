@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:built_collection/built_collection.dart';
+import 'package:collection/collection.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 
@@ -186,6 +187,8 @@ void main() {
       await taskwarrior.add(['y']);
       await taskwarrior.add(['z']);
 
+      var version = await taskwarrior.version();
+
       // Assumes task executable before
       // <https://github.com/GothenburgBitFactory/taskwarrior/commit/20af583e21666d4825bfb81fcd1264c786bf4d01>.
       // Tests may be improved to detect task executable version. Such an
@@ -194,10 +197,12 @@ void main() {
       // installed, either in CI or personal computer.
       await taskwarrior.modify(['1', 'dep:2,3,4']);
       var string = (json.decode(await taskwarrior.export()) as List)[0];
-      expect((string as Map)['depends'], isA<String>());
-      expect((string['depends'] as String).split(',').length, 3);
-      expect(Task.fromJson(string).toJson(), string);
 
+      if (version[0] <= 2 && version[1] <= 5) {
+        expect((string as Map)['depends'], isA<String>());
+        expect((string['depends'] as String).split(',').length, 3);
+        expect(Task.fromJson(string).toJson(), string);
+      }
       // I expect the rest of the tests to work for stable and bleeding edge
       // Taskwarrior.
 
