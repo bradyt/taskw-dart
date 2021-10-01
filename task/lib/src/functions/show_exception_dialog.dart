@@ -34,7 +34,7 @@ void showExceptionDialog({context, e, trace}) {
               '''
 $identifier
 
-The server sent a certificate that could not be verified with your CA file.
+The server sent a certificate that could not be verified with a CA file.
 
 You may export and inspect the certificate. You may indicate that you trust the
 certificate, and it will be saved to this profile to allow future

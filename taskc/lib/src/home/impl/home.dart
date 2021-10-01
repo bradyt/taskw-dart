@@ -213,7 +213,6 @@ class HomeImpl {
 
   Connection _getConnection(Map config) {
     var pems = [
-      'taskd.ca',
       'taskd.cert',
       'taskd.key',
     ];
@@ -242,11 +241,13 @@ class HomeImpl {
           'Ensure your TASKRC\'s taskd.server has the form <domain>:<port>, '
           'where port is an integer.');
     }
+    var context = (File(_keyPemLookup['taskd.ca']!).existsSync())
+        ? (SecurityContext()..setTrustedCertificates(_ca))
+        : SecurityContext.defaultContext;
     return Connection(
       address: address,
       port: port,
-      context: SecurityContext()
-        ..setTrustedCertificates(_ca)
+      context: context
         ..useCertificateChain(_cert)
         ..usePrivateKey(_key),
       onBadCertificate: (serverCert) {
