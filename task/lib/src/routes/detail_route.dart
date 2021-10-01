@@ -535,7 +535,8 @@ class ProjectWidget extends StatelessWidget {
                   onPressed: () {
                     try {
                       validateTaskProject(controller.text);
-                      callback(controller.text);
+                      callback(
+                          (controller.text == '') ? null : controller.text);
                       Navigator.of(context).pop();
                     } on FormatException catch (e, trace) {
                       showExceptionDialog(

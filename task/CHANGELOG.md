@@ -6,6 +6,7 @@
   + e.g., "client: info.tangential.task 0.1.4"
 - Adjust urgency for wait for task 2.6.X
 - Bring up keyboard when searching text
+- Clear a task's project field by submitting empty string
 
 # 0.1.3
 
