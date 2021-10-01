@@ -65,6 +65,7 @@ class TaskListRoute extends StatelessWidget {
           if (storageWidget.searchVisible)
             Card(
               child: TextField(
+                autofocus: true,
                 style: GoogleFonts.firaMono(),
                 onChanged: (value) {
                   storageWidget.search(value);

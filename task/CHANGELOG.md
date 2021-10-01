@@ -5,6 +5,7 @@
 - Send client id to Taskserver in message header
   + e.g., "client: info.tangential.task 0.1.4"
 - Adjust urgency for wait for task 2.6.X
+- Bring up keyboard when searching text
 
 # 0.1.3
 
