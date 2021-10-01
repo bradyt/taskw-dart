@@ -76,6 +76,7 @@ class _DetailRouteState extends State<DetailRoute> {
         ),
       ),
       body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
         children: [
           for (var entry in {
             'description': modify.draft.description,
