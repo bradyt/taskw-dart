@@ -112,7 +112,7 @@ void main() {
       'taskd.cert': '.task/first_last.cert.pem',
       'taskd.key': '.task/first_last.key.pem',
     }.entries) {
-      expect(() => storage.home.synchronize(),
+      expect(() => storage.home.synchronize('test'),
           throwsA(isA<TaskserverConfigurationException>()));
       storage.home.addPemFile(
         key: entry.key,
@@ -132,8 +132,8 @@ void main() {
       await taskwarrior.diagnostics();
       var exitCode = await taskwarrior.synchronize();
       stdout.writeln(exitCode);
-      await storage.home.statistics();
-      await storage.home.synchronize();
+      await storage.home.statistics('test');
+      await storage.home.synchronize('test');
     } on BadCertificateException catch (e) {
       await null;
       storage.home.addPemFile(
@@ -143,7 +143,7 @@ void main() {
       await null;
     }
 
-    await storage.home.synchronize();
+    await storage.home.synchronize('test');
 
     for (var data in ['backlog', 'pending', 'completed']) {
       var dataFile = File('$home/.task/$data.data');
@@ -161,7 +161,7 @@ void main() {
         Process.runSync('task', ['export'], environment: {'HOME': home}).stdout;
     Process.runSync('task', ['sync'], environment: {'HOME': home});
 
-    await storage.home.synchronize();
+    await storage.home.synchronize('test');
 
     var libExport = storage.home.export();
 

@@ -37,7 +37,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
   }
 
   Future<void> _showStatistics(BuildContext context) async {
-    await storage.home.statistics().then(
+    await storage.home.statistics(await client()).then(
       (header) {
         var maxKeyLength =
             header.keys.map<int>((key) => key.length).reduce(max);

@@ -59,14 +59,14 @@ void main() {
         );
       }
       try {
-        await storage.home.statistics();
+        await storage.home.statistics('test');
       } on BadCertificateException catch (e) {
         storage.home.addPemFile(
           key: 'server.cert',
           contents: e.certificate.pem,
         );
       }
-      var header = await storage.home.statistics();
+      var header = await storage.home.statistics('test');
       expect(header['code'], '200');
     });
   });

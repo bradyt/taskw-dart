@@ -282,7 +282,7 @@ class _StorageWidgetState extends State<StorageWidget> {
 
   Future<void> synchronize(BuildContext context) async {
     try {
-      var header = await storage.home.synchronize();
+      var header = await storage.home.synchronize(await client());
       _refreshTasks();
       globalTags = tags();
       projects = _projects();

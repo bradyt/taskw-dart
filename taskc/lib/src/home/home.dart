@@ -64,11 +64,11 @@ class Home {
     return parseTaskrc(File('${home.path}/.taskrc').readAsStringSync());
   }
 
-  Future<Map> statistics() {
-    return _homeImpl.statistics();
+  Future<Map> statistics(String client) {
+    return _homeImpl.statistics(client);
   }
 
-  Future<Map> synchronize() {
-    return _homeImpl.synchronize();
+  Future<Map> synchronize(String client) {
+    return _homeImpl.synchronize(client);
   }
 }

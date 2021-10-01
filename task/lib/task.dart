@@ -1,3 +1,4 @@
+export 'package:task/src/functions/client.dart';
 export 'package:task/src/functions/save_file.dart';
 export 'package:task/src/functions/set_config.dart';
 export 'package:task/src/functions/show_exception_dialog.dart';

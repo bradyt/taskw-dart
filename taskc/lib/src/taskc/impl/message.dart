@@ -6,10 +6,12 @@ import 'package:taskc/taskc_impl.dart';
 Future<Response> message({
   required Connection connection,
   required Credentials credentials,
+  required String client,
   required String type,
   String? payload,
 }) async {
   var message = '''
+client: $client
 type: $type
 org: ${credentials.org}
 user: ${credentials.user}

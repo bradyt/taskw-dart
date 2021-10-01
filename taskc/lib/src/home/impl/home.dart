@@ -286,16 +286,17 @@ class HomeImpl {
     return parseTaskrc(File(_taskrc).readAsStringSync());
   }
 
-  Future<Map> statistics() async {
+  Future<Map> statistics(String client) async {
     var config = getConfig();
     var response = await taskc.statistics(
       connection: _getConnection(config),
       credentials: _getCredentials(config),
+      client: client,
     );
     return response.header;
   }
 
-  Future<Map> synchronize() async {
+  Future<Map> synchronize(String client) async {
     var config = getConfig();
     var payload = '';
     if (File('${home.path}/.task/backlog.data').existsSync()) {
@@ -304,6 +305,7 @@ class HomeImpl {
     var response = await taskc.synchronize(
       connection: _getConnection(config),
       credentials: _getCredentials(config),
+      client: client,
       payload: payload,
     );
     var tasks = [

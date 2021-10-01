@@ -65,6 +65,7 @@ void main() {
       var response = await statistics(
         connection: connection,
         credentials: credentials,
+        client: 'test',
       );
       expect(response.header['status'], 'Ok');
     });
@@ -87,6 +88,7 @@ void main() {
       var response = await synchronize(
         connection: connection,
         credentials: credentials,
+        client: 'test',
         payload: '${Payload(tasks: [newTask()])}',
       );
 
@@ -101,6 +103,7 @@ void main() {
       var response = await synchronize(
         connection: connection,
         credentials: credentials,
+        client: 'test',
         payload: '${Payload(tasks: [], userKey: userKey)}',
       );
 
@@ -118,12 +121,14 @@ void main() {
       await synchronize(
         connection: connection,
         credentials: credentials,
+        client: 'test',
         payload: payload,
       );
 
       var response = await synchronize(
         connection: connection,
         credentials: credentials,
+        client: 'test',
         payload: '',
       );
 
@@ -138,12 +143,14 @@ void main() {
       await synchronize(
         connection: connection,
         credentials: credentials,
+        client: 'test',
         payload: '${newTask()}\n${newTask()}',
       );
 
       var response = await synchronize(
         connection: connection,
         credentials: credentials,
+        client: 'test',
         payload: '',
       );
 
@@ -156,6 +163,7 @@ void main() {
         await synchronize(
           connection: connection,
           credentials: credentials,
+          client: 'test',
           payload: payload,
         );
         expect(true, false);
@@ -172,6 +180,7 @@ void main() {
       var response = await synchronize(
         connection: connection,
         credentials: credentials,
+        client: 'test',
         payload: payload,
       );
 
@@ -230,6 +239,7 @@ void main() {
       var response = await synchronize(
         connection: connection,
         credentials: credentials,
+        client: 'test',
         payload: payload,
       );
 
@@ -239,6 +249,7 @@ void main() {
       response = await synchronize(
         connection: connection,
         credentials: credentials,
+        client: 'test',
         payload: '',
       );
 
