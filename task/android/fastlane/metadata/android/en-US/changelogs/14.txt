@@ -1,0 +1,2 @@
+- Fix bug where BadCertificateException's Trust button was broken
+- Add project and annotations to urgency calculation
