@@ -15,6 +15,7 @@ jobs:
       image: cirrusci/flutter:stable
     steps:
     - uses: actions/checkout@v2
+    - run: echo '/sdks/flutter/bin' >> $GITHUB_PATH
     - run: flutter config --no-analytics
     - run: dart --disable-analytics
     - run: make format
