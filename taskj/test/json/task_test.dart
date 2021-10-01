@@ -124,6 +124,7 @@ void main() {
       await taskwarrior.config(['uda.x.type', 'numeric']);
       await taskwarrior.config(['uda.y.type', 'date']);
       await taskwarrior.config(['uda.z.type', 'duration']);
+      await Future.delayed(Duration(seconds: 1));
       await taskwarrior.add([
         'foo',
         'x:42',
