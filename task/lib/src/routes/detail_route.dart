@@ -619,7 +619,7 @@ class AnnotationsWidget extends StatelessWidget {
               Text(
                 (value == null)
                     ? '${'$name:'.padRight(13)}null'
-                    : '${'$name:'.padRight(13)}${(value as List).length} annotation(s)',
+                    : '${'$name:'.padRight(13)}${(value as ListBuilder).length} annotation(s)',
                 style: GoogleFonts.firaMono(),
               ),
             ],
