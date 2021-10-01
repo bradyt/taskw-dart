@@ -1,5 +1,11 @@
 void validateTaskDescription(String description) {
-  if (description.endsWith(r'\')) {
+  if (description.isEmpty) {
+    throw FormatException(
+      'Empty description will provoke a server error.',
+      description,
+      0,
+    );
+  } else if (description.endsWith(r'\')) {
     throw FormatException(
       'Trailing backslashes may corrupt your Taskserver account.',
       description,
