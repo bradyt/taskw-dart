@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:path/path.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 

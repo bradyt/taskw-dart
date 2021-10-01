@@ -1,10 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 

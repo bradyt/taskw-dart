@@ -1,8 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:pedantic/pedantic.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 

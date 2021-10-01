@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'dart:io';
 
-import 'package:pedantic/pedantic.dart';
 import 'package:path/path.dart';
 import 'package:test/test.dart';
 
