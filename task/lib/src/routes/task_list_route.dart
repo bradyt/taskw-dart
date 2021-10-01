@@ -33,29 +33,29 @@ class TaskListRoute extends StatelessWidget {
         actions: [
           IconButton(
             icon: (storageWidget.searchVisible)
-                ? Icon(Icons.cancel)
-                : Icon(Icons.search),
+                ? const Icon(Icons.cancel)
+                : const Icon(Icons.search),
             onPressed: storageWidget.toggleSearch,
           ),
           Builder(
             builder: (context) => IconButton(
-              icon: Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh),
               onPressed: () => storageWidget.synchronize(context),
             ),
           ),
           IconButton(
-            icon: Icon(Icons.sort),
+            icon: const Icon(Icons.sort),
             onPressed: storageWidget.toggleSortHeader,
           ),
           Builder(
             builder: (context) => IconButton(
-              icon: Icon(Icons.filter_list),
+              icon: const Icon(Icons.filter_list),
               onPressed: () => Scaffold.of(context).openEndDrawer(),
             ),
           ),
         ],
       ),
-      drawer: Drawer(
+      drawer: const Drawer(
         child: SafeArea(
           child: ProfilesColumn(),
         ),
@@ -76,7 +76,7 @@ class TaskListRoute extends StatelessWidget {
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: Padding(
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 child: Wrap(
                   spacing: 8,
                   runSpacing: 4,
@@ -112,7 +112,7 @@ class TaskListRoute extends StatelessWidget {
                 ),
               ),
             ),
-          Expanded(
+          const Expanded(
             child: Scrollbar(
               child: TaskListView(),
             ),
@@ -122,9 +122,9 @@ class TaskListRoute extends StatelessWidget {
       endDrawer: Drawer(
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: ListView(
-              key: PageStorageKey('tags-filter'),
+              key: const PageStorageKey('tags-filter'),
               children: [
                 Card(
                   child: ListTile(
@@ -135,9 +135,9 @@ class TaskListRoute extends StatelessWidget {
                     onTap: storageWidget.togglePendingFilter,
                   ),
                 ),
-                Divider(),
+                const Divider(),
                 ExpansionTile(
-                  key: PageStorageKey('project-filter'),
+                  key: const PageStorageKey('project-filter'),
                   title: Text('project:${storageWidget.projectFilter}'),
                   children: [
                     for (var entry in storageWidget.projects.entries)
@@ -162,7 +162,7 @@ class TaskListRoute extends StatelessWidget {
                       ),
                   ],
                 ),
-                Divider(),
+                const Divider(),
                 Wrap(
                   spacing: 4,
                   children: [
@@ -207,10 +207,10 @@ class TaskListRoute extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => showDialog(
           context: context,
-          builder: (context) => AddTaskDialog(),
+          builder: (context) => const AddTaskDialog(),
         ),
         tooltip: 'Add task',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -234,12 +234,12 @@ class ProfilesColumn extends StatelessWidget {
       children: [
         Expanded(
           child: ListView(
-            key: PageStorageKey('task-list'),
+            key: const PageStorageKey('task-list'),
             children: [
               ListTile(
-                title: Text('Profiles'),
+                title: const Text('Profiles'),
                 trailing: IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: () => profilesWidget.addProfile(),
                 ),
               ),
@@ -262,11 +262,11 @@ class ProfilesColumn extends StatelessWidget {
                   ),
                   children: [
                     ListTile(
-                      leading: Padding(
+                      leading: const Padding(
                         padding: EdgeInsets.all(12),
                         child: Icon(Icons.edit),
                       ),
-                      title: Text('Rename profile'),
+                      title: const Text('Rename profile'),
                       onTap: () => showDialog(
                         context: context,
                         builder: (context) => RenameProfileDialog(
@@ -277,11 +277,11 @@ class ProfilesColumn extends StatelessWidget {
                       ),
                     ),
                     ListTile(
-                      leading: Padding(
+                      leading: const Padding(
                         padding: EdgeInsets.all(12),
                         child: Icon(Icons.link),
                       ),
-                      title: Text('Configure Taskserver'),
+                      title: const Text('Configure Taskserver'),
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -294,11 +294,11 @@ class ProfilesColumn extends StatelessWidget {
                       ),
                     ),
                     ListTile(
-                        leading: Padding(
+                        leading: const Padding(
                           padding: EdgeInsets.all(12),
                           child: Icon(Icons.file_download),
                         ),
-                        title: Text('Export tasks'),
+                        title: const Text('Export tasks'),
                         onTap: () {
                           var tasks = ProfilesWidget.of(context)
                               .getStorage(entry.key)
@@ -314,20 +314,20 @@ class ProfilesColumn extends StatelessWidget {
                           );
                         }),
                     ListTile(
-                      leading: Padding(
+                      leading: const Padding(
                         padding: EdgeInsets.all(12),
                         child: Icon(Icons.copy),
                       ),
-                      title: Text('Copy config to new profile'),
+                      title: const Text('Copy config to new profile'),
                       onTap: () => ProfilesWidget.of(context)
                           .copyConfigToNewProfile(entry.key),
                     ),
                     ListTile(
-                      leading: Padding(
+                      leading: const Padding(
                         padding: EdgeInsets.all(12),
                         child: Icon(Icons.delete),
                       ),
-                      title: Text('Delete profile'),
+                      title: const Text('Delete profile'),
                       onTap: () => showDialog(
                         context: context,
                         builder: (context) => DeleteProfileDialog(
@@ -338,11 +338,11 @@ class ProfilesColumn extends StatelessWidget {
                     ),
                   ],
                 ),
-              Divider(),
+              const Divider(),
               ListTile(
-                title: Text('Queries'),
+                title: const Text('Queries'),
                 trailing: IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: () => storageWidget.addTab(),
                 ),
               ),
@@ -366,11 +366,11 @@ class ProfilesColumn extends StatelessWidget {
                   ),
                   children: [
                     ListTile(
-                      leading: Padding(
+                      leading: const Padding(
                         padding: EdgeInsets.all(12),
                         child: Icon(Icons.edit),
                       ),
-                      title: Text('Rename query'),
+                      title: const Text('Rename query'),
                       onTap: () => showDialog(
                         context: context,
                         builder: (context) => RenameTabDialog(
@@ -381,11 +381,11 @@ class ProfilesColumn extends StatelessWidget {
                       ),
                     ),
                     ListTile(
-                      leading: Padding(
+                      leading: const Padding(
                         padding: EdgeInsets.all(12),
                         child: Icon(Icons.delete),
                       ),
-                      title: Text('Delete query'),
+                      title: const Text('Delete query'),
                       onTap: () => storageWidget.removeTab(entry.key),
                     ),
                   ],
@@ -394,8 +394,8 @@ class ProfilesColumn extends StatelessWidget {
           ),
         ),
         if (Platform.isAndroid) ...[
-          Divider(),
-          ListTile(
+          const Divider(),
+          const ListTile(
             title: Text('Privacy policy:'),
             subtitle: Text('This app does not collect data.'),
           ),

@@ -16,7 +16,7 @@ class AddTaskDialog extends StatelessWidget {
 
     return AlertDialog(
       scrollable: true,
-      title: Text('Add task'),
+      title: const Text('Add task'),
       content: TextField(
         autofocus: true,
         maxLines: null,
@@ -27,7 +27,7 @@ class AddTaskDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: () async {
@@ -38,7 +38,7 @@ class AddTaskDialog extends StatelessWidget {
                 Task(
                   (b) => b
                     ..status = 'pending'
-                    ..uuid = Uuid().v1()
+                    ..uuid = const Uuid().v1()
                     ..entry = now
                     ..description = controller.text
                     ..modified = now,
@@ -53,7 +53,7 @@ class AddTaskDialog extends StatelessWidget {
               );
             }
           },
-          child: Text('Submit'),
+          child: const Text('Submit'),
         ),
       ],
     );

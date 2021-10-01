@@ -110,7 +110,7 @@ class _DetailRouteState extends State<DetailRoute> {
                   builder: (context) {
                     return AlertDialog(
                       scrollable: true,
-                      title: Text('Review changes:'),
+                      title: const Text('Review changes:'),
                       content: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Column(
@@ -141,7 +141,7 @@ class _DetailRouteState extends State<DetailRoute> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('Cancel'),
+                          child: const Text('Cancel'),
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -152,14 +152,14 @@ class _DetailRouteState extends State<DetailRoute> {
                             setState(() {});
                             Navigator.of(context).pop();
                           },
-                          child: Text('Submit'),
+                          child: const Text('Submit'),
                         ),
                       ],
                     );
                   },
                 );
               },
-              child: Icon(Icons.save),
+              child: const Icon(Icons.save),
             ),
     );
   }
@@ -239,7 +239,7 @@ class AttributeWidget extends StatelessWidget {
         );
       default:
         return Card(
-          color: Color(0x00000000),
+          color: const Color(0x00000000),
           elevation: 0,
           child: ListTile(
             title: SingleChildScrollView(
@@ -296,7 +296,7 @@ class DescriptionWidget extends StatelessWidget {
             context: context,
             builder: (context) => AlertDialog(
               scrollable: true,
-              title: Text('Edit description'),
+              title: const Text('Edit description'),
               content: TextField(
                 autofocus: true,
                 maxLines: null,
@@ -307,7 +307,7 @@ class DescriptionWidget extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -323,7 +323,7 @@ class DescriptionWidget extends StatelessWidget {
                       );
                     }
                   },
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                 ),
               ],
             ),
@@ -517,7 +517,7 @@ class ProjectWidget extends StatelessWidget {
             context: context,
             builder: (context) => AlertDialog(
               scrollable: true,
-              title: Text('Edit project'),
+              title: const Text('Edit project'),
               content: TextField(
                 autofocus: true,
                 maxLines: null,
@@ -528,7 +528,7 @@ class ProjectWidget extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -544,7 +544,7 @@ class ProjectWidget extends StatelessWidget {
                       );
                     }
                   },
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                 ),
               ],
             ),

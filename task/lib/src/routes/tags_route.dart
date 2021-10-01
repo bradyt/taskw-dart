@@ -59,11 +59,11 @@ class TagsRouteState extends State<TagsRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('tags'),
+        title: const Text('tags'),
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(4),
+          padding: const EdgeInsets.all(4),
           child: SingleChildScrollView(
             child: Wrap(
               spacing: 8,
@@ -78,7 +78,7 @@ class TagsRouteState extends State<TagsRoute> {
                         style: GoogleFonts.firaMono(),
                       ),
                     ),
-                Divider(),
+                const Divider(),
                 if (_globalTags != null)
                   for (var tag in _globalTags!.entries.where((tag) =>
                       !(draftTags?.build().contains(tag.key) ?? false)))
@@ -101,7 +101,7 @@ class TagsRouteState extends State<TagsRoute> {
             context: context,
             builder: (context) => AlertDialog(
               scrollable: true,
-              title: Text('Add tag'),
+              title: const Text('Add tag'),
               content: TextField(
                 autofocus: true,
                 controller: controller,
@@ -111,7 +111,7 @@ class TagsRouteState extends State<TagsRoute> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -127,13 +127,13 @@ class TagsRouteState extends State<TagsRoute> {
                       );
                     }
                   },
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                 ),
               ],
             ),
           );
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

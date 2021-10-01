@@ -45,7 +45,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
           context: context,
           builder: (context) => AlertDialog(
             scrollable: true,
-            title: Text('Statistics:'),
+            title: const Text('Statistics:'),
             content: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -68,7 +68,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Ok'),
+                child: const Text('Ok'),
               ),
             ],
           ),
@@ -96,12 +96,12 @@ class ConfigureTaskserverRoute extends StatelessWidget {
         actions: [
           if (kDebugMode)
             IconButton(
-              icon: Icon(Icons.bug_report),
+              icon: const Icon(Icons.bug_report),
               onPressed: _setConfigurationFromFixtureForDebugging,
             ),
           Builder(
             builder: (context) => IconButton(
-              icon: Icon(Icons.show_chart),
+              icon: const Icon(Icons.show_chart),
               onPressed: () => _showStatistics(context),
             ),
           ),
@@ -234,7 +234,7 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
     }
 
     return ExpansionTile(
-      title: Text('.taskrc'),
+      title: const Text('.taskrc'),
       children: [
         ListTile(
             title: SingleChildScrollView(
@@ -276,7 +276,7 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
                 ),
         ),
         ListTile(
-            title: Text('Select .taskrc'),
+            title: const Text('Select .taskrc'),
             onTap: () async {
               await setConfig(
                 storage: ProfilesWidget.of(context).getStorage(widget.profile),

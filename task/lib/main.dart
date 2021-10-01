@@ -24,7 +24,7 @@ void main([List<String> args = const []]) {
   Directory? testingDirectory;
   if (args.contains('flutter_driver_test')) {
     testingDirectory = Directory(
-      '${Directory.systemTemp.path}/flutter_driver_test/${Uuid().v1()}',
+      '${Directory.systemTemp.path}/flutter_driver_test/${const Uuid().v1()}',
     )..createSync(recursive: true);
     stdout.writeln(testingDirectory);
     Directory(
@@ -38,9 +38,9 @@ void main([List<String> args = const []]) {
       builder: (context, snapshot) => (snapshot.hasData)
           ? ProfilesWidget(
               baseDirectory: testingDirectory ?? snapshot.data!,
-              child: TaskApp(),
+              child: const TaskApp(),
             )
-          : Placeholder(),
+          : const Placeholder(),
     ),
   );
 }
@@ -58,7 +58,7 @@ class TaskApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       darkTheme: ThemeData.dark(),
-      home: TaskListRoute(),
+      home: const TaskListRoute(),
     );
   }
 }

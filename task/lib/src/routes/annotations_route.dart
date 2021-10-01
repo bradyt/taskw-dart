@@ -45,23 +45,23 @@ class AnnotationsRouteState extends State<AnnotationsRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('annotations'),
+        title: const Text('annotations'),
       ),
       body: ListView.separated(
         itemCount: draftAnnotations?.length ?? 0,
-        separatorBuilder: (_, __) => Divider(),
+        separatorBuilder: (_, __) => const Divider(),
         itemBuilder: (_, index) {
           var entry = draftAnnotations![index].entry.toLocal().toString();
           var description = draftAnnotations![index].description;
           return Card(
-            color: Color(0x00000000),
+            color: const Color(0x00000000),
             elevation: 0,
             child: ListTile(
               title: SelectableLinkify(
                 onOpen: (link) => launch(link.url),
                 text: '$entry -- $description',
                 style: GoogleFonts.firaMono(),
-                options: LinkifyOptions(humanize: false),
+                options: const LinkifyOptions(humanize: false),
               ),
             ),
           );
@@ -74,7 +74,7 @@ class AnnotationsRouteState extends State<AnnotationsRoute> {
             context: context,
             builder: (context) => AlertDialog(
               scrollable: true,
-              title: Text('Add annotation'),
+              title: const Text('Add annotation'),
               content: TextField(
                 autofocus: true,
                 controller: controller,
@@ -84,7 +84,7 @@ class AnnotationsRouteState extends State<AnnotationsRoute> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -96,13 +96,13 @@ class AnnotationsRouteState extends State<AnnotationsRoute> {
                     ));
                     Navigator.of(context).pop();
                   },
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                 ),
               ],
             ),
           );
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

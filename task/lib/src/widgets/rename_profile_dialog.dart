@@ -20,14 +20,14 @@ class RenameProfileDialog extends StatelessWidget {
 
     return AlertDialog(
       scrollable: true,
-      title: Text('Rename profile'),
+      title: const Text('Rename profile'),
       content: TextField(controller: controller),
       actions: [
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: () {
@@ -37,7 +37,7 @@ class RenameProfileDialog extends StatelessWidget {
             );
             Navigator.of(context).pop();
           },
-          child: Text('Submit'),
+          child: const Text('Submit'),
         ),
       ],
     );

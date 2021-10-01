@@ -52,20 +52,20 @@ connections.'''
                   );
               Navigator.of(context).pop();
             },
-            child: Text('Trust'),
+            child: const Text('Trust'),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text('Dismiss'),
+            child: const Text('Dismiss'),
           ),
           ElevatedButton(
             onPressed: () async {
               await saveServerCert(e.certificate.pem);
               Navigator.of(context).pop();
             },
-            child: Text('Export'),
+            child: const Text('Export'),
           ),
         ],
       ),
@@ -89,7 +89,7 @@ connections.'''
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Ok'),
+          child: const Text('Ok'),
         ),
       ],
     ),

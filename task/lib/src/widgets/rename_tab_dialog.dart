@@ -20,14 +20,14 @@ class RenameTabDialog extends StatelessWidget {
 
     return AlertDialog(
       scrollable: true,
-      title: Text('Rename tab'),
+      title: const Text('Rename tab'),
       content: TextField(controller: controller),
       actions: [
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: () {
@@ -37,7 +37,7 @@ class RenameTabDialog extends StatelessWidget {
             );
             Navigator.of(context).pop();
           },
-          child: Text('Submit'),
+          child: const Text('Submit'),
         ),
       ],
     );
