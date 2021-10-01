@@ -187,7 +187,7 @@ void main() {
       await taskwarrior.add(['y']);
       await taskwarrior.add(['z']);
 
-      var version = await taskwarrior.version();
+      var version = await Taskwarrior.version();
 
       // Assumes task executable before
       // <https://github.com/GothenburgBitFactory/taskwarrior/commit/20af583e21666d4825bfb81fcd1264c786bf4d01>.
