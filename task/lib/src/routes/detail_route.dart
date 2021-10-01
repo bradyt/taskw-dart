@@ -118,6 +118,7 @@ class _DetailRouteState extends State<DetailRoute> {
                           children: [
                             for (var change in modify.changes.entries)
                               (change) {
+                                change as MapEntry<dynamic, Map>;
                                 var _old = change.value['old'];
                                 var _new = change.value['new'];
                                 if (_old is DateTime) {
@@ -180,8 +181,8 @@ class AttributeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var localValue = (value is DateTime)
-        ? value.toLocal()
-        : ((value is BuiltList) ? value.toBuilder() : value);
+        ? (value as DateTime).toLocal()
+        : ((value is BuiltList) ? (value as BuiltList).toBuilder() : value);
     switch (name) {
       case 'description':
         return DescriptionWidget(
@@ -566,7 +567,6 @@ class TagsWidget extends StatelessWidget {
   final String name;
   final dynamic value;
   final void Function(dynamic) callback;
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -576,7 +576,7 @@ class TagsWidget extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                '${'$name:'.padRight(13)}${value?.build()}',
+                '${'$name:'.padRight(13)}${(value as ListBuilder?)?.build()}',
                 style: GoogleFonts.firaMono(),
               ),
             ],
@@ -619,7 +619,7 @@ class AnnotationsWidget extends StatelessWidget {
               Text(
                 (value == null)
                     ? '${'$name:'.padRight(13)}null'
-                    : '${'$name:'.padRight(13)}${value.length} annotation(s)',
+                    : '${'$name:'.padRight(13)}${(value as List).length} annotation(s)',
                 style: GoogleFonts.firaMono(),
               ),
             ],

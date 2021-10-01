@@ -40,7 +40,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
     await storage.home.statistics(await client()).then(
       (header) {
         var maxKeyLength =
-            header.keys.map<int>((key) => key.length).reduce(max);
+            header.keys.map<int>((key) => (key as String).length).reduce(max);
         showDialog(
           context: context,
           builder: (context) => AlertDialog(

@@ -12,6 +12,7 @@ import 'package:task/task.dart';
 
 void showExceptionDialog({context, e, trace}) {
   if (e.runtimeType == BadCertificateException) {
+    e as BadCertificateException;
     String identifier;
     try {
       identifier = decodePemBlocks(PemLabel.certificate, e.certificate.pem)

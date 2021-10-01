@@ -23,8 +23,8 @@ class Modify {
   Task get draft => _draft;
   int get id => _saved.id!;
 
-  Map get changes {
-    var result = {};
+  Map<dynamic, Map> get changes {
+    var result = <dynamic, Map>{};
     if (_draft.description != _saved.description) {
       result['description'] = {
         'old': _saved.description,
