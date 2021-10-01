@@ -15,6 +15,7 @@ class TaskListView extends StatelessWidget {
     var pendingFilter = StorageWidget.of(context).pendingFilter;
 
     return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
       children: [
         for (var task in taskData)
           Card(
