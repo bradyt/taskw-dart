@@ -8,6 +8,8 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class AddTaskDialog extends StatelessWidget {
+  const AddTaskDialog({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     var controller = TextEditingController();

@@ -9,7 +9,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:taskj/json.dart';
 
 class AnnotationsRoute extends StatefulWidget {
-  const AnnotationsRoute({required this.value, required this.callback});
+  const AnnotationsRoute({
+    required this.value,
+    required this.callback,
+    Key? key,
+  }) : super(key: key);
 
   final ListBuilder<Annotation>? value;
   final void Function(ListBuilder<Annotation>?) callback;

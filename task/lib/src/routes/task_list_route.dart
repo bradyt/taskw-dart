@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:task/task.dart';
 
 class TaskListRoute extends StatelessWidget {
+  const TaskListRoute({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     var profilesWidget = ProfilesWidget.of(context);
@@ -215,6 +217,8 @@ class TaskListRoute extends StatelessWidget {
 }
 
 class ProfilesColumn extends StatelessWidget {
+  const ProfilesColumn({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     var profilesWidget = ProfilesWidget.of(context);

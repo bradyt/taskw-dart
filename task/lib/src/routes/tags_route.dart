@@ -8,7 +8,8 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class TagsRoute extends StatefulWidget {
-  const TagsRoute({required this.value, required this.callback});
+  const TagsRoute({required this.value, required this.callback, Key? key})
+      : super(key: key);
 
   final ListBuilder<String>? value;
   final void Function(ListBuilder<String>?) callback;

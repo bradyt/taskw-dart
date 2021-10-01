@@ -8,7 +8,11 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class ProfilesWidget extends StatefulWidget {
-  const ProfilesWidget({required this.baseDirectory, required this.child});
+  const ProfilesWidget({
+    required this.baseDirectory,
+    required this.child,
+    Key? key,
+  }) : super(key: key);
 
   final Directory baseDirectory;
   final Widget child;
@@ -114,7 +118,8 @@ class _InheritedProfiles extends InheritedModel<String> {
     required this.profilesMap,
     required this.getStorage,
     required Widget child,
-  }) : super(child: child);
+    Key? key,
+  }) : super(child: child, key: key);
 
   final Function() addProfile;
   final Function(String) copyConfigToNewProfile;

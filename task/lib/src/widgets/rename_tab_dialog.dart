@@ -7,7 +7,8 @@ class RenameTabDialog extends StatelessWidget {
     required this.tab,
     required this.alias,
     required this.context,
-  });
+    Key? key,
+  }) : super(key: key);
 
   final String tab;
   final String? alias;

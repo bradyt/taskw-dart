@@ -15,7 +15,7 @@ import 'package:taskc/taskc.dart';
 import 'package:task/task.dart';
 
 class ConfigureTaskserverRoute extends StatelessWidget {
-  const ConfigureTaskserverRoute(this.storage);
+  const ConfigureTaskserverRoute(this.storage, {Key? key}) : super(key: key);
 
   final Storage storage;
 
@@ -126,7 +126,8 @@ class ConfigureTaskserverRoute extends StatelessWidget {
 }
 
 class PemWidget extends StatefulWidget {
-  const PemWidget({required this.storage, required this.pem});
+  const PemWidget({required this.storage, required this.pem, Key? key})
+      : super(key: key);
 
   final Storage storage;
   final String pem;
@@ -183,7 +184,7 @@ class _PemWidgetState extends State<PemWidget> {
 }
 
 class TaskrcWidget extends StatefulWidget {
-  const TaskrcWidget(this.profile);
+  const TaskrcWidget(this.profile, {Key? key}) : super(key: key);
 
   final String profile;
 

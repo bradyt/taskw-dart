@@ -8,7 +8,7 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class DetailRoute extends StatefulWidget {
-  const DetailRoute(this.uuid);
+  const DetailRoute(this.uuid, {Key? key}) : super(key: key);
 
   final String uuid;
 
@@ -170,7 +170,8 @@ class AttributeWidget extends StatelessWidget {
     required this.name,
     required this.value,
     required this.callback,
-  });
+    Key? key,
+  }) : super(key: key);
 
   final String name;
   final dynamic value;
@@ -265,7 +266,8 @@ class DescriptionWidget extends StatelessWidget {
     required this.name,
     required this.value,
     required this.callback,
-  });
+    Key? key,
+  }) : super(key: key);
 
   final String name;
   final dynamic value;
@@ -337,7 +339,8 @@ class StatusWidget extends StatelessWidget {
     required this.name,
     required this.value,
     required this.callback,
-  });
+    Key? key,
+  }) : super(key: key);
 
   final String name;
   final dynamic value;
@@ -378,7 +381,8 @@ class DateTimeWidget extends StatelessWidget {
     required this.name,
     required this.value,
     required this.callback,
-  });
+    Key? key,
+  }) : super(key: key);
 
   final String name;
   final dynamic value;
@@ -439,7 +443,8 @@ class PriorityWidget extends StatelessWidget {
     required this.name,
     required this.value,
     required this.callback,
-  });
+    Key? key,
+  }) : super(key: key);
 
   final String name;
   final dynamic value;
@@ -482,7 +487,8 @@ class ProjectWidget extends StatelessWidget {
     required this.name,
     required this.value,
     required this.callback,
-  });
+    Key? key,
+  }) : super(key: key);
 
   final String name;
   final dynamic value;
@@ -554,7 +560,8 @@ class TagsWidget extends StatelessWidget {
     required this.name,
     required this.value,
     required this.callback,
-  });
+    Key? key,
+  }) : super(key: key);
 
   final String name;
   final dynamic value;
@@ -594,7 +601,8 @@ class AnnotationsWidget extends StatelessWidget {
     required this.name,
     required this.value,
     required this.callback,
-  });
+    Key? key,
+  }) : super(key: key);
 
   final String name;
   final dynamic value;

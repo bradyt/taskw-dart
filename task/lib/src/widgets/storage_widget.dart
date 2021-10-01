@@ -36,7 +36,8 @@ class ProjectMetadata {
 }
 
 class StorageWidget extends StatefulWidget {
-  const StorageWidget({required this.profile, required this.child});
+  const StorageWidget({required this.profile, required this.child, Key? key}) //
+      : super(key: key);
 
   final Directory profile;
   final Widget child;
@@ -435,7 +436,8 @@ class _InheritedStorage extends InheritedModel<String> {
     required this.renameTab,
     required this.tabAlias,
     required Widget child,
-  }) : super(child: child);
+    Key? key,
+  }) : super(child: child, key: key);
 
   final List<Task> tasks;
   final Map<String, TagMetadata> globalTags;

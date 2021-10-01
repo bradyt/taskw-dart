@@ -7,6 +7,8 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class TaskListView extends StatelessWidget {
+  const TaskListView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     var taskData = StorageWidget.of(context).tasks;
