@@ -17,6 +17,12 @@ class Taskwarrior {
   final String _home;
   final _log = Logger('Taskwarrior');
 
+  Future<List<int>> version() async {
+    var result = await Process.start('task', ['--version']);
+    var firstResult = await result.stdout.transform(utf8.decoder).first;
+    return firstResult.split('.').map((item) => int.parse(item)).toList();
+  }
+
   Future<void> diagnostics() async {
     var result = await Process.start('task', ['diagnostics'],
         environment: {'HOME': _home});
