@@ -5,5 +5,5 @@ Map<String, String> parseTaskrc(String contents) => {
           .where((line) => line.contains('=') && line[0] != '#')
           .map((line) => line.replaceAll('\\/', '/')) // ignore: use_raw_strings
           .map((line) => line.split('=')))
-        pair[0]: pair[1],
+        pair[0].trim(): pair[1].trim(),
     };
