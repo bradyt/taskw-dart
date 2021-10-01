@@ -202,7 +202,12 @@ void main() {
 
       await taskwarrior.modify(['1', 'dep:']);
       var empty = (json.decode(await taskwarrior.export()) as List)[0];
-      expect((empty as Map).containsKey('depends'), false);
+
+      // See https://github.com/GothenburgBitFactory/taskwarrior/issues/2655
+      if (!ListEquality().equals(version, [2, 6, 1])) {
+        expect((empty as Map).containsKey('depends'), false);
+      }
+
       expect(Task.fromJson(empty).toJson(), empty);
 
       await taskwarrior.config(['json.depends.array', '1']);
