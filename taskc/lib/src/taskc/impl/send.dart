@@ -7,24 +7,28 @@ Future<Uint8List> send(
     {required Connection connection, required Uint8List bytes}) async {
   Uint8List response;
 
-  var socket = await SecureSocket.connect(
+  var socket = await Socket.connect(
     connection.address,
     connection.port,
+  );
+
+  var secureSocket = await SecureSocket.secure(
+    socket,
     context: connection.context,
     onBadCertificate: connection.onBadCertificate,
   );
 
-  socket.add(bytes);
+  secureSocket.add(bytes);
 
   response = Uint8List.fromList(
-    (await socket.toList())
+    (await secureSocket.toList())
         .expand(
           (x) => x,
         )
         .toList(),
   );
 
-  await socket.close();
+  await secureSocket.close();
 
   return response;
 }
