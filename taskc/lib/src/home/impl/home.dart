@@ -201,6 +201,11 @@ class HomeImpl {
     }
   }
 
+  void removeTaskdCa() {
+    File('${home.path}/.task/ca.cert.pem').deleteSync();
+    File('${home.path}/taskd.ca').deleteSync();
+  }
+
   void addFileName({required String key, required String name}) {
     if (key != '.taskrc') {
       File('${home.path}/$key').writeAsStringSync(name);

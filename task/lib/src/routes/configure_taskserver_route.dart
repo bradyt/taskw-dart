@@ -179,6 +179,12 @@ class _PemWidgetState extends State<PemWidget> {
         await setConfig(storage: widget.storage, key: widget.pem);
         setState(() {});
       },
+      onLongPress: (widget.pem == 'taskd.ca' && name != null)
+          ? () {
+              widget.storage.home.removeTaskdCa();
+              setState(() {});
+            }
+          : null,
     );
   }
 }

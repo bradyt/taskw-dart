@@ -35,6 +35,10 @@ class Home {
     return _homeImpl.export();
   }
 
+  void removeTaskdCa() {
+    _homeImpl.removeTaskdCa();
+  }
+
   void addPemFile({
     required String key,
     required String contents,
