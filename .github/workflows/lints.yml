@@ -12,7 +12,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     container:
-      image: cirrusci/flutter:stable
+      image: bradyt/dart-task
     steps:
     - uses: actions/checkout@v2
     - run: echo '/sdks/flutter/bin' >> $GITHUB_PATH
