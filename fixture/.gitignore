@@ -9,3 +9,4 @@
 /var/taskd/orgs/Public/users/*/config
 /var/taskd/orgs/Public/users/*/tx.data
 /var/taskd/taskd.log
+/var/taskd/taskd.pid
