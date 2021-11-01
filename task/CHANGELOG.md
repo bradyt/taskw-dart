@@ -1,7 +1,7 @@
-# 0.1.5
+# 0.2.0
 
 - Breaking changes:
-  + Implementation details loses saved display name for taskd.certificate, reselect file to replace
+  + taskd.certificate filename saved before version update is lost, reselect file to replace
   + Fewer or later checks, e.g.:
     * App doesn't catch null credentials
     * App catches null server instead of no TASKRC
