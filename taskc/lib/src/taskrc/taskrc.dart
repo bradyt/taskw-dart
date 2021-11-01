@@ -4,8 +4,8 @@ import 'package:taskc/taskrc.dart';
 
 class Taskrc {
   Taskrc({
-    required this.server,
-    required this.credentials,
+    this.server,
+    this.credentials,
   });
 
   factory Taskrc.fromHome(String home) {
@@ -21,12 +21,15 @@ class Taskrc {
   }
 
   factory Taskrc.fromMap(Map taskrc) {
+    var server = taskrc['taskd.server'];
+    var credentials = taskrc['taskd.credentials'];
     return Taskrc(
-      server: Server.fromString(taskrc['taskd.server']),
-      credentials: Credentials.fromString(taskrc['taskd.credentials']),
+      server: (server == null) ? null : Server.fromString(server),
+      credentials:
+          (credentials == null) ? null : Credentials.fromString(credentials),
     );
   }
 
-  final Server server;
-  final Credentials credentials;
+  final Server? server;
+  final Credentials? credentials;
 }

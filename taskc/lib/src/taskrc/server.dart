@@ -1,3 +1,5 @@
+import 'package:taskc/taskrc.dart';
+
 class Server {
   const Server({
     required this.address,
@@ -6,8 +8,19 @@ class Server {
 
   factory Server.fromString(String server) {
     var split = server.split(':');
+    if (split.length != 2) {
+      throw TaskrcException(
+        'Ensure your TASKRC\'s taskd.server contains one colon (:).',
+      );
+    }
     var address = split[0];
-    var port = int.parse(split[1]);
+    var port = int.tryParse(split[1]);
+
+    if (port == null) {
+      throw TaskrcException(
+          'Ensure your TASKRC\'s taskd.server has the form <domain>:<port>, '
+          'where port is an integer.');
+    }
 
     return Server(
       address: address,
@@ -15,6 +28,6 @@ class Server {
     );
   }
 
-  final dynamic address;
+  final String address;
   final int port;
 }

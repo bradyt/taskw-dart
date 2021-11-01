@@ -241,25 +241,14 @@ class HomeImpl {
         'Please ensure your TASKRC includes taskd.server.',
       );
     }
-    var server = (config['taskd.server'] as String).split(':');
-    if (server.length != 2) {
-      throw TaskserverConfigurationException(
-        'Ensure your TASKRC\'s taskd.server contains one colon (:).',
-      );
-    }
-    var address = server[0];
-    var port = int.tryParse(server[1]);
-    if (port == null) {
-      throw TaskserverConfigurationException(
-          'Ensure your TASKRC\'s taskd.server has the form <domain>:<port>, '
-          'where port is an integer.');
-    }
+    var server = Taskrc.fromMap(config).server!;
+
     var context = (File(_keyPemLookup['taskd.ca']!).existsSync())
         ? (SecurityContext()..setTrustedCertificates(_ca))
         : SecurityContext.defaultContext;
     return Connection(
-      address: address,
-      port: port,
+      address: server.address,
+      port: server.port,
       context: context
         ..useCertificateChain(_cert)
         ..usePrivateKey(_key),

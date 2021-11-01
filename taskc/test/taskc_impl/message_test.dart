@@ -16,9 +16,8 @@ void main() {
   var taskdData = Directory('../fixture/var/taskd').absolute.path;
   var taskd = Taskd(taskdData);
   late Map<String, String> config;
-  late List<String> server;
+  late Taskrc taskrc;
   late Connection connection;
-  late Credentials credentials;
 
   setUpAll(() async {
     await taskd.initialize();
@@ -44,16 +43,15 @@ void main() {
     config = parseTaskrc(
       File('$home/.taskrc').readAsStringSync(),
     );
-    server = (config['taskd.server']!).split(':');
+    taskrc = Taskrc.fromMap(config);
     connection = Connection(
-      address: server[0],
-      port: int.parse(server[1]),
+      address: taskrc.server!.address,
+      port: taskrc.server!.port,
       context: SecurityContext()
         ..useCertificateChain(config['taskd.certificate']!)
         ..usePrivateKey(config['taskd.key']!),
       onBadCertificate: (_) => true,
     );
-    credentials = Credentials.fromString(config['taskd.credentials']!);
   });
 
   tearDownAll(() async {
@@ -64,7 +62,7 @@ void main() {
     test('test', () async {
       var response = await statistics(
         connection: connection,
-        credentials: credentials,
+        credentials: taskrc.credentials!,
         client: 'test',
       );
       expect(response.header['status'], 'Ok');
@@ -87,7 +85,7 @@ void main() {
     test('test first sync with one task', () async {
       var response = await synchronize(
         connection: connection,
-        credentials: credentials,
+        credentials: taskrc.credentials!,
         client: 'test',
         payload: '${Payload(tasks: [newTask()])}',
       );
@@ -102,7 +100,7 @@ void main() {
     test('test second sync with userKey and no tasks', () async {
       var response = await synchronize(
         connection: connection,
-        credentials: credentials,
+        credentials: taskrc.credentials!,
         client: 'test',
         payload: '${Payload(tasks: [], userKey: userKey)}',
       );
@@ -123,14 +121,14 @@ void main() {
 
       await synchronize(
         connection: connection,
-        credentials: credentials,
+        credentials: taskrc.credentials!,
         client: 'test',
         payload: payload,
       );
 
       var response = await synchronize(
         connection: connection,
-        credentials: credentials,
+        credentials: taskrc.credentials!,
         client: 'test',
         payload: '',
       );
@@ -140,19 +138,19 @@ void main() {
     });
     test('count tasks', () async {
       await File(
-              '../fixture/var/taskd/orgs/Public/users/${credentials.key}/tx.data')
+              '../fixture/var/taskd/orgs/Public/users/${taskrc.credentials!.key}/tx.data')
           .delete();
 
       await synchronize(
         connection: connection,
-        credentials: credentials,
+        credentials: taskrc.credentials!,
         client: 'test',
         payload: '${newTask()}\n${newTask()}',
       );
 
       var response = await synchronize(
         connection: connection,
-        credentials: credentials,
+        credentials: taskrc.credentials!,
         client: 'test',
         payload: '',
       );
@@ -188,7 +186,7 @@ void main() {
       try {
         await synchronize(
           connection: connection,
-          credentials: credentials,
+          credentials: taskrc.credentials!,
           client: 'test',
           payload: payload,
         );
@@ -205,7 +203,7 @@ void main() {
 
       var response = await synchronize(
         connection: connection,
-        credentials: credentials,
+        credentials: taskrc.credentials!,
         client: 'test',
         payload: payload,
       );
@@ -228,16 +226,15 @@ void main() {
       config = parseTaskrc(
         File('$home/.taskrc').readAsStringSync(),
       );
-      server = (config['taskd.server']!).split(':');
+      taskrc = Taskrc.fromMap(config);
       connection = Connection(
-        address: server[0],
-        port: int.parse(server[1]),
+        address: taskrc.server!.address,
+        port: taskrc.server!.port,
         context: SecurityContext()
           ..useCertificateChain(config['taskd.certificate']!)
           ..usePrivateKey(config['taskd.key']!),
         onBadCertificate: (_) => true,
       );
-      credentials = Credentials.fromString(config['taskd.credentials']!);
 
       var taskUuid = const Uuid().v1();
       var now = DateTime.now().toUtc();
@@ -264,7 +261,7 @@ void main() {
 
       var response = await synchronize(
         connection: connection,
-        credentials: credentials,
+        credentials: taskrc.credentials!,
         client: 'test',
         payload: payload,
       );
@@ -274,7 +271,7 @@ void main() {
 
       response = await synchronize(
         connection: connection,
-        credentials: credentials,
+        credentials: taskrc.credentials!,
         client: 'test',
         payload: '',
       );

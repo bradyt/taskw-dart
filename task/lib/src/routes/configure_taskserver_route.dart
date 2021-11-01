@@ -211,9 +211,7 @@ class TaskrcWidget extends StatefulWidget {
 }
 
 class _TaskrcWidgetState extends State<TaskrcWidget> {
-  String? server;
-  String? address;
-  String? port;
+  Server? server;
   Credentials? credentials;
   bool hideKey = true;
 
@@ -222,7 +220,6 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
     super.didChangeDependencies();
     _getConfig().catchError(
       (_) {
-        server = '';
         setState(() {});
       },
       test: (e) => e is FileSystemException,
@@ -232,14 +229,15 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
   Future<void> _getConfig() async {
     var config =
         ProfilesWidget.of(context).getStorage(widget.profile).home.getConfig();
-    server = config['taskd.server'];
-    credentials = Credentials.fromString(config['taskd.credentials']);
+    var taskrc = Taskrc.fromMap(config);
+    server = taskrc.server;
+    credentials = taskrc.credentials;
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    var credentialsString = '';
+    var credentialsString;
     if (credentials != null) {
       String key;
       if (hideKey) {
@@ -262,10 +260,10 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
                 style: GoogleFonts.firaMono(),
               ),
             ),
-            onTap: (server == null || server!.isEmpty)
+            onTap: (server == null)
                 ? null
                 : () async {
-                    var parts = server!.split(':').first.split('.');
+                    var parts = server!.address.split('.');
                     var length = parts.length;
                     var mainDomain =
                         parts.sublist(length - 2, length).join('.');
