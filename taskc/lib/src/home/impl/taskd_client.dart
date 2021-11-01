@@ -7,13 +7,13 @@ import 'package:taskc/taskrc.dart';
 
 class TaskdClient {
   TaskdClient({
-    required this.taskrc,
+    this.taskrc,
     this.client,
     this.pemFilePaths,
     this.throwOnBadCertificate,
   });
 
-  final Taskrc taskrc;
+  final Taskrc? taskrc;
   final String? client;
   final PemFilePaths? pemFilePaths;
   final void Function(X509Certificate)? throwOnBadCertificate;
@@ -21,7 +21,7 @@ class TaskdClient {
   PemFilePaths _pemFilePaths() {
     return pemFilePaths ??
         PemFilePaths.fromTaskrc(
-          taskrc.pemFilePaths.map,
+          taskrc?.pemFilePaths.map ?? {},
         );
   }
 
@@ -38,15 +38,15 @@ class TaskdClient {
     required String type,
     String? payload,
   }) async {
-    if (taskrc.server == null) {
+    if (taskrc?.server == null) {
       throw TaskserverConfigurationException(
         'Server cannot be null.',
       );
     }
 
     var socket = await Socket.connect(
-      taskrc.server!.address,
-      taskrc.server!.port,
+      taskrc!.server!.address,
+      taskrc!.server!.port,
     );
 
     var secureSocket = await SecureSocket.secure(
@@ -58,7 +58,7 @@ class TaskdClient {
     var _message = message(
       type: type,
       client: client,
-      credentials: taskrc.credentials,
+      credentials: taskrc?.credentials,
       payload: payload,
     );
 

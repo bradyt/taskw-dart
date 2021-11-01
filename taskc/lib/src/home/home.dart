@@ -19,12 +19,10 @@ class Home {
   File get _taskrc => File('${home.path}/.taskrc');
 
   TaskdClient _taskdClient(client) {
-    if (!_taskrc.existsSync()) {
-      throw rc.TaskrcException('No TASKRC file found.');
-    }
-
     return TaskdClient(
-      taskrc: rc.Taskrc.fromString(_taskrc.readAsStringSync()),
+      taskrc: (!_taskrc.existsSync())
+          ? null
+          : rc.Taskrc.fromString(_taskrc.readAsStringSync()),
       client: client,
       pemFilePaths: pemFilePaths,
       throwOnBadCertificate: (badCertificate) => throw BadCertificateException(
