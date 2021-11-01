@@ -16,7 +16,6 @@ void main() {
   var taskdData = Directory('../fixture/var/taskd').absolute.path;
   var taskd = Taskd(taskdData);
   late Taskrc taskrc;
-  late Connection connection;
 
   setUpAll(() async {
     await taskd.initialize();
@@ -40,11 +39,6 @@ void main() {
     );
 
     taskrc = Taskrc.fromHome(home);
-    connection = Connection(
-      server: taskrc.server!,
-      context: taskrc.pemFilePaths.securityContext(),
-      onBadCertificate: (_) => true,
-    );
   });
 
   tearDownAll(() async {
@@ -54,7 +48,9 @@ void main() {
   group('Test statistics', () {
     test('test', () async {
       var response = await statistics(
-        connection: connection,
+        server: taskrc.server!,
+        context: taskrc.pemFilePaths.securityContext(),
+        onBadCertificate: (_) => true,
         credentials: taskrc.credentials!,
         client: 'test',
       );
@@ -77,7 +73,9 @@ void main() {
 
     test('test first sync with one task', () async {
       var response = await synchronize(
-        connection: connection,
+        server: taskrc.server!,
+        context: taskrc.pemFilePaths.securityContext(),
+        onBadCertificate: (_) => true,
         credentials: taskrc.credentials!,
         client: 'test',
         payload: '${Payload(tasks: [newTask()])}',
@@ -92,7 +90,9 @@ void main() {
 
     test('test second sync with userKey and no tasks', () async {
       var response = await synchronize(
-        connection: connection,
+        server: taskrc.server!,
+        context: taskrc.pemFilePaths.securityContext(),
+        onBadCertificate: (_) => true,
         credentials: taskrc.credentials!,
         client: 'test',
         payload: '${Payload(tasks: [], userKey: userKey)}',
@@ -113,14 +113,18 @@ void main() {
       expect(Codec.encode(payload).length > pow(2, 13), true);
 
       await synchronize(
-        connection: connection,
+        server: taskrc.server!,
+        context: taskrc.pemFilePaths.securityContext(),
+        onBadCertificate: (_) => true,
         credentials: taskrc.credentials!,
         client: 'test',
         payload: payload,
       );
 
       var response = await synchronize(
-        connection: connection,
+        server: taskrc.server!,
+        context: taskrc.pemFilePaths.securityContext(),
+        onBadCertificate: (_) => true,
         credentials: taskrc.credentials!,
         client: 'test',
         payload: '',
@@ -135,14 +139,18 @@ void main() {
           .delete();
 
       await synchronize(
-        connection: connection,
+        server: taskrc.server!,
+        context: taskrc.pemFilePaths.securityContext(),
+        onBadCertificate: (_) => true,
         credentials: taskrc.credentials!,
         client: 'test',
         payload: '${newTask()}\n${newTask()}',
       );
 
       var response = await synchronize(
-        connection: connection,
+        server: taskrc.server!,
+        context: taskrc.pemFilePaths.securityContext(),
+        onBadCertificate: (_) => true,
         credentials: taskrc.credentials!,
         client: 'test',
         payload: '',
@@ -178,7 +186,9 @@ void main() {
 
       try {
         await synchronize(
-          connection: connection,
+          server: taskrc.server!,
+          context: taskrc.pemFilePaths.securityContext(),
+          onBadCertificate: (_) => true,
           credentials: taskrc.credentials!,
           client: 'test',
           payload: payload,
@@ -195,7 +205,9 @@ void main() {
       payload = '{"description":"foo"}\n' * (pow(2, 15) as int);
 
       var response = await synchronize(
-        connection: connection,
+        server: taskrc.server!,
+        context: taskrc.pemFilePaths.securityContext(),
+        onBadCertificate: (_) => true,
         credentials: taskrc.credentials!,
         client: 'test',
         payload: payload,
@@ -217,11 +229,6 @@ void main() {
         userKey: userKey,
       );
       taskrc = Taskrc.fromHome(home);
-      connection = Connection(
-        server: taskrc.server!,
-        context: taskrc.pemFilePaths.securityContext(),
-        onBadCertificate: (_) => true,
-      );
 
       var taskUuid = const Uuid().v1();
       var now = DateTime.now().toUtc();
@@ -247,7 +254,9 @@ void main() {
       );
 
       var response = await synchronize(
-        connection: connection,
+        server: taskrc.server!,
+        context: taskrc.pemFilePaths.securityContext(),
+        onBadCertificate: (_) => true,
         credentials: taskrc.credentials!,
         client: 'test',
         payload: payload,
@@ -257,7 +266,9 @@ void main() {
       expect(response.header['status'], 'Ok');
 
       response = await synchronize(
-        connection: connection,
+        server: taskrc.server!,
+        context: taskrc.pemFilePaths.securityContext(),
+        onBadCertificate: (_) => true,
         credentials: taskrc.credentials!,
         client: 'test',
         payload: '',

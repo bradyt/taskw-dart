@@ -53,7 +53,6 @@ library taskc;
 
 import 'dart:io';
 
-export 'src/taskc/connection.dart';
 export 'src/taskc/message.dart';
 export 'src/taskc/payload.dart';
 export 'src/taskc/response.dart';

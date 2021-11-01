@@ -6,7 +6,6 @@ import 'dart:io';
 
 import 'package:taskc/storage.dart';
 import 'package:taskc/taskc.dart' as taskc show statistics, synchronize;
-import 'package:taskc/taskc.dart' hide statistics, synchronize;
 import 'package:taskc/taskrc.dart';
 import 'package:taskj/json.dart';
 
@@ -259,11 +258,9 @@ class HomeImpl {
   Future<Map> statistics(String client) async {
     var config = getConfig();
     var response = await taskc.statistics(
-      connection: Connection(
-        server: Taskrc.fromMap(config).server!,
-        context: _pemFilePaths.securityContext(),
-        onBadCertificate: _onBadCertificate,
-      ),
+      server: Taskrc.fromMap(config).server!,
+      context: _pemFilePaths.securityContext(),
+      onBadCertificate: _onBadCertificate,
       credentials: Taskrc.fromMap(config).credentials!,
       client: client,
     );
@@ -277,11 +274,9 @@ class HomeImpl {
       payload = File('${home.path}/.task/backlog.data').readAsStringSync();
     }
     var response = await taskc.synchronize(
-      connection: Connection(
-        server: Taskrc.fromMap(config).server!,
-        context: _pemFilePaths.securityContext(),
-        onBadCertificate: _onBadCertificate,
-      ),
+      server: Taskrc.fromMap(config).server!,
+      context: _pemFilePaths.securityContext(),
+      onBadCertificate: _onBadCertificate,
       credentials: Taskrc.fromMap(config).credentials!,
       client: client,
       payload: payload,

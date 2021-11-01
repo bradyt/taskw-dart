@@ -1,11 +1,16 @@
+// ignore_for_file: always_put_required_named_parameters_first
+
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:taskc/taskc.dart';
 import 'package:taskc/taskc_impl.dart';
 import 'package:taskc/taskrc.dart';
 
 Future<Response> message({
-  required Connection connection,
+  required Server server,
+  required SecurityContext context,
+  bool Function(X509Certificate)? onBadCertificate,
   required Credentials credentials,
   required String client,
   required String type,
@@ -20,8 +25,12 @@ key: ${credentials.key}
 protocol: v1
 
 $payload''';
-  var responseBytes =
-      await send(connection: connection, bytes: Codec.encode(message));
+  var responseBytes = await send(
+    server: server,
+    context: context,
+    onBadCertificate: onBadCertificate,
+    bytes: Codec.encode(message),
+  );
   if (responseBytes.isEmpty) {
     throw EmptyResponseException();
   }
