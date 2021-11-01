@@ -32,7 +32,12 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(2),
+      padding: EdgeInsets.fromLTRB(
+        2,
+        2,
+        2,
+        2 + MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(12),

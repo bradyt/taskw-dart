@@ -213,6 +213,7 @@ class TaskListRoute extends StatelessWidget {
           context: context,
           builder: (context) => const AddTaskBottomSheet(),
           backgroundColor: Colors.transparent,
+          isScrollControlled: true,
         ),
         tooltip: 'Add task',
         child: const Icon(Icons.add),
