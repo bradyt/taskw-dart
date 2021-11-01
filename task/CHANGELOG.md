@@ -1,6 +1,8 @@
 # 0.3.0
 
-- New parser for adding tasks, like 'Build bike +next pri:H pro:diy'
+- Improved "new task" dialog
+  + Parse tags, priority, project, e.g., like 'Build bike +next pri:H pro:diy'
+  + Button added to add due date
 - Fix issue where connection used same PEM files after removing them
 - Improve feedback for incorrect taskd.credentials
 - Display start field
