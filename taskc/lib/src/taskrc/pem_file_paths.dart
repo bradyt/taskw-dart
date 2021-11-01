@@ -5,6 +5,7 @@ class PemFilePaths {
     this.ca,
     this.certificate,
     this.key,
+    this.serverCert,
   });
 
   factory PemFilePaths.fromTaskrc(Map taskrc) {
@@ -18,6 +19,7 @@ class PemFilePaths {
   final String? ca;
   final String? certificate;
   final String? key;
+  final String? serverCert;
 
   SecurityContext securityContext() {
     var context = (ca != null && File(ca!).existsSync())
@@ -31,4 +33,20 @@ class PemFilePaths {
     }
     return context;
   }
+
+  bool onBadCertificate(X509Certificate badServerCert) {
+    if (serverCert != null) {
+      if (File(serverCert!).existsSync()) {
+        return File(serverCert!).readAsStringSync() == badServerCert.pem;
+      }
+    }
+    return false;
+  }
+
+  Map get map => {
+        'taskd.ca': ca,
+        'taskd.certificate': certificate,
+        'taskd.key': key,
+        'server.cert': serverCert,
+      }..removeWhere((_, value) => value == null);
 }

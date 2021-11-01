@@ -12,32 +12,16 @@ class TaskdClient {
 
   final Directory home;
 
-  String get _ca => '${home.path}/.task/ca.cert.pem';
-  String get _cert => '${home.path}/.task/first_last.cert.pem';
-  String get _key => '${home.path}/.task/first_last.key.pem';
-  String get _serverCert => '${home.path}/.task/server.cert.pem';
-
-  PemFilePaths get _pemFilePaths => PemFilePaths.fromTaskrc(
-        {
-          for (var pemFileLabel in [
-            'taskd.ca',
-            'taskd.certificate',
-            'taskd.key',
-          ])
-            pemFileLabel: _keyPemLookup[pemFileLabel],
-        },
+  PemFilePaths get _pemFilePaths => PemFilePaths(
+        ca: '${home.path}/.task/ca.cert.pem',
+        certificate: '${home.path}/.task/first_last.cert.pem',
+        key: '${home.path}/.task/first_last.key.pem',
+        serverCert: '${home.path}/.task/server.cert.pem',
       );
-
-  Map<String, String> get _keyPemLookup => {
-        'taskd.ca': _ca,
-        'taskd.cert': _cert,
-        'taskd.key': _key,
-        'server.cert': _serverCert,
-      };
 
   File fileByKey(String key) {
     Directory('${home.path}/.task').createSync(recursive: true);
-    return File(_keyPemLookup[key]!);
+    return File(_pemFilePaths.map[key]!);
   }
 
   String? pemName(String key) {
@@ -47,22 +31,28 @@ class TaskdClient {
   }
 
   void removeTaskdCa() {
-    File('${home.path}/.task/ca.cert.pem').deleteSync();
-    File('${home.path}/taskd.ca').deleteSync();
+    if (File(_pemFilePaths.ca!).existsSync()) {
+      File(_pemFilePaths.ca!).deleteSync();
+    }
+    if (File('${home.path}/taskd.ca').existsSync()) {
+      File('${home.path}/taskd.ca').deleteSync();
+    }
   }
 
   void removeServerCert() {
-    File('${home.path}/.task/server.cert.pem').deleteSync();
+    if (_pemFilePaths.serverCert != null) {
+      if (File(_pemFilePaths.serverCert!).existsSync()) {
+        File(_pemFilePaths.serverCert!).deleteSync();
+      }
+    }
   }
 
   bool serverCertExists() {
-    return File('${home.path}/.task/server.cert.pem').existsSync();
+    return File(_pemFilePaths.serverCert!).existsSync();
   }
 
   void addFileName({required String key, required String name}) {
-    if (key != '.taskrc') {
-      File('${home.path}/$key').writeAsStringSync(name);
-    }
+    File('${home.path}/$key').writeAsStringSync(name);
   }
 
   void addFileContents({required String key, required String contents}) {
@@ -70,8 +60,7 @@ class TaskdClient {
   }
 
   bool _onBadCertificate(X509Certificate serverCert) {
-    var file = File(_serverCert);
-    if (file.existsSync() && serverCert.pem == file.readAsStringSync()) {
+    if (_pemFilePaths.onBadCertificate(serverCert)) {
       return true;
     } else {
       throw BadCertificateException(
