@@ -10,6 +10,7 @@ class Home {
   final Directory home;
 
   HomeImpl get _homeImpl => HomeImpl(home);
+  TaskdClient get _taskdClient => TaskdClient(home);
 
   void addTask(Task task) {
     _homeImpl.mergeTask(task);
@@ -36,15 +37,15 @@ class Home {
   }
 
   void removeTaskdCa() {
-    _homeImpl.removeTaskdCa();
+    _taskdClient.removeTaskdCa();
   }
 
   void removeServerCert() {
-    _homeImpl.removeServerCert();
+    _taskdClient.removeServerCert();
   }
 
   bool serverCertExists() {
-    return _homeImpl.serverCertExists();
+    return _taskdClient.serverCertExists();
   }
 
   void addPemFile({
@@ -52,19 +53,19 @@ class Home {
     required String contents,
     String? name,
   }) {
-    _homeImpl.addFileContents(key: key, contents: contents);
+    _taskdClient.addFileContents(key: key, contents: contents);
     if (name != null) {
-      _homeImpl.addFileName(key: key, name: name);
+      _taskdClient.addFileName(key: key, name: name);
     }
   }
 
   String? pemFilename(String key) {
-    return _homeImpl.pemName(key);
+    return _taskdClient.pemName(key);
   }
 
   String? pemContents(String key) {
-    if (_homeImpl.fileByKey(key).existsSync()) {
-      return _homeImpl.fileByKey(key).readAsStringSync();
+    if (_taskdClient.fileByKey(key).existsSync()) {
+      return _taskdClient.fileByKey(key).readAsStringSync();
     }
   }
 
@@ -77,7 +78,7 @@ class Home {
   }
 
   Future<Map> statistics(String client) {
-    return _homeImpl.statistics(client);
+    return _taskdClient.statistics(client);
   }
 
   Future<Map> synchronize(String client) {
