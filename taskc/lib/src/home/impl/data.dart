@@ -4,7 +4,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:taskc/home_impl.dart';
+import 'package:taskc/taskc.dart';
 import 'package:taskj/json.dart';
 
 import 'package:taskw/taskw.dart';
@@ -173,15 +173,15 @@ class Data {
     }
   }
 
-  Future<Map> synchronize(String client) async {
-    var payload = '';
+  String payload() {
+    var _payload = '';
     if (File('${home.path}/.task/backlog.data').existsSync()) {
-      payload = File('${home.path}/.task/backlog.data').readAsStringSync();
+      _payload = File('${home.path}/.task/backlog.data').readAsStringSync();
     }
-    var response = await TaskdClient(home).synchronize(
-      client: client,
-      payload: payload,
-    );
+    return _payload;
+  }
+
+  void mergeSynchronizeResponse(Response response) {
     var tasks = [
       for (var task in response.payload.tasks)
         Task.fromJson(
@@ -190,6 +190,5 @@ class Data {
     _mergeTasks(tasks);
     File('${home.path}/.task/backlog.data')
         .writeAsStringSync('${response.payload.userKey}\n');
-    return response.header;
   }
 }

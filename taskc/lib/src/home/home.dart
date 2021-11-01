@@ -85,7 +85,13 @@ class Home {
     return _taskdClient.statistics(client);
   }
 
-  Future<Map> synchronize(String client) {
-    return _data.synchronize(client);
+  Future<Map> synchronize(String client) async {
+    var _payload = _data.payload();
+    var response = await _taskdClient.synchronize(
+      client: client,
+      payload: _payload,
+    );
+    _data.mergeSynchronizeResponse(response);
+    return response.header;
   }
 }
