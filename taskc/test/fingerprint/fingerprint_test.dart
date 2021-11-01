@@ -8,6 +8,8 @@ import 'package:test/test.dart';
 import 'package:taskc/fingerprint.dart';
 
 void main() {
+  var certtool = (Platform.isMacOS) ? 'gnutls-certtool' : 'certtool';
+
   test(r'test $TASKDDATA/pki certs', () async {
     var taskddata = normalize(absolute('../fixture/var/taskd'));
 
@@ -23,7 +25,7 @@ void main() {
         File('$taskddata/$cert').readAsStringSync(),
       );
       var certtoolFingerprint = ((await Process.run(
-        'gnutls-certtool',
+        certtool,
         [
           '--fingerprint',
           '--infile',
@@ -51,7 +53,7 @@ void main() {
     // SHA1 Fingerprint=85:E0:6E:10:DB:E3:4B:98:BA:7C:D1:24:93:51:48:40:9C:16:AD:6D
     // ```
     var certtoolFingerprint = ((await Process.run(
-      'gnutls-certtool',
+      certtool,
       [
         '--fingerprint',
         '--infile',
