@@ -72,13 +72,20 @@ class TaskdClient {
 
   Future<Map> statistics(String client) async {
     var taskrc = Taskrc.fromHome(home.path);
-    var response = await taskc.statistics(
+
+    var socket = await getSocket(
       server: taskrc.server,
       context: _pemFilePaths.securityContext(),
       onBadCertificate: _onBadCertificate,
+    );
+    var response = await taskc.statistics(
+      socket: socket,
       credentials: taskrc.credentials,
       client: client,
     );
+
+    await socket.close();
+
     return response.header;
   }
 
@@ -87,14 +94,20 @@ class TaskdClient {
     required String payload,
   }) async {
     var taskrc = Taskrc.fromHome(home.path);
-    var response = await taskc.synchronize(
+    var socket = await getSocket(
       server: taskrc.server,
       context: _pemFilePaths.securityContext(),
       onBadCertificate: _onBadCertificate,
+    );
+    var response = await taskc.synchronize(
+      socket: socket,
       credentials: taskrc.credentials,
       client: client,
       payload: payload,
     );
+
+    await socket.close();
+
     return response;
   }
 }

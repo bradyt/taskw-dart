@@ -7,33 +7,25 @@ import 'package:taskc/taskc_impl.dart';
 import 'package:taskc/taskrc.dart';
 
 Future<Response> statistics({
-  required Server? server,
-  required SecurityContext context,
-  bool Function(X509Certificate)? onBadCertificate,
+  required SecureSocket socket,
   required Credentials? credentials,
   required String client,
 }) =>
     message(
-      server: server,
-      context: context,
-      onBadCertificate: onBadCertificate,
+      socket: socket,
       credentials: credentials,
       client: client,
       type: 'statistics',
     );
 
 Future<Response> synchronize({
-  Server? server,
-  required SecurityContext context,
-  bool Function(X509Certificate)? onBadCertificate,
+  required SecureSocket socket,
   Credentials? credentials,
   required String client,
   required String payload,
 }) =>
     message(
-      server: server,
-      context: context,
-      onBadCertificate: onBadCertificate,
+      socket: socket,
       credentials: credentials,
       client: client,
       type: 'sync',

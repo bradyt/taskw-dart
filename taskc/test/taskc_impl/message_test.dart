@@ -47,13 +47,20 @@ void main() {
 
   group('Test statistics', () {
     test('test', () async {
-      var response = await statistics(
+      var socket = await getSocket(
         server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
+      );
+
+      var response = await statistics(
+        socket: socket,
         credentials: taskrc.credentials,
         client: 'test',
       );
+
+      await socket.close();
+
       expect(response.header['status'], 'Ok');
     });
   });
@@ -72,14 +79,20 @@ void main() {
     String? userKey;
 
     test('test first sync with one task', () async {
-      var response = await synchronize(
+      var socket = await getSocket(
         server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
+      );
+
+      var response = await synchronize(
+        socket: socket,
         credentials: taskrc.credentials,
         client: 'test',
         payload: '${Payload(tasks: [newTask()])}',
       );
+
+      await socket.close();
 
       userKey = response.payload.userKey;
 
@@ -89,14 +102,20 @@ void main() {
     });
 
     test('test second sync with userKey and no tasks', () async {
-      var response = await synchronize(
+      var socket = await getSocket(
         server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
+      );
+
+      var response = await synchronize(
+        socket: socket,
         credentials: taskrc.credentials,
         client: 'test',
         payload: '${Payload(tasks: [], userKey: userKey)}',
       );
+
+      await socket.close();
 
       expect(response.header['client'], 'taskd 1.1.0');
       expect(response.header['code'], '201');
@@ -112,23 +131,35 @@ void main() {
 
       expect(Codec.encode(payload).length > pow(2, 13), true);
 
-      await synchronize(
+      var socket = await getSocket(
         server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
+      );
+
+      await synchronize(
+        socket: socket,
         credentials: taskrc.credentials,
         client: 'test',
         payload: payload,
       );
 
-      var response = await synchronize(
+      await socket.close();
+
+      socket = await getSocket(
         server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
+      );
+
+      var response = await synchronize(
+        socket: socket,
         credentials: taskrc.credentials,
         client: 'test',
         payload: '',
       );
+
+      await socket.close();
 
       expect(Codec.encode('${response.payload}').length > pow(2, 13), true);
       expect(response.header['status'], 'Ok');
@@ -138,23 +169,35 @@ void main() {
               '../fixture/var/taskd/orgs/Public/users/${taskrc.credentials!.key}/tx.data')
           .delete();
 
-      await synchronize(
+      var socket = await getSocket(
         server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
+      );
+
+      await synchronize(
+        socket: socket,
         credentials: taskrc.credentials,
         client: 'test',
         payload: '${newTask()}\n${newTask()}',
       );
 
-      var response = await synchronize(
+      await socket.close();
+
+      socket = await getSocket(
         server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
+      );
+
+      var response = await synchronize(
+        socket: socket,
         credentials: taskrc.credentials,
         client: 'test',
         payload: '',
       );
+
+      await socket.close();
 
       expect(response.payload.tasks.length, 2);
     });
@@ -185,14 +228,21 @@ void main() {
       var payload = '{"description":"foo"}\n' * (pow(2, 16) as int);
 
       try {
-        await synchronize(
+        var socket = await getSocket(
           server: taskrc.server,
           context: taskrc.pemFilePaths.securityContext(),
           onBadCertificate: (_) => true,
+        );
+
+        await synchronize(
+          socket: socket,
           credentials: taskrc.credentials,
           client: 'test',
           payload: payload,
         );
+
+        await socket.close();
+
         expect(true, false);
       } on TaskserverResponseException catch (e) {
         expect(e.header, {
@@ -204,14 +254,20 @@ void main() {
 
       payload = '{"description":"foo"}\n' * (pow(2, 15) as int);
 
-      var response = await synchronize(
+      var socket = await getSocket(
         server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
+      );
+
+      var response = await synchronize(
+        socket: socket,
         credentials: taskrc.credentials,
         client: 'test',
         payload: payload,
       );
+
+      await socket.close();
 
       expect(response.header['code'], '200');
       expect(response.header['status'], 'Ok');
@@ -253,22 +309,32 @@ void main() {
         '}',
       );
 
-      var response = await synchronize(
+      var socket = await getSocket(
         server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
+      );
+
+      var response = await synchronize(
+        socket: socket,
         credentials: taskrc.credentials,
         client: 'test',
         payload: payload,
       );
 
+      await socket.close();
+
       expect(response.header['code'], '200');
       expect(response.header['status'], 'Ok');
 
-      response = await synchronize(
+      socket = await getSocket(
         server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
+      );
+
+      response = await synchronize(
+        socket: socket,
         credentials: taskrc.credentials,
         client: 'test',
         payload: '',

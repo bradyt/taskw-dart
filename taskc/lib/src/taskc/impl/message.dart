@@ -8,19 +8,12 @@ import 'package:taskc/taskc_impl.dart';
 import 'package:taskc/taskrc.dart';
 
 Future<Response> message({
-  required Server? server,
-  required SecurityContext context,
-  bool Function(X509Certificate)? onBadCertificate,
-  required Credentials? credentials,
+  required SecureSocket socket,
+  Credentials? credentials,
   required String client,
   required String type,
   String? payload,
 }) async {
-  if (server == null) {
-    throw TaskrcException(
-      'Server cannot be null.',
-    );
-  }
   if (credentials == null) {
     throw TaskrcException(
       'Credentials cannot be null.',
@@ -36,9 +29,7 @@ protocol: v1
 
 $payload''';
   var responseBytes = await send(
-    server: server,
-    context: context,
-    onBadCertificate: onBadCertificate,
+    socket: socket,
     bytes: Codec.encode(message),
   );
   if (responseBytes.isEmpty) {

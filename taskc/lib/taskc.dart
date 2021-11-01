@@ -56,3 +56,4 @@ import 'dart:io';
 export 'src/taskc/message.dart';
 export 'src/taskc/payload.dart';
 export 'src/taskc/response.dart';
+export 'src/taskc/socket.dart';
