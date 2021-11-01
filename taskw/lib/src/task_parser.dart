@@ -19,7 +19,7 @@ class Attribute {
   );
 
   final String key;
-  final String value;
+  final String? value;
 
   @override
   String toString() => 'Attribute($key, $value)';

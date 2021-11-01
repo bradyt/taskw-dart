@@ -10,4 +10,9 @@ void main() {
     expect(task.priority, 'H');
     expect(task.project, 'diy');
   });
+  test('test empty attribute', () {
+    var task = taskParser('foo pri: baz');
+    expect(task.description, 'foo baz');
+    expect(task.priority, null);
+  });
 }
