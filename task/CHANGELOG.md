@@ -1,5 +1,6 @@
-# 0.2.1
+# 0.3.0
 
+- New parser for adding tasks, like 'Build bike +next pri:H pro:diy'
 - Fix issue where connection used same PEM files after removing them
 - Improve feedback for incorrect taskd.credentials
 - Display start field
