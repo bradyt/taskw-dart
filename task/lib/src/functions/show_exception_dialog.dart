@@ -29,7 +29,7 @@ void showExceptionDialog({context, e, trace}) {
           children: [
             Text(
               '''
-$identifier
+SHA1: $identifier
 
 The server sent a certificate that could not be verified with a CA file.
 
