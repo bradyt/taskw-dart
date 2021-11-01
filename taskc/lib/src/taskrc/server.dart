@@ -30,4 +30,9 @@ class Server {
 
   final String address;
   final int port;
+
+  @override
+  String toString() {
+    return '$address:$port';
+  }
 }
