@@ -36,7 +36,7 @@ class ProjectMetadata {
 }
 
 class StorageWidget extends StatefulWidget {
-  const StorageWidget({required this.profile, required this.child, Key? key}) //
+  const StorageWidget({required this.profile, required this.child, Key? key})
       : super(key: key);
 
   final Directory profile;
