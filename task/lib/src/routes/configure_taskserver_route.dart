@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:crypto/crypto.dart';
@@ -26,6 +25,8 @@ class ConfigureTaskserverRoute extends StatefulWidget {
 
 class _ConfigureTaskserverRouteState extends State<ConfigureTaskserverRoute> {
   late Storage storage;
+  Server? server;
+  Credentials? credentials;
 
   @override
   void didChangeDependencies() {
@@ -36,6 +37,8 @@ class _ConfigureTaskserverRouteState extends State<ConfigureTaskserverRoute> {
   Future<void> _setConfigurationFromFixtureForDebugging() async {
     var contents = await rootBundle.loadString('assets/.taskrc');
     rc.Taskrc(storage.home.home).addTaskrc(contents);
+    server = Taskrc.fromString(contents).server;
+    credentials = Taskrc.fromString(contents).credentials;
     for (var entry in {
       'taskd.certificate': '.task/first_last.cert.pem',
       'taskd.key': '.task/first_last.key.pem',
@@ -49,6 +52,7 @@ class _ConfigureTaskserverRouteState extends State<ConfigureTaskserverRoute> {
         name: entry.value.split('/').last,
       );
     }
+    setState(() {});
   }
 
   Future<void> _showStatistics(BuildContext context) async {
@@ -125,7 +129,11 @@ class _ConfigureTaskserverRouteState extends State<ConfigureTaskserverRoute> {
       ),
       body: ListView(
         children: [
-          TaskrcWidget(profile),
+          TaskrcWidget(
+            storage: storage,
+            server: server,
+            credentials: credentials,
+          ),
           for (var pem in [
             'taskd.certificate',
             'taskd.key',
@@ -217,57 +225,38 @@ class _PemWidgetState extends State<PemWidget> {
 }
 
 class TaskrcWidget extends StatefulWidget {
-  const TaskrcWidget(this.profile, {Key? key}) : super(key: key);
+  const TaskrcWidget({
+    required this.storage,
+    required this.server,
+    required this.credentials,
+    Key? key,
+  }) : super(key: key);
 
-  final String profile;
+  final Storage storage;
+  final Server? server;
+  final Credentials? credentials;
 
   @override
   State<TaskrcWidget> createState() => _TaskrcWidgetState();
 }
 
 class _TaskrcWidgetState extends State<TaskrcWidget> {
-  Server? server;
-  Credentials? credentials;
   bool hideKey = true;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _getConfig().catchError(
-      (_) {
-        setState(() {});
-      },
-      test: (e) => e is FileSystemException,
-    );
-  }
-
-  Future<void> _getConfig() async {
-    var taskrc = ProfilesWidget.of(context)
-        .getStorage(widget.profile)
-        .taskrc
-        .readTaskrc();
-    if (taskrc != null) {
-      server = Taskrc.fromString(taskrc).server;
-      credentials = Taskrc.fromString(taskrc).credentials;
-    } else {
-      server = null;
-      credentials = null;
-    }
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var server = widget.server;
+    var credentials = widget.credentials;
     String? credentialsString;
     if (credentials != null) {
       String key;
       if (hideKey) {
-        key = credentials!.key.replaceAll(RegExp(r'[0-9a-f]'), '*');
+        key = credentials.key.replaceAll(RegExp(r'[0-9a-f]'), '*');
       } else {
-        key = credentials!.key;
+        key = credentials.key;
       }
 
-      credentialsString = '${credentials!.org}/${credentials!.user}/$key';
+      credentialsString = '${credentials.org}/${credentials.user}/$key';
     }
 
     return ExpansionTile(
@@ -287,13 +276,13 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
             onTap: (server == null)
                 ? null
                 : () async {
-                    var parts = server!.address.split('.');
+                    var parts = server.address.split('.');
                     var length = parts.length;
                     var mainDomain =
                         parts.sublist(length - 2, length).join('.');
 
                     ProfilesWidget.of(context).renameProfile(
-                      profile: widget.profile,
+                      profile: widget.storage.profile.path,
                       alias: mainDomain,
                     );
                   }),
@@ -322,11 +311,9 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
             ),
             onTap: () async {
               await setConfig(
-                storage: ProfilesWidget.of(context).getStorage(widget.profile),
+                storage: widget.storage,
                 key: 'TASKRC',
               );
-
-              await _getConfig();
             }),
       ],
     );
