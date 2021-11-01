@@ -7,10 +7,10 @@ import 'package:taskc/taskc_impl.dart';
 import 'package:taskc/taskrc.dart';
 
 Future<Response> statistics({
-  required Server server,
+  required Server? server,
   required SecurityContext context,
   bool Function(X509Certificate)? onBadCertificate,
-  required Credentials credentials,
+  required Credentials? credentials,
   required String client,
 }) =>
     message(
@@ -23,10 +23,10 @@ Future<Response> statistics({
     );
 
 Future<Response> synchronize({
-  required Server server,
+  Server? server,
   required SecurityContext context,
   bool Function(X509Certificate)? onBadCertificate,
-  required Credentials credentials,
+  Credentials? credentials,
   required String client,
   required String payload,
 }) =>

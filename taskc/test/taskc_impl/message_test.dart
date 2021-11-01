@@ -48,10 +48,10 @@ void main() {
   group('Test statistics', () {
     test('test', () async {
       var response = await statistics(
-        server: taskrc.server!,
+        server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
-        credentials: taskrc.credentials!,
+        credentials: taskrc.credentials,
         client: 'test',
       );
       expect(response.header['status'], 'Ok');
@@ -73,10 +73,10 @@ void main() {
 
     test('test first sync with one task', () async {
       var response = await synchronize(
-        server: taskrc.server!,
+        server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
-        credentials: taskrc.credentials!,
+        credentials: taskrc.credentials,
         client: 'test',
         payload: '${Payload(tasks: [newTask()])}',
       );
@@ -90,10 +90,10 @@ void main() {
 
     test('test second sync with userKey and no tasks', () async {
       var response = await synchronize(
-        server: taskrc.server!,
+        server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
-        credentials: taskrc.credentials!,
+        credentials: taskrc.credentials,
         client: 'test',
         payload: '${Payload(tasks: [], userKey: userKey)}',
       );
@@ -113,19 +113,19 @@ void main() {
       expect(Codec.encode(payload).length > pow(2, 13), true);
 
       await synchronize(
-        server: taskrc.server!,
+        server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
-        credentials: taskrc.credentials!,
+        credentials: taskrc.credentials,
         client: 'test',
         payload: payload,
       );
 
       var response = await synchronize(
-        server: taskrc.server!,
+        server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
-        credentials: taskrc.credentials!,
+        credentials: taskrc.credentials,
         client: 'test',
         payload: '',
       );
@@ -139,19 +139,19 @@ void main() {
           .delete();
 
       await synchronize(
-        server: taskrc.server!,
+        server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
-        credentials: taskrc.credentials!,
+        credentials: taskrc.credentials,
         client: 'test',
         payload: '${newTask()}\n${newTask()}',
       );
 
       var response = await synchronize(
-        server: taskrc.server!,
+        server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
-        credentials: taskrc.credentials!,
+        credentials: taskrc.credentials,
         client: 'test',
         payload: '',
       );
@@ -186,10 +186,10 @@ void main() {
 
       try {
         await synchronize(
-          server: taskrc.server!,
+          server: taskrc.server,
           context: taskrc.pemFilePaths.securityContext(),
           onBadCertificate: (_) => true,
-          credentials: taskrc.credentials!,
+          credentials: taskrc.credentials,
           client: 'test',
           payload: payload,
         );
@@ -205,10 +205,10 @@ void main() {
       payload = '{"description":"foo"}\n' * (pow(2, 15) as int);
 
       var response = await synchronize(
-        server: taskrc.server!,
+        server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
-        credentials: taskrc.credentials!,
+        credentials: taskrc.credentials,
         client: 'test',
         payload: payload,
       );
@@ -254,10 +254,10 @@ void main() {
       );
 
       var response = await synchronize(
-        server: taskrc.server!,
+        server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
-        credentials: taskrc.credentials!,
+        credentials: taskrc.credentials,
         client: 'test',
         payload: payload,
       );
@@ -266,10 +266,10 @@ void main() {
       expect(response.header['status'], 'Ok');
 
       response = await synchronize(
-        server: taskrc.server!,
+        server: taskrc.server,
         context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
-        credentials: taskrc.credentials!,
+        credentials: taskrc.credentials,
         client: 'test',
         payload: '',
       );

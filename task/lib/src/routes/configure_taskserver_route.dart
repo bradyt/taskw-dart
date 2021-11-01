@@ -235,7 +235,7 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var credentialsString;
+    String? credentialsString;
     if (credentials != null) {
       String key;
       if (hideKey) {

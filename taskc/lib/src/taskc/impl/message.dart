@@ -8,14 +8,24 @@ import 'package:taskc/taskc_impl.dart';
 import 'package:taskc/taskrc.dart';
 
 Future<Response> message({
-  required Server server,
+  required Server? server,
   required SecurityContext context,
   bool Function(X509Certificate)? onBadCertificate,
-  required Credentials credentials,
+  required Credentials? credentials,
   required String client,
   required String type,
   String? payload,
 }) async {
+  if (server == null) {
+    throw TaskrcException(
+      'Server cannot be null.',
+    );
+  }
+  if (credentials == null) {
+    throw TaskrcException(
+      'Credentials cannot be null.',
+    );
+  }
   var message = '''
 client: $client
 type: $type

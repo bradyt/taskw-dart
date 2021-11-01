@@ -73,10 +73,10 @@ class TaskdClient {
   Future<Map> statistics(String client) async {
     var taskrc = Taskrc.fromHome(home.path);
     var response = await taskc.statistics(
-      server: taskrc.server!,
+      server: taskrc.server,
       context: _pemFilePaths.securityContext(),
       onBadCertificate: _onBadCertificate,
-      credentials: taskrc.credentials!,
+      credentials: taskrc.credentials,
       client: client,
     );
     return response.header;
@@ -88,10 +88,10 @@ class TaskdClient {
   }) async {
     var taskrc = Taskrc.fromHome(home.path);
     var response = await taskc.synchronize(
-      server: taskrc.server!,
+      server: taskrc.server,
       context: _pemFilePaths.securityContext(),
       onBadCertificate: _onBadCertificate,
-      credentials: taskrc.credentials!,
+      credentials: taskrc.credentials,
       client: client,
       payload: payload,
     );
