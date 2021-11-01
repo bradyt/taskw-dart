@@ -1,3 +1,7 @@
+# 0.2.1
+
+- Fix issue where connection used same PEM files after removing them
+
 # 0.2.0
 
 - Breaking changes:
