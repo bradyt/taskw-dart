@@ -162,5 +162,5 @@ void main() {
 
     expect(json.decode(libExport), json.decode(cliExport));
     expect(libExport, cliExport);
-  });
+  }, skip: Platform.environment['CI'] == 'true');
 }
