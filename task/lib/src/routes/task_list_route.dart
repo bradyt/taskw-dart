@@ -209,9 +209,10 @@ class TaskListRoute extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showDialog(
+        onPressed: () => showModalBottomSheet(
           context: context,
-          builder: (context) => const AddTaskDialog(),
+          builder: (context) => const AddTaskBottomSheet(),
+          backgroundColor: Colors.transparent,
         ),
         tooltip: 'Add task',
         child: const Icon(Icons.add),
