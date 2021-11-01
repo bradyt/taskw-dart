@@ -9,31 +9,31 @@ class Home {
 
   final Directory home;
 
-  HomeImpl get _homeImpl => HomeImpl(home);
+  Data get _data => Data(home);
   TaskdClient get _taskdClient => TaskdClient(home);
 
   void addTask(Task task) {
-    _homeImpl.mergeTask(task);
+    _data.mergeTask(task);
   }
 
   void mergeTask(Task task) {
-    _homeImpl.mergeTask(task);
+    _data.mergeTask(task);
   }
 
   Task getTask(String uuid) {
-    return _homeImpl.getTask(uuid);
+    return _data.getTask(uuid);
   }
 
   List<Task> allData() {
-    return _homeImpl.allData();
+    return _data.allData();
   }
 
   List<Task> pendingData() {
-    return _homeImpl.pendingData();
+    return _data.pendingData();
   }
 
   String export() {
-    return _homeImpl.export();
+    return _data.export();
   }
 
   void removeTaskdCa() {
@@ -82,6 +82,6 @@ class Home {
   }
 
   Future<Map> synchronize(String client) {
-    return _homeImpl.synchronize(client);
+    return _data.synchronize(client);
   }
 }

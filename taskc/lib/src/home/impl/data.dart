@@ -9,8 +9,8 @@ import 'package:taskj/json.dart';
 
 import 'package:taskw/taskw.dart';
 
-class HomeImpl {
-  HomeImpl(this.home);
+class Data {
+  Data(this.home);
 
   final Directory home;
 
