@@ -157,6 +157,29 @@ void main() {
       expect(response.payload.tasks.length, 2);
     });
     test('too many tasks', () async {
+      // Can apply request.limit=0 with the following diff:
+      //
+      // ```
+      // modified   taskc/lib/src/taskd/taskd.dart
+      // @@ -35,6 +35,7 @@ class Taskd {
+      //        ['config', '--force', 'log', '$taskdData/taskd.log'],
+      //        ['config', '--force', 'pid.file', '$taskdData/taskd.pid'],
+      //        ['config', '--force', 'debug.tls', '2'],
+      // +      ['config', '--force', 'request.limit', '0'],
+      //        ['add', 'org', 'Public'],
+      //      ]) {
+      //        await Process.run('taskd', arguments,
+      // ```
+      //
+      // With the above change, there's no exceptions until pow(2, 24), as in
+      // the following:
+      //
+      // ```
+      // payload = '{"description":"foo"}\n' * (pow(2, 24) as int);
+      // ```
+      //
+      // Then, we see TimeoutException, and very slow test runs.
+
       var payload = '{"description":"foo"}\n' * (pow(2, 16) as int);
 
       try {
