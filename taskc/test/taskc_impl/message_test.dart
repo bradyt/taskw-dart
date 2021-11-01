@@ -15,7 +15,6 @@ import 'package:taskj/json.dart';
 void main() {
   var taskdData = Directory('../fixture/var/taskd').absolute.path;
   var taskd = Taskd(taskdData);
-  late Map<String, String> config;
   late Taskrc taskrc;
   late Connection connection;
 
@@ -40,16 +39,13 @@ void main() {
       userKey: userKey,
     );
 
-    config = parseTaskrc(
-      File('$home/.taskrc').readAsStringSync(),
-    );
-    taskrc = Taskrc.fromMap(config);
+    taskrc = Taskrc.fromHome(home);
     connection = Connection(
       address: taskrc.server!.address,
       port: taskrc.server!.port,
       context: SecurityContext()
-        ..useCertificateChain(config['taskd.certificate']!)
-        ..usePrivateKey(config['taskd.key']!),
+        ..useCertificateChain(taskrc.pemFilePaths.certificate!)
+        ..usePrivateKey(taskrc.pemFilePaths.key!),
       onBadCertificate: (_) => true,
     );
   });
@@ -223,16 +219,13 @@ void main() {
         fileName: 'first_last',
         userKey: userKey,
       );
-      config = parseTaskrc(
-        File('$home/.taskrc').readAsStringSync(),
-      );
-      taskrc = Taskrc.fromMap(config);
+      taskrc = Taskrc.fromHome(home);
       connection = Connection(
         address: taskrc.server!.address,
         port: taskrc.server!.port,
         context: SecurityContext()
-          ..useCertificateChain(config['taskd.certificate']!)
-          ..usePrivateKey(config['taskd.key']!),
+          ..useCertificateChain(taskrc.pemFilePaths.certificate!)
+          ..usePrivateKey(taskrc.pemFilePaths.key!),
         onBadCertificate: (_) => true,
       );
 
