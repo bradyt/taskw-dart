@@ -276,13 +276,17 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
             onTap: (server == null)
                 ? null
                 : () async {
-                    var parts = server.address.split('.');
-                    var length = parts.length;
-                    var mainDomain =
-                        parts.sublist(length - 2, length).join('.');
+                    late String mainDomain;
+                    if (server.address == 'localhost') {
+                      mainDomain = server.address;
+                    } else {
+                      var parts = server.address.split('.');
+                      var length = parts.length;
+                      mainDomain = parts.sublist(length - 2, length).join('.');
+                    }
 
                     ProfilesWidget.of(context).renameProfile(
-                      profile: widget.storage.profile.path,
+                      profile: widget.storage.profile.path.split('/').last,
                       alias: mainDomain,
                     );
                   }),
