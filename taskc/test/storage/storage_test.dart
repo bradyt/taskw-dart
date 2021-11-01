@@ -46,7 +46,9 @@ void main() {
       fileName: 'first_last',
       userKey: userKey,
     );
-    credentialsKey = Taskrc.fromHome(home).credentials!.key;
+    credentialsKey = Taskrc.fromString(File('$home/.taskrc').readAsStringSync())
+        .credentials!
+        .key;
     txData = File(
       '../fixture/var/taskd/orgs/Public/users/$credentialsKey/tx.data',
     );

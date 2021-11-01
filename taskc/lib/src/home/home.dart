@@ -16,17 +16,23 @@ class Home {
   final bool Function(X509Certificate)? onBadCertificate;
 
   Data get _data => Data(home);
+  File get _taskrc => File('${home.path}/.taskrc');
 
-  TaskdClient _taskdClient(client) => TaskdClient(
-        taskrc: rc.Taskrc.fromHome(home.path),
-        client: client,
-        pemFilePaths: pemFilePaths,
-        throwOnBadCertificate: (badCertificate) =>
-            throw BadCertificateException(
-          home: home,
-          certificate: badCertificate,
-        ),
-      );
+  TaskdClient _taskdClient(client) {
+    if (!_taskrc.existsSync()) {
+      throw rc.TaskrcException('No TASKRC file found.');
+    }
+
+    return TaskdClient(
+      taskrc: rc.Taskrc.fromString(_taskrc.readAsStringSync()),
+      client: client,
+      pemFilePaths: pemFilePaths,
+      throwOnBadCertificate: (badCertificate) => throw BadCertificateException(
+        home: home,
+        certificate: badCertificate,
+      ),
+    );
+  }
 
   Future<Map> statistics(String client) {
     return _taskdClient(client).statistics();

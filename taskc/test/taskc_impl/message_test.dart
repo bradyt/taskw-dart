@@ -40,7 +40,7 @@ void main() {
       userKey: userKey,
     );
 
-    taskrc = rc.Taskrc.fromHome(home);
+    taskrc = rc.Taskrc.fromString(File('$home/.taskrc').readAsStringSync());
     taskdClient = TaskdClient(taskrc: taskrc);
   });
 
@@ -177,7 +177,7 @@ void main() {
         fileName: 'first_last',
         userKey: userKey,
       );
-      taskrc = rc.Taskrc.fromHome(home);
+      taskrc = rc.Taskrc.fromString(File('$home/.taskrc').readAsStringSync());
 
       var taskUuid = const Uuid().v1();
       var now = DateTime.now().toUtc();

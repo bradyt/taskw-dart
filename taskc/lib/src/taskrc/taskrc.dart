@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:taskc/taskrc.dart';
 
 class Taskrc {
@@ -9,18 +7,6 @@ class Taskrc {
     // ignore: always_put_required_named_parameters_first
     required this.pemFilePaths,
   });
-
-  factory Taskrc.fromHome(String home) {
-    if (File('$home/.taskrc').existsSync()) {
-      return Taskrc.fromString(
-        File('$home/.taskrc').readAsStringSync(),
-      );
-    } else {
-      throw TaskrcException(
-        'Please add a TASKRC file.',
-      );
-    }
-  }
 
   factory Taskrc.fromString(String taskrc) {
     return Taskrc.fromMap(
