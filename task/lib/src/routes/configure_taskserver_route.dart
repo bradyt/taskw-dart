@@ -55,51 +55,49 @@ class _ConfigureTaskserverRouteState extends State<ConfigureTaskserverRoute> {
   }
 
   Future<void> _showStatistics(BuildContext context) async {
-    await storage.home.statistics(await client()).then(
-      (header) {
-        var maxKeyLength =
-            header.keys.map<int>((key) => (key as String).length).reduce(max);
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            scrollable: true,
-            title: const Text('Statistics:'),
-            content: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var key in header.keys.toList())
-                        Text(
-                          '${'$key:'.padRight(maxKeyLength + 1)} ${header[key]}',
-                          style: GoogleFonts.firaMono(),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
+    try {
+      var header = await storage.home.statistics(await client());
+      var maxKeyLength =
+          header.keys.map<int>((key) => (key as String).length).reduce(max);
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          scrollable: true,
+          title: const Text('Statistics:'),
+          content: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (var key in header.keys.toList())
+                      Text(
+                        '${'$key:'.padRight(maxKeyLength + 1)} ${header[key]}',
+                        style: GoogleFonts.firaMono(),
+                      ),
+                  ],
+                ),
+              ],
             ),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Ok'),
-              ),
-            ],
           ),
-        );
-      },
-      onError: (e) {
-        showExceptionDialog(
-          context: context,
-          e: e,
-        );
-        ProfilesWidget.of(context).setState(() {});
-      },
-    );
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Ok'),
+            ),
+          ],
+        ),
+      );
+    } on Exception catch (e) {
+      showExceptionDialog(
+        context: context,
+        e: e,
+      );
+      ProfilesWidget.of(context).setState(() {});
+    }
   }
 
   @override
