@@ -235,40 +235,16 @@ class HomeImpl {
     fileByKey(key).writeAsStringSync(contents);
   }
 
-  Connection _getConnection(Map config) {
-    var pems = [
-      'taskd.cert',
-      'taskd.key',
-    ];
-    for (var pem in pems) {
-      if (!File(_keyPemLookup[pem]!).existsSync()) {
-        throw TaskserverConfigurationException(
-          'Please provide $pem.',
-        );
-      }
-    }
-    if (!config.containsKey('taskd.server')) {
-      throw TaskserverConfigurationException(
-        'Please ensure your TASKRC includes taskd.server.',
+  bool _onBadCertificate(X509Certificate serverCert) {
+    var file = File(_serverCert);
+    if (file.existsSync() && serverCert.pem == file.readAsStringSync()) {
+      return true;
+    } else {
+      throw BadCertificateException(
+        home: home,
+        certificate: serverCert,
       );
     }
-    var server = Taskrc.fromMap(config).server!;
-
-    return Connection(
-      server: server,
-      context: _pemFilePaths.securityContext(),
-      onBadCertificate: (serverCert) {
-        var file = File(_serverCert);
-        if (file.existsSync() && serverCert.pem == file.readAsStringSync()) {
-          return true;
-        } else {
-          throw BadCertificateException(
-            home: home,
-            certificate: serverCert,
-          );
-        }
-      },
-    );
   }
 
   Map getConfig() {
@@ -283,7 +259,11 @@ class HomeImpl {
   Future<Map> statistics(String client) async {
     var config = getConfig();
     var response = await taskc.statistics(
-      connection: _getConnection(config),
+      connection: Connection(
+        server: Taskrc.fromMap(config).server!,
+        context: _pemFilePaths.securityContext(),
+        onBadCertificate: _onBadCertificate,
+      ),
       credentials: Taskrc.fromMap(config).credentials!,
       client: client,
     );
@@ -297,7 +277,11 @@ class HomeImpl {
       payload = File('${home.path}/.task/backlog.data').readAsStringSync();
     }
     var response = await taskc.synchronize(
-      connection: _getConnection(config),
+      connection: Connection(
+        server: Taskrc.fromMap(config).server!,
+        context: _pemFilePaths.securityContext(),
+        onBadCertificate: _onBadCertificate,
+      ),
       credentials: Taskrc.fromMap(config).credentials!,
       client: client,
       payload: payload,
