@@ -58,7 +58,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                     style: GoogleFonts.firaMono(),
                   ),
                   onPressed: () async {
-                    var initialDate = due?.toUtc() ?? DateTime.now();
+                    var initialDate = due?.toLocal() ?? DateTime.now();
                     var date = await showDatePicker(
                       context: context,
                       initialDate: initialDate,
