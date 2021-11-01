@@ -7,16 +7,11 @@ String message({
   Credentials? credentials,
   String? payload,
 }) {
-  if (credentials == null) {
-    throw TaskrcException(
-      'Credentials cannot be null.',
-    );
-  }
   return '''
 ${(client != null) ? 'client: $client\n' : ''}type: $type
-org: ${credentials.org}
-user: ${credentials.user}
-key: ${credentials.key}
+org: ${credentials?.org ?? ''}
+user: ${credentials?.user ?? ''}
+key: ${credentials?.key ?? ''}
 protocol: v1
 
 $payload''';
