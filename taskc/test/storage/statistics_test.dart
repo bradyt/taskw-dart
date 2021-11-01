@@ -50,7 +50,7 @@ void main() {
       for (var entry in {
         '.taskrc': '.taskrc',
         'taskd.ca': '.task/ca.cert.pem',
-        'taskd.cert': '.task/first_last.cert.pem',
+        'taskd.certificate': '.task/first_last.cert.pem',
         'taskd.key': '.task/first_last.key.pem',
       }.entries) {
         storage.home.addPemFile(

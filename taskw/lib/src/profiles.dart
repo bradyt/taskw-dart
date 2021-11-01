@@ -34,7 +34,7 @@ class Profiles {
       '.task/first_last.key.pem',
       '.task/server.cert.pem',
       'taskd.ca',
-      'taskd.cert',
+      'taskd.certificate',
       'taskd.key',
     ]) {
       if (File('${base.path}/profiles/$profile/$file').existsSync()) {

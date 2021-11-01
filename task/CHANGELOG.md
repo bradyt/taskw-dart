@@ -1,3 +1,8 @@
+# 0.1.5
+
+- Breaking changes:
+  + Implementation details loses saved display name for taskd.certificate, reselect file to replace
+
 # 0.1.4
 
 - Fix bug for 'Copy config to new profile' for partial configurations

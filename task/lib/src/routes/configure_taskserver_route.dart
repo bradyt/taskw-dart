@@ -23,7 +23,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
     for (var entry in {
       '.taskrc': '.taskrc',
       'taskd.ca': '.task/ca.cert.pem',
-      'taskd.cert': '.task/first_last.cert.pem',
+      'taskd.certificate': '.task/first_last.cert.pem',
       'taskd.key': '.task/first_last.key.pem',
       // 'server.cert': '.task/server.cert.pem',
     }.entries) {
@@ -113,7 +113,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
           TaskrcWidget(profile),
           for (var pem in [
             'taskd.ca',
-            'taskd.cert',
+            'taskd.certificate',
             'taskd.key',
           ])
             PemWidget(
@@ -151,7 +151,7 @@ class _PemWidgetState extends State<PemWidget> {
       title: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Text(
-          '${widget.pem.padRight(10)}${(widget.pem == 'server.cert') ? '' : ' = $name'}',
+          '${widget.pem.padRight(17)}${(widget.pem == 'server.cert') ? '' : ' = $name'}',
           style: GoogleFonts.firaMono(),
         ),
       ),
@@ -254,7 +254,7 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
             title: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Text(
-                'taskd.server=$server',
+                'taskd.server      = $server',
                 style: GoogleFonts.firaMono(),
               ),
             ),
@@ -275,7 +275,7 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
           title: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Text(
-              'taskd.credentials=$credentialsString',
+              'taskd.credentials = $credentialsString',
               style: GoogleFonts.firaMono(),
             ),
           ),
