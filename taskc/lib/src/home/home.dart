@@ -73,8 +73,12 @@ class Home {
     File('${home.path}/.taskrc').writeAsStringSync(taskrc);
   }
 
-  Map getConfig() {
-    return parseTaskrc(File('${home.path}/.taskrc').readAsStringSync());
+  Server? server() {
+    return Taskrc.fromHome(home.path).server;
+  }
+
+  Credentials? credentials() {
+    return Taskrc.fromHome(home.path).credentials;
   }
 
   Future<Map> statistics(String client) {

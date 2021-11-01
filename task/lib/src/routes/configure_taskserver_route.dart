@@ -227,11 +227,9 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
   }
 
   Future<void> _getConfig() async {
-    var config =
-        ProfilesWidget.of(context).getStorage(widget.profile).home.getConfig();
-    var taskrc = Taskrc.fromMap(config);
-    server = taskrc.server;
-    credentials = taskrc.credentials;
+    var home = ProfilesWidget.of(context).getStorage(widget.profile).home;
+    server = home.server();
+    credentials = home.credentials();
     setState(() {});
   }
 
