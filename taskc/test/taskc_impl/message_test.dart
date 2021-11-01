@@ -10,13 +10,13 @@ import 'package:taskc/home_impl.dart';
 import 'package:taskc/taskc.dart';
 import 'package:taskc/taskc_impl.dart';
 import 'package:taskc/taskd.dart';
-import 'package:taskc/taskrc.dart';
+import 'package:taskc/taskrc.dart' as rc;
 import 'package:taskj/json.dart';
 
 void main() {
   var taskdData = Directory('../fixture/var/taskd').absolute.path;
   var taskd = Taskd(taskdData);
-  late Taskrc taskrc;
+  late rc.Taskrc taskrc;
   late TaskdClient taskdClient;
 
   setUpAll(() async {
@@ -40,7 +40,7 @@ void main() {
       userKey: userKey,
     );
 
-    taskrc = Taskrc.fromHome(home);
+    taskrc = rc.Taskrc.fromHome(home);
     taskdClient = TaskdClient(taskrc: taskrc);
   });
 
@@ -177,7 +177,7 @@ void main() {
         fileName: 'first_last',
         userKey: userKey,
       );
-      taskrc = Taskrc.fromHome(home);
+      taskrc = rc.Taskrc.fromHome(home);
 
       var taskUuid = const Uuid().v1();
       var now = DateTime.now().toUtc();

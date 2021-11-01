@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:taskc/home_impl.dart';
 import 'package:taskc/storage.dart';
-import 'package:taskc/taskrc.dart';
+import 'package:taskc/taskrc.dart' as rc;
 
 class Home {
   const Home({
@@ -12,13 +12,13 @@ class Home {
   });
 
   final Directory home;
-  final PemFilePaths? pemFilePaths;
+  final rc.PemFilePaths? pemFilePaths;
   final bool Function(X509Certificate)? onBadCertificate;
 
   Data get _data => Data(home);
 
   TaskdClient _taskdClient(client) => TaskdClient(
-        taskrc: Taskrc.fromHome(home.path),
+        taskrc: rc.Taskrc.fromHome(home.path),
         client: client,
         pemFilePaths: pemFilePaths,
         throwOnBadCertificate: (badCertificate) =>
@@ -27,18 +27,6 @@ class Home {
           certificate: badCertificate,
         ),
       );
-
-  void addTaskrc(String taskrc) {
-    File('${home.path}/.taskrc').writeAsStringSync(taskrc);
-  }
-
-  Server? server() {
-    return Taskrc.fromHome(home.path).server;
-  }
-
-  Credentials? credentials() {
-    return Taskrc.fromHome(home.path).credentials;
-  }
 
   Future<Map> statistics(String client) {
     return _taskdClient(client).statistics();

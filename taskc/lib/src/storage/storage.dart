@@ -19,4 +19,5 @@ class Storage {
       );
   Query get query => Query(profile);
   Tabs get tabs => Tabs(profile);
+  Taskrc get taskrc => Taskrc(profile);
 }
