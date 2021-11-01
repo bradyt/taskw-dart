@@ -32,13 +32,16 @@ class Profiles {
       '.task/ca.cert.pem',
       '.task/first_last.cert.pem',
       '.task/first_last.key.pem',
+      '.task/server.cert.pem',
       'taskd.ca',
       'taskd.cert',
       'taskd.key',
     ]) {
-      File('${base.path}/profiles/$profile/$file').copySync(
-        '${base.path}/profiles/$newProfile/$file',
-      );
+      if (File('${base.path}/profiles/$profile/$file').existsSync()) {
+        File('${base.path}/profiles/$profile/$file').copySync(
+          '${base.path}/profiles/$newProfile/$file',
+        );
+      }
     }
   }
 

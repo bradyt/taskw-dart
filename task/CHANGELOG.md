@@ -1,5 +1,6 @@
 # 0.1.4
 
+- Fix bug for 'Copy config to new profile' for partial configurations
 - Make taskd.ca optional
   + Long press to remove CA
 - If server.cert manually trusted, show its SHA-1 in configuration, and allow to remove cert
