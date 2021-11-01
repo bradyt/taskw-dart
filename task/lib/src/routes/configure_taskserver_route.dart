@@ -209,7 +209,7 @@ class _PemWidgetState extends State<PemWidget> {
               await setConfig(storage: widget.storage, key: widget.pem);
               setState(() {});
             },
-      onLongPress: (widget.pem == 'taskd.ca' && name != null)
+      onLongPress: (widget.pem != 'server.cert' && name != null)
           ? () {
               widget.storage.guiPemFiles.removePemFile(widget.pem);
               setState(() {});
