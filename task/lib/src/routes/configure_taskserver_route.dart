@@ -248,7 +248,10 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
     }
 
     return ExpansionTile(
-      title: const Text('.taskrc'),
+      title: Text(
+        'TASKRC',
+        style: GoogleFonts.firaMono(),
+      ),
       children: [
         ListTile(
             title: SingleChildScrollView(
@@ -290,7 +293,10 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
                 ),
         ),
         ListTile(
-            title: const Text('Select .taskrc'),
+            title: Text(
+              'Select TASKRC',
+              style: GoogleFonts.firaMono(),
+            ),
             onTap: () async {
               await setConfig(
                 storage: ProfilesWidget.of(context).getStorage(widget.profile),
