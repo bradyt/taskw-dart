@@ -91,10 +91,11 @@ class _ConfigureTaskserverRouteState extends State<ConfigureTaskserverRoute> {
           ],
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, trace) {
       showExceptionDialog(
         context: context,
         e: e,
+        trace: trace,
       );
       ProfilesWidget.of(context).setState(() {});
     }
