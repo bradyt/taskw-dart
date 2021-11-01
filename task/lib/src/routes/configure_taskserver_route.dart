@@ -300,7 +300,7 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
             onTap: () async {
               await setConfig(
                 storage: ProfilesWidget.of(context).getStorage(widget.profile),
-                key: '.taskrc',
+                key: 'TASKRC',
               );
 
               await _getConfig();

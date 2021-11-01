@@ -22,7 +22,7 @@ Future<void> setConfig({required Storage storage, required String key}) async {
     });
   }
   if (contents != null) {
-    if (key == '.taskrc') {
+    if (key == 'TASKRC') {
       storage.home.addTaskrc(contents!);
     } else {
       storage.home.addPemFile(
