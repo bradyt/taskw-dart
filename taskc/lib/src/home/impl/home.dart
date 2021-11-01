@@ -266,20 +266,6 @@ class HomeImpl {
     );
   }
 
-  Credentials _getCredentials(Map config) {
-    if (!config.containsKey('taskd.credentials')) {
-      throw TaskserverConfigurationException(
-        'Ensure your TASKRC sets taskd.credentials',
-      );
-    }
-    if ((config['taskd.credentials'] as String).split('/').length != 3) {
-      throw TaskserverConfigurationException(
-        'Ensure your TASKRC sets taskd.credentials to a string of the form <org>/<user>/<key>.',
-      );
-    }
-    return Credentials.fromString(config['taskd.credentials']);
-  }
-
   Map getConfig() {
     if (!File(_taskrc).existsSync()) {
       throw TaskserverConfigurationException(
@@ -293,7 +279,7 @@ class HomeImpl {
     var config = getConfig();
     var response = await taskc.statistics(
       connection: _getConnection(config),
-      credentials: _getCredentials(config),
+      credentials: Taskrc.fromMap(config).credentials!,
       client: client,
     );
     return response.header;
@@ -307,7 +293,7 @@ class HomeImpl {
     }
     var response = await taskc.synchronize(
       connection: _getConnection(config),
-      credentials: _getCredentials(config),
+      credentials: Taskrc.fromMap(config).credentials!,
       client: client,
       payload: payload,
     );
