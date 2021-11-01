@@ -37,8 +37,19 @@ class TaskdClient {
     required String type,
     String? payload,
   }) async {
-    var socket = await getSocket(
-      server: taskrc.server,
+    if (taskrc.server == null) {
+      throw Exception(
+        'Server cannot be null.',
+      );
+    }
+
+    var socket = await Socket.connect(
+      taskrc.server!.address,
+      taskrc.server!.port,
+    );
+
+    var secureSocket = await SecureSocket.secure(
+      socket,
       context: _pemFilePaths().securityContext(),
       onBadCertificate: _onBadCertificate,
     );
@@ -51,10 +62,11 @@ class TaskdClient {
     );
 
     var responseBytes = await send(
-      socket: socket,
+      socket: secureSocket,
       bytes: Codec.encode(_message),
     );
 
+    await secureSocket.close();
     await socket.close();
 
     if (responseBytes.isEmpty) {
