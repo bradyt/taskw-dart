@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:pem/pem.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:taskc/fingerprints.dart';
+import 'package:taskc/fingerprint.dart';
 import 'package:taskc/storage.dart';
 
 import 'package:task/task.dart';
@@ -15,9 +14,7 @@ void showExceptionDialog({context, e, trace}) {
     e as BadCertificateException;
     String identifier;
     try {
-      identifier = fingerprints(PemLabel.certificate, e.certificate.pem)
-          .map((digest) => '$digest'.toUpperCase())
-          .join('\n');
+      identifier = fingerprint(e.certificate.pem).toUpperCase();
       // ignore: avoid_catches_without_on_clauses
     } catch (_) {
       identifier = '${e.certificate}';

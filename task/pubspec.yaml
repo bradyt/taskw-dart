@@ -10,7 +10,6 @@ environment:
   flutter: ">=2.5.0 <3.0.0"
 
 dependencies:
-  crypto:
   cupertino_icons:
   file_picker_writable:
   file_selector:

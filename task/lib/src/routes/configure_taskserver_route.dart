@@ -3,13 +3,12 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pem/pem.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:taskc/home_impl.dart' as rc;
 
-import 'package:taskc/fingerprints.dart';
+import 'package:taskc/fingerprint.dart';
 import 'package:taskc/storage.dart';
 import 'package:taskc/taskrc.dart';
 
@@ -183,9 +182,7 @@ class _PemWidgetState extends State<PemWidget> {
           return null;
         }
         try {
-          var identifier = fingerprints(PemLabel.certificate, contents)
-              .map((digest) => '$digest'.toUpperCase())
-              .join('\n');
+          var identifier = fingerprint(contents).toUpperCase();
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Text(
