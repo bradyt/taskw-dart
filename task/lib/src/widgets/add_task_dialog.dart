@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
 import 'package:taskw/taskw.dart';
 
 import 'package:task/task.dart';
@@ -18,6 +20,7 @@ class AddTaskDialog extends StatelessWidget {
         autofocus: true,
         maxLines: null,
         controller: controller,
+        style: GoogleFonts.firaMono(),
       ),
       actions: [
         TextButton(
