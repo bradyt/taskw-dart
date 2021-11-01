@@ -2,6 +2,12 @@
 
 - Breaking changes:
   + Implementation details loses saved display name for taskd.certificate, reselect file to replace
+  + Simpler implementation in general
+    * For now, has fewer helpful warnings
+
+      E.g., client certificate is not required to send, but will provoke an empty response from Taskserver
+
+    * May help progress on other features
 
 # 0.1.4
 
