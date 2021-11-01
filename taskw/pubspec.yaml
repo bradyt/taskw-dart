@@ -13,6 +13,7 @@ executables:
 dependencies:
   collection:
   intl:
+  petitparser:
   taskc:
     path: ../taskc
   taskj:
