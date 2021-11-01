@@ -13,7 +13,9 @@ executables:
 dependencies:
   built_value:
   collection:
+  crypto:
   intl:
+  pem:
   uuid:
 
 dev_dependencies:

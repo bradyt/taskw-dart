@@ -423,7 +423,7 @@ packages:
     source: hosted
     version: "1.11.1"
   pem:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: pem
       url: "https://pub.dartlang.org"

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:taskc/home_impl.dart' as rc;
 
+import 'package:taskc/fingerprints.dart';
 import 'package:taskc/storage.dart';
 import 'package:taskc/taskrc.dart';
 
@@ -183,13 +183,13 @@ class _PemWidgetState extends State<PemWidget> {
           return null;
         }
         try {
-          var fingerprints = decodePemBlocks(PemLabel.certificate, contents)
-              .map((block) => 'SHA-1: ${sha1.convert(block)}'.toUpperCase())
+          var identifier = fingerprints(PemLabel.certificate, contents)
+              .map((digest) => '$digest'.toUpperCase())
               .join('\n');
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Text(
-              fingerprints,
+              'SHA1: $identifier',
               style: GoogleFonts.firaMono(),
             ),
           );

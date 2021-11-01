@@ -25,7 +25,6 @@ dependencies:
   package_info_plus:
   path_provider:
   path_provider_macos:
-  pem:
   taskc:
     path: ../taskc
   taskj:

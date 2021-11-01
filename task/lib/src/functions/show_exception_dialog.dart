@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:pem/pem.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:taskc/fingerprints.dart';
 import 'package:taskc/storage.dart';
 
 import 'package:task/task.dart';
@@ -15,8 +15,8 @@ void showExceptionDialog({context, e, trace}) {
     e as BadCertificateException;
     String identifier;
     try {
-      identifier = decodePemBlocks(PemLabel.certificate, e.certificate.pem)
-          .map((block) => 'SHA-1: ${sha1.convert(block)}'.toUpperCase())
+      identifier = fingerprints(PemLabel.certificate, e.certificate.pem)
+          .map((digest) => '$digest'.toUpperCase())
           .join('\n');
       // ignore: avoid_catches_without_on_clauses
     } catch (_) {
