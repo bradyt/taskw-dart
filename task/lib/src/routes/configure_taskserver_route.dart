@@ -109,6 +109,12 @@ class _ConfigureTaskserverRouteState extends State<ConfigureTaskserverRoute> {
     );
     var alias = ProfilesWidget.of(context).profilesMap[profile];
 
+    var contents = rc.Taskrc(storage.home.home).readTaskrc();
+    if (contents != null) {
+      server = Taskrc.fromString(contents).server;
+      credentials = Taskrc.fromString(contents).credentials;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(alias ?? profile),
@@ -128,11 +134,7 @@ class _ConfigureTaskserverRouteState extends State<ConfigureTaskserverRoute> {
       ),
       body: ListView(
         children: [
-          TaskrcWidget(
-            storage: storage,
-            server: server,
-            credentials: credentials,
-          ),
+          TaskrcWidget(storage),
           for (var pem in [
             'taskd.certificate',
             'taskd.key',
@@ -222,16 +224,9 @@ class _PemWidgetState extends State<PemWidget> {
 }
 
 class TaskrcWidget extends StatefulWidget {
-  const TaskrcWidget({
-    required this.storage,
-    required this.server,
-    required this.credentials,
-    Key? key,
-  }) : super(key: key);
+  const TaskrcWidget(this.storage, {Key? key}) : super(key: key);
 
   final Storage storage;
-  final Server? server;
-  final Credentials? credentials;
 
   @override
   State<TaskrcWidget> createState() => _TaskrcWidgetState();
@@ -242,8 +237,13 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var server = widget.server;
-    var credentials = widget.credentials;
+    Server? server;
+    Credentials? credentials;
+    var contents = rc.Taskrc(widget.storage.home.home).readTaskrc();
+    if (contents != null) {
+      server = Taskrc.fromString(contents).server;
+      credentials = Taskrc.fromString(contents).credentials;
+    }
     String? credentialsString;
     if (credentials != null) {
       String key;
@@ -274,7 +274,7 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
                 ? null
                 : () async {
                     late String mainDomain;
-                    if (server.address == 'localhost') {
+                    if (server!.address == 'localhost') {
                       mainDomain = server.address;
                     } else {
                       var parts = server.address.split('.');
@@ -315,6 +315,7 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
                 storage: widget.storage,
                 key: 'TASKRC',
               );
+              setState(() {});
             }),
       ],
     );
