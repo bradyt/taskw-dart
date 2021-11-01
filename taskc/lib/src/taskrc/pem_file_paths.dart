@@ -25,10 +25,10 @@ class PemFilePaths {
     var context = (ca != null && File(ca!).existsSync())
         ? (SecurityContext()..setTrustedCertificates(ca!))
         : SecurityContext.defaultContext;
-    if (certificate != null) {
+    if (certificate != null && File(certificate!).existsSync()) {
       context.useCertificateChain(certificate!);
     }
-    if (key != null) {
+    if (key != null && File(key!).existsSync()) {
       context.usePrivateKey(key!);
     }
     return context;
