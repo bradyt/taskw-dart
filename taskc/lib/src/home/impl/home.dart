@@ -16,7 +16,6 @@ class HomeImpl {
 
   final Directory home;
 
-  String get _taskrc => '${home.path}/.taskrc';
   String get _ca => '${home.path}/.task/ca.cert.pem';
   String get _cert => '${home.path}/.task/first_last.cert.pem';
   String get _key => '${home.path}/.task/first_last.key.pem';
@@ -34,7 +33,6 @@ class HomeImpl {
       );
 
   Map<String, String> get _keyPemLookup => {
-        '.taskrc': _taskrc,
         'taskd.ca': _ca,
         'taskd.cert': _cert,
         'taskd.key': _key,
@@ -246,38 +244,29 @@ class HomeImpl {
     }
   }
 
-  Map getConfig() {
-    if (!File(_taskrc).existsSync()) {
-      throw TaskserverConfigurationException(
-        'Please add your TASKRC file.',
-      );
-    }
-    return parseTaskrc(File(_taskrc).readAsStringSync());
-  }
-
   Future<Map> statistics(String client) async {
-    var config = getConfig();
+    var taskrc = Taskrc.fromHome(home.path);
     var response = await taskc.statistics(
-      server: Taskrc.fromMap(config).server!,
+      server: taskrc.server!,
       context: _pemFilePaths.securityContext(),
       onBadCertificate: _onBadCertificate,
-      credentials: Taskrc.fromMap(config).credentials!,
+      credentials: taskrc.credentials!,
       client: client,
     );
     return response.header;
   }
 
   Future<Map> synchronize(String client) async {
-    var config = getConfig();
+    var taskrc = Taskrc.fromHome(home.path);
     var payload = '';
     if (File('${home.path}/.task/backlog.data').existsSync()) {
       payload = File('${home.path}/.task/backlog.data').readAsStringSync();
     }
     var response = await taskc.synchronize(
-      server: Taskrc.fromMap(config).server!,
+      server: taskrc.server!,
       context: _pemFilePaths.securityContext(),
       onBadCertificate: _onBadCertificate,
-      credentials: Taskrc.fromMap(config).credentials!,
+      credentials: taskrc.credentials!,
       client: client,
       payload: payload,
     );
