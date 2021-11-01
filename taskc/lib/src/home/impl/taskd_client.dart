@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:taskc/storage.dart';
 import 'package:taskc/taskc.dart';
 import 'package:taskc/taskc_impl.dart';
 import 'package:taskc/taskrc.dart';
@@ -38,7 +39,7 @@ class TaskdClient {
     String? payload,
   }) async {
     if (taskrc.server == null) {
-      throw Exception(
+      throw TaskserverConfigurationException(
         'Server cannot be null.',
       );
     }
