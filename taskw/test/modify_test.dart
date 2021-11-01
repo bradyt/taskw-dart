@@ -17,7 +17,7 @@ void main() {
       Directory(
         'test/profile-testing/modify/${const Uuid().v1()}',
       ),
-    )..home.mergeTask(Task(
+    )..data.mergeTask(Task(
         (b) => b
           ..uuid = uuid
           ..status = 'pending'
@@ -25,8 +25,8 @@ void main() {
           ..entry = now,
       ));
     Modify(
-      getTask: storage.home.getTask,
-      mergeTask: storage.home.mergeTask,
+      getTask: storage.data.getTask,
+      mergeTask: storage.data.mergeTask,
       uuid: uuid,
     )
       ..draft

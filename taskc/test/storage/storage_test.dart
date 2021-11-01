@@ -97,8 +97,8 @@ void main() {
           ..modified = now
           ..until = now,
       ),
-    ].forEach(storage.home.mergeTask);
-    storage.home.allData();
+    ].forEach(storage.data.mergeTask);
+    storage.data.allData();
     for (var entry in {
       '.taskrc': '.taskrc',
       'taskd.ca': '.task/ca.cert.pem',
@@ -156,7 +156,7 @@ void main() {
 
     await storage.home.synchronize('test');
 
-    var libExport = storage.home.export();
+    var libExport = storage.data.export();
 
     expect(json.decode(libExport), json.decode(cliExport));
     expect(libExport, cliExport);

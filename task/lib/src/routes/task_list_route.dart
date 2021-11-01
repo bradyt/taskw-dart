@@ -306,7 +306,7 @@ class ProfilesColumn extends StatelessWidget {
                         onTap: () {
                           var tasks = ProfilesWidget.of(context)
                               .getStorage(entry.key)
-                              .home
+                              .data
                               .export();
                           var now = DateTime.now()
                               .toIso8601String()

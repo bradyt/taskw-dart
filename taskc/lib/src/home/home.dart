@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:taskc/home_impl.dart';
 import 'package:taskc/storage.dart';
 import 'package:taskc/taskrc.dart';
-import 'package:taskj/json.dart';
 
 class Home {
   const Home({
@@ -28,30 +27,6 @@ class Home {
           certificate: badCertificate,
         ),
       );
-
-  void addTask(Task task) {
-    _data.mergeTask(task);
-  }
-
-  void mergeTask(Task task) {
-    _data.mergeTask(task);
-  }
-
-  Task getTask(String uuid) {
-    return _data.getTask(uuid);
-  }
-
-  List<Task> allData() {
-    return _data.allData();
-  }
-
-  List<Task> pendingData() {
-    return _data.pendingData();
-  }
-
-  String export() {
-    return _data.export();
-  }
 
   void addTaskrc(String taskrc) {
     File('${home.path}/.taskrc').writeAsStringSync(taskrc);

@@ -100,12 +100,12 @@ class _StorageWidgetState extends State<StorageWidget> {
 
   void _refreshTasks() {
     if (pendingFilter) {
-      queriedTasks = storage.home
+      queriedTasks = storage.data
           .pendingData()
           .where((task) => task.status == 'pending')
           .toList();
     } else {
-      queriedTasks = storage.home.allData();
+      queriedTasks = storage.data.allData();
     }
 
     if (projectFilter.isNotEmpty) {
@@ -161,7 +161,7 @@ class _StorageWidgetState extends State<StorageWidget> {
 
   Map<String, TagMetadata> tags() {
     var frequency = <String, int>{};
-    for (var task in storage.home.pendingData()) {
+    for (var task in storage.data.pendingData()) {
       for (var tag in task.tags?.asList() ?? []) {
         if (frequency.containsKey(tag)) {
           frequency[tag] = (frequency[tag] ?? 0) + 1;
@@ -171,7 +171,7 @@ class _StorageWidgetState extends State<StorageWidget> {
       }
     }
     var modified = <String, DateTime>{};
-    for (var task in storage.home.allData()) {
+    for (var task in storage.data.allData()) {
       var _modified = task.modified ?? DateTime.now().toUtc();
       for (var tag in task.tags?.asList() ?? []) {
         if (modified.containsKey(tag)) {
@@ -188,7 +188,7 @@ class _StorageWidgetState extends State<StorageWidget> {
         }
       }
     }
-    var setOfTags = storage.home
+    var setOfTags = storage.data
         .allData()
         .map((task) => task.tags)
         .expand((tags) => tags ?? BuiltList())
@@ -210,7 +210,7 @@ class _StorageWidgetState extends State<StorageWidget> {
 
   Map<String, ProjectMetadata> _projects() {
     var frequency = <String, int>{};
-    for (var task in storage.home.pendingData()) {
+    for (var task in storage.data.pendingData()) {
       if (task.project != null) {
         if (frequency.containsKey(task.project)) {
           frequency[task.project!] = (frequency[task.project] ?? 0) + 1;
@@ -275,11 +275,11 @@ class _StorageWidgetState extends State<StorageWidget> {
   }
 
   Task getTask(String uuid) {
-    return storage.home.getTask(uuid);
+    return storage.data.getTask(uuid);
   }
 
   void mergeTask(Task task) {
-    storage.home.mergeTask(task);
+    storage.data.mergeTask(task);
     _refreshTasks();
     setState(() {});
   }

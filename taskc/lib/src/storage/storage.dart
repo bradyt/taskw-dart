@@ -11,6 +11,7 @@ class Storage {
 
   final Directory profile;
 
+  Data get data => Data(profile);
   Home get home => Home(
         home: profile,
         pemFilePaths: guiPemFiles.pemFilePaths,
