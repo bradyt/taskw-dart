@@ -29,6 +29,26 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
     super.dispose();
   }
 
+  Future submit() async {
+    try {
+      var task = taskParser(controller.text).rebuild((b) => b..due = due);
+      validateTaskDescription(task.description);
+      if (task.project != null) {
+        validateTaskProject(task.project!);
+      }
+      StorageWidget.of(context).mergeTask(task);
+      controller.text = '';
+      due = null;
+      setState(() {});
+    } on FormatException catch (e, trace) {
+      showExceptionDialog(
+        context: context,
+        e: e,
+        trace: trace,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -58,30 +78,17 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       smartQuotesType: SmartQuotesType.disabled,
                       controller: controller,
                       style: GoogleFonts.firaMono(),
+                      onSubmitted: (_) {
+                        if (controller.text.isNotEmpty) {
+                          submit();
+                        }
+                        Navigator.of(context).pop();
+                      },
                     ),
                   ),
                   IconButton(
                     icon: const Icon(Icons.keyboard_return),
-                    onPressed: () async {
-                      try {
-                        var task = taskParser(controller.text)
-                            .rebuild((b) => b..due = due);
-                        validateTaskDescription(task.description);
-                        if (task.project != null) {
-                          validateTaskProject(task.project!);
-                        }
-                        StorageWidget.of(context).mergeTask(task);
-                        controller.text = '';
-                        due = null;
-                        setState(() {});
-                      } on FormatException catch (e, trace) {
-                        showExceptionDialog(
-                          context: context,
-                          e: e,
-                          trace: trace,
-                        );
-                      }
-                    },
+                    onPressed: submit,
                   ),
                 ],
               ),
