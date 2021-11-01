@@ -92,6 +92,24 @@ Task taskParser(String task) {
         case 'priority':
           draft = draft.rebuild((b) => b..priority = value);
           break;
+        case 'due':
+          draft = draft.rebuild(
+            (b) =>
+                b..due = (value == null) ? null : DateTime.parse(value).toUtc(),
+          );
+          break;
+        case 'wait':
+          draft = draft.rebuild(
+            (b) => b
+              ..wait = (value == null) ? null : DateTime.parse(value).toUtc(),
+          );
+          break;
+        case 'until':
+          draft = draft.rebuild(
+            (b) => b
+              ..until = (value == null) ? null : DateTime.parse(value).toUtc(),
+          );
+          break;
       }
     } else if (match is Tag) {
       draft = draft.rebuild((b) => b..tags = (b.tags..add(match.tag)));
