@@ -8,8 +8,8 @@ Future<Uint8List> send(
   Uint8List response;
 
   var socket = await Socket.connect(
-    connection.address,
-    connection.port,
+    connection.server.address,
+    connection.server.port,
   );
 
   var secureSocket = await SecureSocket.secure(

@@ -41,8 +41,7 @@ void main() {
 
     taskrc = Taskrc.fromHome(home);
     connection = Connection(
-      address: taskrc.server!.address,
-      port: taskrc.server!.port,
+      server: taskrc.server!,
       context: SecurityContext()
         ..useCertificateChain(taskrc.pemFilePaths.certificate!)
         ..usePrivateKey(taskrc.pemFilePaths.key!),
@@ -221,8 +220,7 @@ void main() {
       );
       taskrc = Taskrc.fromHome(home);
       connection = Connection(
-        address: taskrc.server!.address,
-        port: taskrc.server!.port,
+        server: taskrc.server!,
         context: SecurityContext()
           ..useCertificateChain(taskrc.pemFilePaths.certificate!)
           ..usePrivateKey(taskrc.pemFilePaths.key!),

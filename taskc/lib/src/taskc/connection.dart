@@ -1,15 +1,15 @@
 import 'dart:io';
 
+import 'package:taskc/taskrc.dart';
+
 class Connection {
   Connection({
-    required this.address,
-    required this.port,
+    required this.server,
     required this.context,
     this.onBadCertificate,
   });
 
-  final String address;
-  final int port;
+  final Server server;
 
   final SecurityContext context;
 

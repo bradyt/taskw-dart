@@ -247,8 +247,7 @@ class HomeImpl {
         ? (SecurityContext()..setTrustedCertificates(_ca))
         : SecurityContext.defaultContext;
     return Connection(
-      address: server.address,
-      port: server.port,
+      server: server,
       context: context
         ..useCertificateChain(_cert)
         ..usePrivateKey(_key),
