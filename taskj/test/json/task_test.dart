@@ -196,10 +196,10 @@ void main() {
       // someone wants to run tests where bleeding edge Taskwarrior is
       // installed, either in CI or personal computer.
       await taskwarrior.modify(['1', 'dep:2,3,4']);
-      var string = (json.decode(await taskwarrior.export()) as List)[0];
+      var string = (json.decode(await taskwarrior.export()) as List)[0] as Map;
 
       if (version[0] <= 2 && version[1] <= 5) {
-        expect((string as Map)['depends'], isA<String>());
+        expect(string['depends'], isA<String>());
         expect((string['depends'] as String).split(',').length, 3);
         expect(Task.fromJson(string).toJson(), string);
       }
