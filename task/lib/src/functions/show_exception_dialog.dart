@@ -80,7 +80,7 @@ connections.'''
       scrollable: true,
       title: SelectableText('${e.runtimeType}'),
       content: SelectableText(
-        '$e${trace != null ? '\n$trace' : ''}',
+        '$e${trace != null ? '\n\n$trace' : ''}',
         style: GoogleFonts.firaMono(),
       ),
       actions: [
