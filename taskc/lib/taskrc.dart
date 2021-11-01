@@ -1,8 +1,9 @@
-/// Currently this library only contains the parseTaskrc function, which is
-/// currently only used for configuring a client to point at a
+/// This library parses taskrc files to configure a taskd client, regarding
 /// [Taskserver](https://github.com/GothenburgBitFactory/taskserver).
 
 library taskrc;
 
 export 'src/taskrc/credentials.dart';
+export 'src/taskrc/parse_taskrc.dart';
+export 'src/taskrc/server.dart';
 export 'src/taskrc/taskrc.dart';

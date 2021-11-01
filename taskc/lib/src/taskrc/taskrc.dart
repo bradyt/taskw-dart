@@ -1,9 +1,32 @@
-/// Parses a taskrc file into a Dart [Map].
-Map<String, String> parseTaskrc(String contents) => {
-      for (var pair in contents
-          .split('\n')
-          .where((line) => line.contains('=') && line[0] != '#')
-          .map((line) => line.replaceAll('\\/', '/')) // ignore: use_raw_strings
-          .map((line) => line.split('=')))
-        pair[0].trim(): pair[1].trim(),
-    };
+import 'dart:io';
+
+import 'package:taskc/taskrc.dart';
+
+class Taskrc {
+  Taskrc({
+    required this.server,
+    required this.credentials,
+  });
+
+  factory Taskrc.fromHome(String home) {
+    return Taskrc.fromString(
+      File('$home/.taskrc').readAsStringSync(),
+    );
+  }
+
+  factory Taskrc.fromString(String taskrc) {
+    return Taskrc.fromMap(
+      parseTaskrc(taskrc),
+    );
+  }
+
+  factory Taskrc.fromMap(Map taskrc) {
+    return Taskrc(
+      server: Server.fromString(taskrc['taskd.server']),
+      credentials: Credentials.fromString(taskrc['taskd.credentials']),
+    );
+  }
+
+  final Server server;
+  final Credentials credentials;
+}
