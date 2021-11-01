@@ -15,5 +15,10 @@ class TaskserverResponseException implements Exception {
 class EmptyResponseException implements Exception {
   @override
   String toString() => 'The server returned an empty response. '
-      'Please review the server logs or contact administrator.';
+      'Please review the server logs or contact administrator.\n'
+      '\n'
+      'This may be an issue with the triple:\n'
+      '- taskd.certificate\n'
+      '- taskd.key\n'
+      '- \$TASKDDATA/ca.cert.pem';
 }
