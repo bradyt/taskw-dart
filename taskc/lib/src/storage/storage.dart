@@ -12,11 +12,11 @@ class Storage {
   final Directory profile;
 
   Data get data => Data(profile);
+  GUIPemFiles get guiPemFiles => GUIPemFiles(profile);
   Home get home => Home(
         home: profile,
         pemFilePaths: guiPemFiles.pemFilePaths,
       );
-  GUIPemFiles get guiPemFiles => GUIPemFiles(profile);
   Query get query => Query(profile);
   Tabs get tabs => Tabs(profile);
 }
