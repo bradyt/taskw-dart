@@ -11,9 +11,15 @@ class Taskrc {
   });
 
   factory Taskrc.fromHome(String home) {
-    return Taskrc.fromString(
-      File('$home/.taskrc').readAsStringSync(),
-    );
+    if (File('$home/.taskrc').existsSync()) {
+      return Taskrc.fromString(
+        File('$home/.taskrc').readAsStringSync(),
+      );
+    } else {
+      throw TaskrcException(
+        'Please add a TASKRC file.',
+      );
+    }
   }
 
   factory Taskrc.fromString(String taskrc) {
