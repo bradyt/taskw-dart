@@ -20,8 +20,9 @@ class ConfigureTaskserverRoute extends StatelessWidget {
   final Storage storage;
 
   Future<void> _setConfigurationFromFixtureForDebugging() async {
+    var contents = await rootBundle.loadString('assets/.taskrc');
+    storage.home.addTaskrc(contents);
     for (var entry in {
-      '.taskrc': '.taskrc',
       'taskd.certificate': '.task/first_last.cert.pem',
       'taskd.key': '.task/first_last.key.pem',
       'taskd.ca': '.task/ca.cert.pem',
