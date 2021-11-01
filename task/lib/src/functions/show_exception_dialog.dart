@@ -47,7 +47,7 @@ connections.'''
         actions: [
           TextButton(
             onPressed: () {
-              Storage(e.home).home.addPemFile(
+              Storage(e.home).guiPemFiles.addPemFile(
                     key: 'server.cert',
                     contents: e.certificate.pem,
                   );

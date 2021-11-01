@@ -17,7 +17,7 @@ class Home {
   final bool Function(X509Certificate)? onBadCertificate;
 
   Data get _data => Data(home);
-  GUIPemFiles get _guiPemFiles => GUIPemFiles(home);
+
   TaskdClient _taskdClient(client) => TaskdClient(
         taskrc: Taskrc.fromHome(home.path),
         client: client,
@@ -51,39 +51,6 @@ class Home {
 
   String export() {
     return _data.export();
-  }
-
-  void removeTaskdCa() {
-    _guiPemFiles.removeTaskdCa();
-  }
-
-  void removeServerCert() {
-    _guiPemFiles.removeServerCert();
-  }
-
-  bool serverCertExists() {
-    return _guiPemFiles.serverCertExists();
-  }
-
-  void addPemFile({
-    required String key,
-    required String contents,
-    String? name,
-  }) {
-    _guiPemFiles.addFileContents(key: key, contents: contents);
-    if (name != null) {
-      _guiPemFiles.addFileName(key: key, name: name);
-    }
-  }
-
-  String? pemFilename(String key) {
-    return _guiPemFiles.pemName(key);
-  }
-
-  String? pemContents(String key) {
-    if (_guiPemFiles.fileByKey(key).existsSync()) {
-      return _guiPemFiles.fileByKey(key).readAsStringSync();
-    }
   }
 
   void addTaskrc(String taskrc) {

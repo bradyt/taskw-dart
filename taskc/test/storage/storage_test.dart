@@ -107,7 +107,7 @@ void main() {
     }.entries) {
       expect(() => storage.home.synchronize('test'),
           throwsA(isA<TaskserverConfigurationException>()));
-      storage.home.addPemFile(
+      storage.guiPemFiles.addPemFile(
         key: entry.key,
         contents: File('$home/${entry.value}').readAsStringSync(),
       );
@@ -129,7 +129,7 @@ void main() {
       await storage.home.synchronize('test');
     } on BadCertificateException catch (e) {
       await null;
-      storage.home.addPemFile(
+      storage.guiPemFiles.addPemFile(
         key: 'server.cert',
         contents: e.certificate.pem,
       );

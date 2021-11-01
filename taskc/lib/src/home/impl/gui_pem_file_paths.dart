@@ -53,4 +53,25 @@ class GUIPemFiles {
   void addFileContents({required String key, required String contents}) {
     fileByKey(key).writeAsStringSync(contents);
   }
+
+  void addPemFile({
+    required String key,
+    required String contents,
+    String? name,
+  }) {
+    addFileContents(key: key, contents: contents);
+    if (name != null) {
+      addFileName(key: key, name: name);
+    }
+  }
+
+  String? pemContents(String key) {
+    if (fileByKey(key).existsSync()) {
+      return fileByKey(key).readAsStringSync();
+    }
+  }
+
+  String? pemFilename(String key) {
+    return pemName(key);
+  }
 }

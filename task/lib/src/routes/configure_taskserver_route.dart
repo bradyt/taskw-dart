@@ -29,7 +29,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
       // 'server.cert': '.task/server.cert.pem',
     }.entries) {
       var contents = await rootBundle.loadString('assets/${entry.value}');
-      storage.home.addPemFile(
+      storage.guiPemFiles.addPemFile(
         key: entry.key,
         contents: contents,
         name: entry.value.split('/').last,
@@ -146,8 +146,8 @@ class PemWidget extends StatefulWidget {
 class _PemWidgetState extends State<PemWidget> {
   @override
   Widget build(BuildContext context) {
-    var contents = widget.storage.home.pemContents(widget.pem);
-    var name = widget.storage.home.pemFilename(widget.pem);
+    var contents = widget.storage.guiPemFiles.pemContents(widget.pem);
+    var name = widget.storage.guiPemFiles.pemFilename(widget.pem);
     return ListTile(
       title: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -184,7 +184,7 @@ class _PemWidgetState extends State<PemWidget> {
       }(widget.pem),
       onTap: (widget.pem == 'server.cert')
           ? () {
-              widget.storage.home.removeServerCert();
+              widget.storage.guiPemFiles.removeServerCert();
               ProfilesWidget.of(context).setState(() {});
               setState(() {});
             }
@@ -194,7 +194,7 @@ class _PemWidgetState extends State<PemWidget> {
             },
       onLongPress: (widget.pem == 'taskd.ca' && name != null)
           ? () {
-              widget.storage.home.removeTaskdCa();
+              widget.storage.guiPemFiles.removeTaskdCa();
               setState(() {});
             }
           : null,

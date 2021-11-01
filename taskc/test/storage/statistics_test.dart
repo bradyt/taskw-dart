@@ -53,7 +53,7 @@ void main() {
         'taskd.certificate': '.task/first_last.cert.pem',
         'taskd.key': '.task/first_last.key.pem',
       }.entries) {
-        storage.home.addPemFile(
+        storage.guiPemFiles.addPemFile(
           key: entry.key,
           contents: File('$home/${entry.value}').readAsStringSync(),
         );
@@ -61,7 +61,7 @@ void main() {
       try {
         await storage.home.statistics('test');
       } on BadCertificateException catch (e) {
-        storage.home.addPemFile(
+        storage.guiPemFiles.addPemFile(
           key: 'server.cert',
           contents: e.certificate.pem,
         );

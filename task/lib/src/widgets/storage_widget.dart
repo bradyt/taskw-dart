@@ -70,7 +70,7 @@ class _StorageWidgetState extends State<StorageWidget> {
   void initState() {
     super.initState();
     storage = Storage(widget.profile);
-    serverCertExists = storage.home.serverCertExists();
+    serverCertExists = storage.guiPemFiles.serverCertExists();
     _profileSet();
   }
 
@@ -79,7 +79,7 @@ class _StorageWidgetState extends State<StorageWidget> {
     super.didUpdateWidget(oldWidget);
     if (widget.profile != oldWidget.profile) {
       storage = Storage(widget.profile);
-      serverCertExists = storage.home.serverCertExists();
+      serverCertExists = storage.guiPemFiles.serverCertExists();
       _profileSet();
     }
   }
