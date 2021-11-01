@@ -112,6 +112,9 @@ void main() {
       expect(response.header['status'], 'No change');
     });
     test('test response with more than 2^13th bytes', () async {
+      // My experience is that implementations need to account for some limit at
+      // 8191 bytes (2^13 - 1) being sent over socket.
+
       var payload = Payload(
         tasks: List.generate(100, (_) => newTask()).toList(),
       ).toString();
