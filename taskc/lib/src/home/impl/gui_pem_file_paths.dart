@@ -25,12 +25,12 @@ class GUIPemFiles {
     }
   }
 
-  void removeTaskdCa() {
-    if (File(pemFilePaths.ca!).existsSync()) {
-      File(pemFilePaths.ca!).deleteSync();
+  void removePemFile(String pemFileKey) {
+    if (fileByKey(pemFileKey).existsSync()) {
+      fileByKey(pemFileKey).deleteSync();
     }
-    if (File('${home.path}/taskd.ca').existsSync()) {
-      File('${home.path}/taskd.ca').deleteSync();
+    if (File('${home.path}/$pemFileKey').existsSync()) {
+      File('${home.path}/$pemFileKey').deleteSync();
     }
   }
 

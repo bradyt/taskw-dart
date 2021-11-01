@@ -215,7 +215,7 @@ class _PemWidgetState extends State<PemWidget> {
             },
       onLongPress: (widget.pem == 'taskd.ca' && name != null)
           ? () {
-              widget.storage.guiPemFiles.removeTaskdCa();
+              widget.storage.guiPemFiles.removePemFile(widget.pem);
               setState(() {});
             }
           : null,
