@@ -23,6 +23,17 @@ class HomeImpl {
   String get _key => '${home.path}/.task/first_last.key.pem';
   String get _serverCert => '${home.path}/.task/server.cert.pem';
 
+  PemFilePaths get _pemFilePaths => PemFilePaths.fromTaskrc(
+        {
+          for (var pemFileLabel in [
+            'taskd.ca',
+            'taskd.certificate',
+            'taskd.key',
+          ])
+            pemFileLabel: _keyPemLookup[pemFileLabel],
+        },
+      );
+
   Map<String, String> get _keyPemLookup => {
         '.taskrc': _taskrc,
         'taskd.ca': _ca,
@@ -243,14 +254,9 @@ class HomeImpl {
     }
     var server = Taskrc.fromMap(config).server!;
 
-    var context = (File(_keyPemLookup['taskd.ca']!).existsSync())
-        ? (SecurityContext()..setTrustedCertificates(_ca))
-        : SecurityContext.defaultContext;
     return Connection(
       server: server,
-      context: context
-        ..useCertificateChain(_cert)
-        ..usePrivateKey(_key),
+      context: _pemFilePaths.securityContext(),
       onBadCertificate: (serverCert) {
         var file = File(_serverCert);
         if (file.existsSync() && serverCert.pem == file.readAsStringSync()) {

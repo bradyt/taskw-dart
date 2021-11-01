@@ -42,9 +42,7 @@ void main() {
     taskrc = Taskrc.fromHome(home);
     connection = Connection(
       server: taskrc.server!,
-      context: SecurityContext()
-        ..useCertificateChain(taskrc.pemFilePaths.certificate!)
-        ..usePrivateKey(taskrc.pemFilePaths.key!),
+      context: taskrc.pemFilePaths.securityContext(),
       onBadCertificate: (_) => true,
     );
   });
@@ -221,9 +219,7 @@ void main() {
       taskrc = Taskrc.fromHome(home);
       connection = Connection(
         server: taskrc.server!,
-        context: SecurityContext()
-          ..useCertificateChain(taskrc.pemFilePaths.certificate!)
-          ..usePrivateKey(taskrc.pemFilePaths.key!),
+        context: taskrc.pemFilePaths.securityContext(),
         onBadCertificate: (_) => true,
       );
 

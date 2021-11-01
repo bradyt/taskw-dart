@@ -5,13 +5,16 @@ import 'package:path/path.dart';
 import 'package:test/test.dart';
 
 import 'package:taskc/taskd.dart';
+import 'package:taskc/taskrc.dart';
 
 void main() {
   var address = 'localhost';
   var port = 53589;
-  var certificate = '../fixture/var/taskd/pki/first_last.cert.pem';
-  var key = '../fixture/var/taskd/pki/first_last.key.pem';
-  var ca = '../fixture/var/taskd/pki/ca.cert.pem';
+  var pemFilePaths = PemFilePaths.fromTaskrc({
+    'taskd.certificate': '../fixture/var/taskd/pki/first_last.cert.pem',
+    'taskd.key': '../fixture/var/taskd/pki/first_last.key.pem',
+    'taskd.ca': '../fixture/var/taskd/pki/ca.cert.pem',
+  });
 
   var taskd = Taskd(normalize(absolute('../fixture/var/taskd')));
   // var taskwarrior = Taskwarrior(absolute('../fixture'));
@@ -44,10 +47,7 @@ void main() {
     try {
       await SecureSocket.secure(
         socket,
-        context: SecurityContext(withTrustedRoots: true)
-          ..useCertificateChain(certificate)
-          ..usePrivateKey(key)
-          ..setTrustedCertificates(ca),
+        context: pemFilePaths.securityContext(),
       ).then((socket) => socket.close());
       madeIt = true;
     } on HandshakeException catch (_) {}
@@ -61,10 +61,7 @@ void main() {
     );
     var secureSocket = await SecureSocket.secure(
       socket,
-      context: SecurityContext(withTrustedRoots: true)
-        ..useCertificateChain(certificate)
-        ..usePrivateKey(key)
-        ..setTrustedCertificates(ca),
+      context: pemFilePaths.securityContext(),
       onBadCertificate: (_) => true,
     );
 
