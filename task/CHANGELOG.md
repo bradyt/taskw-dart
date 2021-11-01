@@ -1,4 +1,4 @@
-# 0.3.0
+# 0.2.1
 
 - Improved "new task" dialog
   + Parse tags, priority, project, e.g., like 'Build bike +next pri:H pro:diy'
