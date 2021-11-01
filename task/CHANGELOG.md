@@ -2,20 +2,14 @@
 
 - Breaking changes:
   + Implementation details loses saved display name for taskd.certificate, reselect file to replace
-  + Simpler implementation in general
-    * For now, has fewer helpful warnings
-
-      E.g., client certificate is not required to send, but will provoke an empty response from Taskserver
-
-    * May help progress on other features
+  + Fewer or later checks, e.g.:
+    * App doesn't catch null credentials
+    * App catches null server instead of no TASKRC
+    * App allows connection attempts with any PEM files
 - Changes to profiles UI
   + List of profiles is folded, so that queries may be easier to access
   + Selection and management are decoupled
     * Management is limited to selected profile
-
-      May simplify maintentance
-
-      May reduce cognitive load from editing unselected profiles
 
 # 0.1.4
 
