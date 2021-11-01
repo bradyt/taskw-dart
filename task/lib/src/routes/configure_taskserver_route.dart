@@ -22,9 +22,9 @@ class ConfigureTaskserverRoute extends StatelessWidget {
   Future<void> _setConfigurationFromFixtureForDebugging() async {
     for (var entry in {
       '.taskrc': '.taskrc',
-      'taskd.ca': '.task/ca.cert.pem',
       'taskd.certificate': '.task/first_last.cert.pem',
       'taskd.key': '.task/first_last.key.pem',
+      'taskd.ca': '.task/ca.cert.pem',
       // 'server.cert': '.task/server.cert.pem',
     }.entries) {
       var contents = await rootBundle.loadString('assets/${entry.value}');
@@ -112,9 +112,9 @@ class ConfigureTaskserverRoute extends StatelessWidget {
         children: [
           TaskrcWidget(profile),
           for (var pem in [
-            'taskd.ca',
             'taskd.certificate',
             'taskd.key',
+            'taskd.ca',
           ])
             PemWidget(
               storage: storage,
