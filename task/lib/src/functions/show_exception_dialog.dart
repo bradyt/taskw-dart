@@ -51,6 +51,7 @@ connections.'''
                     key: 'server.cert',
                     contents: e.certificate.pem,
                   );
+              ProfilesWidget.of(context).setState(() {});
               Navigator.of(context).pop();
             },
             child: const Text('Trust'),

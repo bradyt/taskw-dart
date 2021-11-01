@@ -64,11 +64,13 @@ class _StorageWidgetState extends State<StorageWidget> {
   bool sortHeaderVisible = false;
   bool searchVisible = false;
   var searchController = TextEditingController();
+  late bool serverCertExists;
 
   @override
   void initState() {
     super.initState();
     storage = Storage(widget.profile);
+    serverCertExists = storage.home.serverCertExists();
     _profileSet();
   }
 
@@ -77,6 +79,7 @@ class _StorageWidgetState extends State<StorageWidget> {
     super.didUpdateWidget(oldWidget);
     if (widget.profile != oldWidget.profile) {
       storage = Storage(widget.profile);
+      serverCertExists = storage.home.serverCertExists();
       _profileSet();
     }
   }
@@ -399,6 +402,7 @@ class _StorageWidgetState extends State<StorageWidget> {
       removeTab: removeTab,
       renameTab: renameTab,
       tabAlias: tabAlias,
+      serverCertExists: serverCertExists,
       child: widget.child,
     );
   }
@@ -435,6 +439,7 @@ class InheritedStorage extends InheritedModel<String> {
     required this.removeTab,
     required this.renameTab,
     required this.tabAlias,
+    required this.serverCertExists,
     required Widget child,
     Key? key,
   }) : super(child: child, key: key);
@@ -468,6 +473,7 @@ class InheritedStorage extends InheritedModel<String> {
   final void Function(String) search;
   final TextEditingController searchController;
   final void Function({required String tab, required String name}) renameTab;
+  final bool serverCertExists;
 
   @override
   bool updateShouldNotify(InheritedStorage oldWidget) {

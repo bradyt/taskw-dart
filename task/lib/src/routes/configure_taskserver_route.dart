@@ -79,6 +79,7 @@ class ConfigureTaskserverRoute extends StatelessWidget {
           context: context,
           e: e,
         );
+        ProfilesWidget.of(context).setState(() {});
       },
     );
   }
@@ -119,6 +120,11 @@ class ConfigureTaskserverRoute extends StatelessWidget {
               storage: storage,
               pem: pem,
             ),
+          if (StorageWidget.of(context).serverCertExists)
+            PemWidget(
+              storage: storage,
+              pem: 'server.cert',
+            ),
         ],
       ),
     );
@@ -145,7 +151,7 @@ class _PemWidgetState extends State<PemWidget> {
       title: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Text(
-          '${widget.pem.padRight(10)} = $name',
+          '${widget.pem.padRight(10)}${(widget.pem == 'server.cert') ? '' : ' = $name'}',
           style: GoogleFonts.firaMono(),
         ),
       ),
@@ -175,10 +181,16 @@ class _PemWidgetState extends State<PemWidget> {
           );
         }
       }(widget.pem),
-      onTap: () async {
-        await setConfig(storage: widget.storage, key: widget.pem);
-        setState(() {});
-      },
+      onTap: (widget.pem == 'server.cert')
+          ? () {
+              widget.storage.home.removeServerCert();
+              ProfilesWidget.of(context).setState(() {});
+              setState(() {});
+            }
+          : () async {
+              await setConfig(storage: widget.storage, key: widget.pem);
+              setState(() {});
+            },
       onLongPress: (widget.pem == 'taskd.ca' && name != null)
           ? () {
               widget.storage.home.removeTaskdCa();

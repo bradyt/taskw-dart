@@ -39,6 +39,14 @@ class Home {
     _homeImpl.removeTaskdCa();
   }
 
+  void removeServerCert() {
+    _homeImpl.removeServerCert();
+  }
+
+  bool serverCertExists() {
+    return _homeImpl.serverCertExists();
+  }
+
   void addPemFile({
     required String key,
     required String contents,

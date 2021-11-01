@@ -206,6 +206,14 @@ class HomeImpl {
     File('${home.path}/taskd.ca').deleteSync();
   }
 
+  void removeServerCert() {
+    File('${home.path}/.task/server.cert.pem').deleteSync();
+  }
+
+  bool serverCertExists() {
+    return File('${home.path}/.task/server.cert.pem').existsSync();
+  }
+
   void addFileName({required String key, required String name}) {
     if (key != '.taskrc') {
       File('${home.path}/$key').writeAsStringSync(name);

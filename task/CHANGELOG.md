@@ -2,6 +2,7 @@
 
 - Make taskd.ca optional
   + Long press to remove CA
+- If server.cert manually trusted, show its SHA-1 in configuration, and allow to remove cert
 - Send client id to Taskserver in message header
   + e.g., "client: info.tangential.task 0.1.4"
 - Adjust urgency for wait for task 2.6.X

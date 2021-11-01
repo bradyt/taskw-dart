@@ -97,6 +97,7 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
       currentProfile: currentProfile,
       profilesMap: profilesMap,
       getStorage: getStorage,
+      setState: setState,
       child: StorageWidget(
         profile: Directory(
           '${widget.baseDirectory.path}/profiles/$currentProfile',
@@ -117,6 +118,7 @@ class InheritedProfiles extends InheritedModel<String> {
     required this.currentProfile,
     required this.profilesMap,
     required this.getStorage,
+    required this.setState,
     required Widget child,
     Key? key,
   }) : super(child: child, key: key);
@@ -132,6 +134,7 @@ class InheritedProfiles extends InheritedModel<String> {
   final String currentProfile;
   final Map<String, String?> profilesMap;
   final Storage Function(String) getStorage;
+  final void Function(void Function() ) setState;
 
   @override
   bool updateShouldNotify(InheritedProfiles oldWidget) {
