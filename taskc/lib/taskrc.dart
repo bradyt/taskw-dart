@@ -4,4 +4,5 @@
 
 library taskrc;
 
+export 'src/taskrc/credentials.dart';
 export 'src/taskrc/taskrc.dart';
