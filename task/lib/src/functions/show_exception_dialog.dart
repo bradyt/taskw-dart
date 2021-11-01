@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:taskc/fingerprint.dart';
 import 'package:taskc/storage.dart';
+import 'package:taskc/taskc_impl.dart';
 
 import 'package:task/task.dart';
 
@@ -74,13 +75,24 @@ connections.'''
   if (trace != null) {
     stdout.writeln(trace);
   }
+  var content = '$e';
+  if (e is TaskserverResponseException) {
+    var header = e.header.cast<String, String>();
+    if (header['code'] == '430' && header['status'] == 'Access denied') {
+      content =
+          '$content\n\nThis may be due to an issue with taskd.credentials.';
+    }
+  }
+  if (trace != null) {
+    content = '$content\n\n$trace';
+  }
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
       scrollable: true,
       title: SelectableText('${e.runtimeType}'),
       content: SelectableText(
-        '$e${trace != null ? '\n\n$trace' : ''}',
+        content,
         style: GoogleFonts.firaMono(),
       ),
       actions: [
