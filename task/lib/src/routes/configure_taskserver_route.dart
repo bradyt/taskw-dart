@@ -252,12 +252,21 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
       credentialsString = '${credentials.org}/${credentials.user}/$key';
     }
 
-    return ExpansionTile(
-      title: Text(
-        'TASKRC',
-        style: GoogleFonts.firaMono(),
-      ),
+    return Column(
       children: [
+        ListTile(
+          title: Text(
+            'Select TASKRC',
+            style: GoogleFonts.firaMono(),
+          ),
+          onTap: () async {
+            await setConfig(
+              storage: widget.storage,
+              key: 'TASKRC',
+            );
+            setState(() {});
+          },
+        ),
         ListTile(
             title: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -301,18 +310,6 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
                   },
                 ),
         ),
-        ListTile(
-            title: Text(
-              'Select TASKRC',
-              style: GoogleFonts.firaMono(),
-            ),
-            onTap: () async {
-              await setConfig(
-                storage: widget.storage,
-                key: 'TASKRC',
-              );
-              setState(() {});
-            }),
       ],
     );
   }
