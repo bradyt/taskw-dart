@@ -104,10 +104,13 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
         ElevatedButton(
           onPressed: () async {
             try {
-              validateTaskDescription(controller.text);
-              StorageWidget.of(context).mergeTask(
-                taskParser(controller.text).rebuild((b) => b..due = due),
-              );
+              var task =
+                  taskParser(controller.text).rebuild((b) => b..due = due);
+              validateTaskDescription(task.description);
+              if (task.project != null) {
+                validateTaskProject(task.project!);
+              }
+              StorageWidget.of(context).mergeTask(task);
               Navigator.of(context).pop();
             } on FormatException catch (e, trace) {
               showExceptionDialog(
