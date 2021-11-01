@@ -41,7 +41,10 @@ void main() {
     );
 
     taskrc = rc.Taskrc.fromString(File('$home/.taskrc').readAsStringSync());
-    taskdClient = TaskdClient(taskrc: taskrc);
+    taskdClient = TaskdClient(
+      taskrc: taskrc,
+      throwOnBadCertificate: (Platform.isMacOS) ? (_) => true : null,
+    );
   });
 
   tearDownAll(() async {
@@ -212,7 +215,7 @@ void main() {
       expect(response.header['code'], '200');
       expect(response.header['status'], 'Ok');
 
-      var task = response.payload.tasks.first;
+      var task = response.payload.tasks.last;
 
       expect(
         () => json.decode(task),

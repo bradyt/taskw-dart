@@ -30,6 +30,7 @@ class TaskdClient {
       return true;
     } else if (throwOnBadCertificate != null) {
       throwOnBadCertificate!(serverCert);
+      return true;
     }
     return false;
   }

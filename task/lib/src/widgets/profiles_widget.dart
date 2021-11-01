@@ -134,7 +134,7 @@ class InheritedProfiles extends InheritedModel<String> {
   final String currentProfile;
   final Map<String, String?> profilesMap;
   final Storage Function(String) getStorage;
-  final void Function(void Function() ) setState;
+  final void Function(void Function()) setState;
 
   @override
   bool updateShouldNotify(InheritedProfiles oldWidget) {

@@ -57,7 +57,7 @@ void main() {
         '--infile',
         'test-ev-rsa-ssl-com.pem',
       ],
-      workingDirectory: 'test/fingerprints',
+      workingDirectory: 'test/fingerprint',
     ))
             .stdout as String)
         .trim();
@@ -67,7 +67,7 @@ void main() {
     ];
     for (var cert in certs) {
       var fp = fingerprint(
-        File('./test/fingerprints/$cert').readAsStringSync(),
+        File('./test/fingerprint/$cert').readAsStringSync(),
       );
       expect(fp, certtoolFingerprint);
     }
