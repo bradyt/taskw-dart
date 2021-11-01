@@ -65,20 +65,24 @@ Task taskParser(String task) {
   );
   for (var match in add.parse(task).value) {
     if (match is Attribute) {
+      var value = match.value;
+      value = (value != null && value.startsWith('\'') && value.endsWith('\''))
+          ? value.substring(1, value.length - 1)
+          : value;
       switch (match.key) {
         case 'st':
         case 'sta':
         case 'stat':
         case 'statu':
         case 'status':
-          draft = draft.rebuild((b) => b..status = match.value);
+          draft = draft.rebuild((b) => b..status = value);
           break;
         case 'pro':
         case 'proj':
         case 'proje':
         case 'projec':
         case 'project':
-          draft = draft.rebuild((b) => b..project = match.value);
+          draft = draft.rebuild((b) => b..project = value);
           break;
         case 'pri':
         case 'prio':
@@ -86,7 +90,7 @@ Task taskParser(String task) {
         case 'priori':
         case 'priorit':
         case 'priority':
-          draft = draft.rebuild((b) => b..priority = match.value);
+          draft = draft.rebuild((b) => b..priority = value);
           break;
       }
     } else if (match is Tag) {

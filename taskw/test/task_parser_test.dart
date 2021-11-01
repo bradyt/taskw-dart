@@ -15,4 +15,9 @@ void main() {
     expect(task.description, 'foo baz');
     expect(task.priority, null);
   });
+  test('Test quoted attribute values', () {
+    var task = taskParser('foo project:\'Home & Garden\' bar');
+    expect(task.description, 'foo bar');
+    expect(task.project, 'Home & Garden');
+  });
 }
