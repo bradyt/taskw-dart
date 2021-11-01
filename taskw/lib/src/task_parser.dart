@@ -53,7 +53,7 @@ final add = (tagPrimitive() | attributePrimitive() | descriptionWordPrimitive())
 );
 
 Task taskParser(String task) {
-  var now = DateTime.now();
+  var now = DateTime.now().toUtc();
   var uuid = const Uuid().v1();
   var draft = Task(
     (b) => b
