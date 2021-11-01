@@ -34,7 +34,7 @@ class PemFilePaths {
     return context;
   }
 
-  bool onBadCertificate(X509Certificate badServerCert) {
+  bool savedServerCertificateMatches(X509Certificate badServerCert) {
     if (serverCert != null) {
       if (File(serverCert!).existsSync()) {
         return File(serverCert!).readAsStringSync() == badServerCert.pem;

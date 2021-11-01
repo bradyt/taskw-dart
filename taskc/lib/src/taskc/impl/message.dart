@@ -1,51 +1,6 @@
 // ignore_for_file: always_put_required_named_parameters_first
 
 import 'dart:convert';
-import 'dart:io';
-
-import 'package:taskc/taskc.dart';
-import 'package:taskc/taskc_impl.dart';
-import 'package:taskc/taskrc.dart';
-
-Future<Response> message({
-  required SecureSocket socket,
-  Credentials? credentials,
-  required String client,
-  required String type,
-  String? payload,
-}) async {
-  if (credentials == null) {
-    throw TaskrcException(
-      'Credentials cannot be null.',
-    );
-  }
-  var message = '''
-client: $client
-type: $type
-org: ${credentials.org}
-user: ${credentials.user}
-key: ${credentials.key}
-protocol: v1
-
-$payload''';
-  var responseBytes = await send(
-    socket: socket,
-    bytes: Codec.encode(message),
-  );
-  if (responseBytes.isEmpty) {
-    throw EmptyResponseException();
-  }
-  var response = Response.fromString(Codec.decode(responseBytes));
-  if ([
-    '200',
-    '201',
-    '202',
-  ].contains(response.header['code'])) {
-    return response;
-  } else {
-    throw TaskserverResponseException(response.header);
-  }
-}
 
 class TaskserverResponseException implements Exception {
   TaskserverResponseException(this.header);

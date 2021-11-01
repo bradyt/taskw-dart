@@ -181,14 +181,14 @@ class Data {
     return _payload;
   }
 
-  void mergeSynchronizeResponse(Response response) {
+  void mergeSynchronizeResponse(Payload payload) {
     var tasks = [
-      for (var task in response.payload.tasks)
+      for (var task in payload.tasks)
         Task.fromJson(
             (json.decode(task) as Map<String, dynamic>)..remove('id')),
     ];
     _mergeTasks(tasks);
     File('${home.path}/.task/backlog.data')
-        .writeAsStringSync('${response.payload.userKey}\n');
+        .writeAsStringSync('${payload.userKey}\n');
   }
 }

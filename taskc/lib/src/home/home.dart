@@ -1,16 +1,33 @@
 import 'dart:io';
 
 import 'package:taskc/home_impl.dart';
+import 'package:taskc/storage.dart';
 import 'package:taskc/taskrc.dart';
 import 'package:taskj/json.dart';
 
 class Home {
-  const Home(this.home);
+  const Home({
+    required this.home,
+    this.pemFilePaths,
+    this.onBadCertificate,
+  });
 
   final Directory home;
+  final PemFilePaths? pemFilePaths;
+  final bool Function(X509Certificate)? onBadCertificate;
 
   Data get _data => Data(home);
-  TaskdClient get _taskdClient => TaskdClient(home);
+  GUIPemFiles get _guiPemFiles => GUIPemFiles(home);
+  TaskdClient _taskdClient(client) => TaskdClient(
+        taskrc: Taskrc.fromHome(home.path),
+        client: client,
+        pemFilePaths: pemFilePaths,
+        throwOnBadCertificate: (badCertificate) =>
+            throw BadCertificateException(
+          home: home,
+          certificate: badCertificate,
+        ),
+      );
 
   void addTask(Task task) {
     _data.mergeTask(task);
@@ -37,15 +54,15 @@ class Home {
   }
 
   void removeTaskdCa() {
-    _taskdClient.removeTaskdCa();
+    _guiPemFiles.removeTaskdCa();
   }
 
   void removeServerCert() {
-    _taskdClient.removeServerCert();
+    _guiPemFiles.removeServerCert();
   }
 
   bool serverCertExists() {
-    return _taskdClient.serverCertExists();
+    return _guiPemFiles.serverCertExists();
   }
 
   void addPemFile({
@@ -53,19 +70,19 @@ class Home {
     required String contents,
     String? name,
   }) {
-    _taskdClient.addFileContents(key: key, contents: contents);
+    _guiPemFiles.addFileContents(key: key, contents: contents);
     if (name != null) {
-      _taskdClient.addFileName(key: key, name: name);
+      _guiPemFiles.addFileName(key: key, name: name);
     }
   }
 
   String? pemFilename(String key) {
-    return _taskdClient.pemName(key);
+    return _guiPemFiles.pemName(key);
   }
 
   String? pemContents(String key) {
-    if (_taskdClient.fileByKey(key).existsSync()) {
-      return _taskdClient.fileByKey(key).readAsStringSync();
+    if (_guiPemFiles.fileByKey(key).existsSync()) {
+      return _guiPemFiles.fileByKey(key).readAsStringSync();
     }
   }
 
@@ -82,16 +99,15 @@ class Home {
   }
 
   Future<Map> statistics(String client) {
-    return _taskdClient.statistics(client);
+    return _taskdClient(client).statistics();
   }
 
   Future<Map> synchronize(String client) async {
     var _payload = _data.payload();
-    var response = await _taskdClient.synchronize(
-      client: client,
-      payload: _payload,
+    var response = await _taskdClient(client).synchronize(
+      _payload,
     );
-    _data.mergeSynchronizeResponse(response);
+    _data.mergeSynchronizeResponse(response.payload);
     return response.header;
   }
 }

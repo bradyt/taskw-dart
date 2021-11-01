@@ -1,113 +1,89 @@
-// ignore_for_file: prefer_expression_function_bodies
-
 import 'dart:io';
 
-import 'package:taskc/storage.dart';
-import 'package:taskc/taskc.dart' as taskc show statistics, synchronize;
-import 'package:taskc/taskc.dart' hide statistics, synchronize;
+import 'package:taskc/taskc.dart';
+import 'package:taskc/taskc_impl.dart';
 import 'package:taskc/taskrc.dart';
 
 class TaskdClient {
-  TaskdClient(this.home);
+  TaskdClient({
+    required this.taskrc,
+    this.client,
+    this.pemFilePaths,
+    this.throwOnBadCertificate,
+  });
 
-  final Directory home;
+  final Taskrc taskrc;
+  final String? client;
+  final PemFilePaths? pemFilePaths;
+  final void Function(X509Certificate)? throwOnBadCertificate;
 
-  PemFilePaths get _pemFilePaths => PemFilePaths(
-        ca: '${home.path}/.task/ca.cert.pem',
-        certificate: '${home.path}/.task/first_last.cert.pem',
-        key: '${home.path}/.task/first_last.key.pem',
-        serverCert: '${home.path}/.task/server.cert.pem',
-      );
-
-  File fileByKey(String key) {
-    Directory('${home.path}/.task').createSync(recursive: true);
-    return File(_pemFilePaths.map[key]!);
-  }
-
-  String? pemName(String key) {
-    if (File('${home.path}/$key').existsSync()) {
-      return File('${home.path}/$key').readAsStringSync();
-    }
-  }
-
-  void removeTaskdCa() {
-    if (File(_pemFilePaths.ca!).existsSync()) {
-      File(_pemFilePaths.ca!).deleteSync();
-    }
-    if (File('${home.path}/taskd.ca').existsSync()) {
-      File('${home.path}/taskd.ca').deleteSync();
-    }
-  }
-
-  void removeServerCert() {
-    if (_pemFilePaths.serverCert != null) {
-      if (File(_pemFilePaths.serverCert!).existsSync()) {
-        File(_pemFilePaths.serverCert!).deleteSync();
-      }
-    }
-  }
-
-  bool serverCertExists() {
-    return File(_pemFilePaths.serverCert!).existsSync();
-  }
-
-  void addFileName({required String key, required String name}) {
-    File('${home.path}/$key').writeAsStringSync(name);
-  }
-
-  void addFileContents({required String key, required String contents}) {
-    fileByKey(key).writeAsStringSync(contents);
+  PemFilePaths _pemFilePaths() {
+    return pemFilePaths ??
+        PemFilePaths.fromTaskrc(
+          taskrc.pemFilePaths.map,
+        );
   }
 
   bool _onBadCertificate(X509Certificate serverCert) {
-    if (_pemFilePaths.onBadCertificate(serverCert)) {
+    if (_pemFilePaths().savedServerCertificateMatches(serverCert)) {
       return true;
-    } else {
-      throw BadCertificateException(
-        home: home,
-        certificate: serverCert,
-      );
+    } else if (throwOnBadCertificate != null) {
+      throwOnBadCertificate!(serverCert);
     }
+    return false;
   }
 
-  Future<Map> statistics(String client) async {
-    var taskrc = Taskrc.fromHome(home.path);
-
-    var socket = await getSocket(
-      server: taskrc.server,
-      context: _pemFilePaths.securityContext(),
-      onBadCertificate: _onBadCertificate,
-    );
-    var response = await taskc.statistics(
-      socket: socket,
-      credentials: taskrc.credentials,
-      client: client,
-    );
-
-    await socket.close();
-
-    return response.header;
-  }
-
-  Future<Response> synchronize({
-    required String client,
-    required String payload,
+  Future<Response> request({
+    required String type,
+    String? payload,
   }) async {
-    var taskrc = Taskrc.fromHome(home.path);
     var socket = await getSocket(
       server: taskrc.server,
-      context: _pemFilePaths.securityContext(),
+      context: _pemFilePaths().securityContext(),
       onBadCertificate: _onBadCertificate,
     );
-    var response = await taskc.synchronize(
-      socket: socket,
-      credentials: taskrc.credentials,
+
+    var _message = message(
+      type: type,
       client: client,
+      credentials: taskrc.credentials,
       payload: payload,
     );
 
+    var responseBytes = await send(
+      socket: socket,
+      bytes: Codec.encode(_message),
+    );
+
     await socket.close();
 
+    if (responseBytes.isEmpty) {
+      throw EmptyResponseException();
+    }
+
+    var response = Response.fromString(Codec.decode(responseBytes));
+
+    if (![
+      '200',
+      '201',
+      '202',
+    ].contains(response.header['code'])) {
+      throw TaskserverResponseException(response.header);
+    }
+
     return response;
+  }
+
+  Future<Map> statistics() {
+    return request(
+      type: 'statistics',
+    ).then((response) => response.header);
+  }
+
+  Future<Response> synchronize(String payload) {
+    return request(
+      type: 'sync',
+      payload: payload,
+    );
   }
 }
