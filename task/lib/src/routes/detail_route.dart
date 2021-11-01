@@ -83,6 +83,7 @@ class _DetailRouteState extends State<DetailRoute> {
             'status': modify.draft.status,
             'entry': modify.draft.entry,
             'modified': modify.draft.modified,
+            'start': modify.draft.start,
             'end': modify.draft.end,
             'due': modify.draft.due,
             'wait': modify.draft.wait,
