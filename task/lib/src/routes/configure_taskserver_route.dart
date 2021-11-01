@@ -175,8 +175,17 @@ class _PemWidgetState extends State<PemWidget> {
         ),
       ),
       subtitle: (key) {
-        if (key == 'taskd.key' || contents == null) {
+        if (key == 'taskd.key') {
           return null;
+        }
+        if (contents == null) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text(
+              'SHA1: null',
+              style: GoogleFonts.firaMono(),
+            ),
+          );
         }
         try {
           var identifier = fingerprint(contents).toUpperCase();
