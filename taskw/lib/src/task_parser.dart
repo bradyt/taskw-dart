@@ -55,9 +55,17 @@ final add = (tagPrimitive() | attributePrimitive() | descriptionWordPrimitive())
 Task taskParser(String task) {
   var now = DateTime.now().toUtc();
   var uuid = const Uuid().v1();
+  var description = add
+      .parse(task)
+      .value
+      .whereType<String>()
+      .map((part) => (part.startsWith('\'') && part.endsWith('\''))
+          ? part.substring(1, part.length - 1)
+          : part)
+      .join(' ');
   var draft = Task(
     (b) => b
-      ..description = add.parse(task).value.whereType<String>().join(' ')
+      ..description = description
       ..status = 'pending'
       ..uuid = uuid
       ..entry = now

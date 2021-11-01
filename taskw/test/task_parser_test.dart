@@ -20,4 +20,10 @@ void main() {
     expect(task.description, 'foo bar');
     expect(task.project, 'Home & Garden');
   });
+  test('Test quoted description parts', () {
+    var task = taskParser('\'foo +bar\' +baz pri:H quux');
+    expect(task.description, 'foo +bar quux');
+    expect(task.tags, ['baz']);
+    expect(task.priority, 'H');
+  });
 }
