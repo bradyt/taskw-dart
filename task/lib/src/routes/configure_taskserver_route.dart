@@ -139,15 +139,11 @@ class _ConfigureTaskserverRouteState extends State<ConfigureTaskserverRoute> {
             'taskd.certificate',
             'taskd.key',
             'taskd.ca',
+            if (StorageWidget.of(context).serverCertExists) 'server.cert',
           ])
             PemWidget(
               storage: storage,
               pem: pem,
-            ),
-          if (StorageWidget.of(context).serverCertExists)
-            PemWidget(
-              storage: storage,
-              pem: 'server.cert',
             ),
         ],
       ),
