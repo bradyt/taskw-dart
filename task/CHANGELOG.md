@@ -8,8 +8,7 @@
     * App allows connection attempts with any PEM files
 - Changes to profiles UI
   + List of profiles is folded, so that queries may be easier to access
-  + Selection and management are decoupled
-    * Management is limited to selected profile
+  + Profile management is now limited to selected profile
 
 # 0.1.4
 
