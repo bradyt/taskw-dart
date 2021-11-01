@@ -9,19 +9,33 @@ import 'package:pem/pem.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:taskc/home_impl.dart' as rc;
+
 import 'package:taskc/storage.dart';
 import 'package:taskc/taskrc.dart';
 
 import 'package:task/task.dart';
 
-class ConfigureTaskserverRoute extends StatelessWidget {
-  const ConfigureTaskserverRoute(this.storage, {Key? key}) : super(key: key);
+class ConfigureTaskserverRoute extends StatefulWidget {
+  const ConfigureTaskserverRoute([Key? key]) : super(key: key);
 
-  final Storage storage;
+  @override
+  State<ConfigureTaskserverRoute> createState() =>
+      _ConfigureTaskserverRouteState();
+}
+
+class _ConfigureTaskserverRouteState extends State<ConfigureTaskserverRoute> {
+  late Storage storage;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    storage = StorageWidget.of(context).storage;
+  }
 
   Future<void> _setConfigurationFromFixtureForDebugging() async {
     var contents = await rootBundle.loadString('assets/.taskrc');
-    storage.taskrc.addTaskrc(contents);
+    rc.Taskrc(storage.home.home).addTaskrc(contents);
     for (var entry in {
       'taskd.certificate': '.task/first_last.cert.pem',
       'taskd.key': '.task/first_last.key.pem',
@@ -228,7 +242,10 @@ class _TaskrcWidgetState extends State<TaskrcWidget> {
   }
 
   Future<void> _getConfig() async {
-    var taskrc = ProfilesWidget.of(context).getStorage(widget.profile).taskrc.readTaskrc();
+    var taskrc = ProfilesWidget.of(context)
+        .getStorage(widget.profile)
+        .taskrc
+        .readTaskrc();
     if (taskrc != null) {
       server = Taskrc.fromString(taskrc).server;
       credentials = Taskrc.fromString(taskrc).credentials;

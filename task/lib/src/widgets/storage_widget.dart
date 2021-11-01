@@ -373,6 +373,7 @@ class _StorageWidgetState extends State<StorageWidget> {
   @override
   Widget build(BuildContext context) {
     return InheritedStorage(
+      storage: storage,
       tasks: searchedTasks,
       globalTags: globalTags,
       projects: projects,
@@ -410,6 +411,7 @@ class _StorageWidgetState extends State<StorageWidget> {
 
 class InheritedStorage extends InheritedModel<String> {
   const InheritedStorage({
+    required this.storage,
     required this.tasks,
     required this.globalTags,
     required this.projects,
@@ -444,6 +446,7 @@ class InheritedStorage extends InheritedModel<String> {
     Key? key,
   }) : super(child: child, key: key);
 
+  final Storage storage;
   final List<Task> tasks;
   final Map<String, TagMetadata> globalTags;
   final Map<String, ProjectMetadata> projects;

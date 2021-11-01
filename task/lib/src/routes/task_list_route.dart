@@ -307,11 +307,7 @@ class ProfilesColumn extends StatelessWidget {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ConfigureTaskserverRoute(
-                          ProfilesWidget.of(context).getStorage(
-                            currentProfile,
-                          ),
-                        ),
+                        builder: (_) => const ConfigureTaskserverRoute(),
                       ),
                     ),
                   ),
