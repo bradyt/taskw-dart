@@ -78,8 +78,6 @@ Task taskParser(String task) {
           ? value.substring(1, value.length - 1)
           : value;
       switch (match.key) {
-        case 'st':
-        case 'sta':
         case 'stat':
         case 'statu':
         case 'status':
