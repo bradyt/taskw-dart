@@ -135,7 +135,6 @@ void main() {
       ]);
       var result = await taskwarrior.export();
       var task = (json.decode(result) as List).cast<Map>()[0];
-      expect(task is Map, true);
       expect(
         Task.fromJson(task),
         Task(
