@@ -3,6 +3,18 @@ import 'package:test/test.dart';
 import 'package:taskw/taskw.dart';
 
 void main() {
+  test('Test empty string', () {
+    expect(
+      () => taskParser(''),
+      throwsA(isA<FormatException>()),
+    );
+  });
+  test('Test empty description', () {
+    expect(
+      () => taskParser('+foo'),
+      throwsA(isA<FormatException>()),
+    );
+  });
   test('test task parser', () {
     var task = taskParser('foo +next pro:diy pri:H baz');
     expect(task.description, 'foo baz');

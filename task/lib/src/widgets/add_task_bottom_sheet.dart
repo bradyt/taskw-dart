@@ -32,10 +32,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   Future submit() async {
     try {
       var task = taskParser(controller.text).rebuild((b) => b..due = due);
-      validateTaskDescription(task.description);
-      if (task.project != null) {
-        validateTaskProject(task.project!);
-      }
       StorageWidget.of(context).mergeTask(task);
       controller.text = '';
       due = null;

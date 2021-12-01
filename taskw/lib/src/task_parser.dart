@@ -61,11 +61,12 @@ Parser attributePrimitive() =>
         .map((value) => Attribute(value[0], value[2]));
 Parser descriptionWordPrimitive() => wordPrimitive();
 
-final add = (tagPrimitive() | attributePrimitive() | descriptionWordPrimitive())
-    .separatedBy(
-  char(' '),
-  includeSeparators: false,
-);
+final add = (epsilon() & endOfInput()) |
+    (tagPrimitive() | attributePrimitive() | descriptionWordPrimitive())
+        .separatedBy(
+      char(' '),
+      includeSeparators: false,
+    );
 
 Task taskParser(String task) {
   var now = DateTime.now().toUtc();

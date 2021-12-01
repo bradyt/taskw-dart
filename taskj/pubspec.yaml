@@ -11,6 +11,8 @@ dependencies:
   built_value:
   collection:
   intl:
+  taskw:
+    path: ../taskw
   uuid:
 
 dev_dependencies:

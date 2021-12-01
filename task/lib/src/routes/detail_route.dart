@@ -315,7 +315,6 @@ class DescriptionWidget extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     try {
-                      validateTaskDescription(controller.text);
                       callback(controller.text);
                       Navigator.of(context).pop();
                     } on FormatException catch (e, trace) {
@@ -536,7 +535,6 @@ class ProjectWidget extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     try {
-                      validateTaskProject(controller.text);
                       callback(
                           (controller.text == '') ? null : controller.text);
                       Navigator.of(context).pop();

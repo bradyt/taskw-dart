@@ -3,6 +3,7 @@
 - Fix bugs in parsing of new task
   + Fix silent dropping of attribute-like terms containing colon, like `foo:bar` or `foo:`
   + Remove problematic quote parsing feature
+  + Show FormatException if user submits empty string
 
 # 0.2.2
 

@@ -5,6 +5,7 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
 import 'package:taskj/json.dart';
+import 'package:taskw/taskw.dart';
 
 part 'task.g.dart';
 
@@ -35,7 +36,15 @@ final coreAttributes = [
 
 abstract class Task implements Built<Task, TaskBuilder> {
   factory Task([void Function(TaskBuilder) updates]) = _$Task;
-  Task._();
+  Task._() {
+    validateTaskDescription(description);
+    if (project != null) {
+      validateTaskProject(project!);
+    }
+    if (tags != null) {
+      tags!.forEach(validateTaskTags);
+    }
+  }
 
   static Task fromJson(Map json) {
     var udas = Map.of(json)
