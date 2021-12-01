@@ -25,19 +25,7 @@ class Attribute {
   String toString() => 'Attribute($key, $value)';
 }
 
-Parser space() => char(' ');
-Parser colon() => char(':');
-
-Parser quote() => char('\'');
-Parser notQuote() => quote().not() & any();
-Parser quotedWordPrimitive() =>
-    (quote() & notQuote().star() & quote()).pick(1).flatten();
-
-Parser unquotedWordPrimitive() =>
-    ((space() | quote()).not() & any()).plus().flatten();
-
-Parser wordPrimitive() =>
-    unquotedWordPrimitive() | quotedWordPrimitive().flatten();
+Parser wordPrimitive() => (char(' ').not() & any()).plus().flatten();
 
 Parser attributeNamePrimitive() =>
     string('status') |
@@ -67,7 +55,7 @@ Parser attributeNamePrimitive() =>
     string('until');
 
 Parser tagPrimitive() =>
-    (char('+') & unquotedWordPrimitive()).pick(1).map((value) => Tag(value));
+    (char('+') & wordPrimitive()).pick(1).map((value) => Tag(value));
 Parser attributePrimitive() =>
     (attributeNamePrimitive() & char(':') & wordPrimitive().optional())
         .map((value) => Attribute(value[0], value[2]));
@@ -82,14 +70,8 @@ final add = (tagPrimitive() | attributePrimitive() | descriptionWordPrimitive())
 Task taskParser(String task) {
   var now = DateTime.now().toUtc();
   var uuid = const Uuid().v1();
-  var description = add
-      .parse(task)
-      .value
-      .whereType<String>()
-      .map((part) => (part.startsWith('\'') && part.endsWith('\''))
-          ? part.substring(1, part.length - 1)
-          : part)
-      .join(' ');
+  var description =
+      (add.parse(task).value as Iterable).whereType<String>().join(' ');
   var draft = Task(
     (b) => b
       ..description = description

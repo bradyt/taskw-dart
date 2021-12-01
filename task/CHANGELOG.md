@@ -1,6 +1,8 @@
 # 0.2.3
 
-- Fix for silently dropping attribute-like use of colon
+- Fix bugs in parsing of new task
+  + Fix silent dropping of attribute-like terms containing colon, like `foo:bar` or `foo:`
+  + Remove problematic quote parsing feature
 
 # 0.2.2
 
