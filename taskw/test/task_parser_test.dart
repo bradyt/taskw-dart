@@ -26,4 +26,8 @@ void main() {
     expect(task.tags, ['baz']);
     expect(task.priority, 'H');
   });
+  test('Test parser silently dropping attribute-like use of colon', () {
+    var task = taskParser('Blog: Test');
+    expect(task.description, 'Blog: Test');
+  });
 }

@@ -1,3 +1,7 @@
+# 0.2.3
+
+- Fix for silently dropping attribute-like use of colon
+
 # 0.2.2
 
 - Updated "new task" dialog

@@ -34,15 +34,42 @@ Parser quotedWordPrimitive() =>
     (quote() & notQuote().star() & quote()).pick(1).flatten();
 
 Parser unquotedWordPrimitive() =>
-    ((space() | colon() | quote()).not() & any()).plus().flatten();
+    ((space() | quote()).not() & any()).plus().flatten();
 
 Parser wordPrimitive() =>
     unquotedWordPrimitive() | quotedWordPrimitive().flatten();
 
+Parser attributeNamePrimitive() =>
+    string('status') |
+    string('statu') |
+    string('stat') |
+    string('project') |
+    string('projec') |
+    string('proje') |
+    string('proj') |
+    string('pro') |
+    string('priority') |
+    string('priorit') |
+    string('priori') |
+    string('prior') |
+    string('prio') |
+    string('pri') |
+    string('scheduled') |
+    string('schedule') |
+    string('schedul') |
+    string('schedu') |
+    string('sched') |
+    string('sche') |
+    string('sch') |
+    string('sc') |
+    string('due') |
+    string('wait') |
+    string('until');
+
 Parser tagPrimitive() =>
     (char('+') & unquotedWordPrimitive()).pick(1).map((value) => Tag(value));
 Parser attributePrimitive() =>
-    (unquotedWordPrimitive() & char(':') & wordPrimitive().optional())
+    (attributeNamePrimitive() & char(':') & wordPrimitive().optional())
         .map((value) => Attribute(value[0], value[2]));
 Parser descriptionWordPrimitive() => wordPrimitive();
 
