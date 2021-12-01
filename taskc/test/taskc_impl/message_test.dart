@@ -184,28 +184,14 @@ void main() {
 
       var taskUuid = const Uuid().v1();
       var now = DateTime.now().toUtc();
-      var payload = json.encode(
-        Task(
-          (b) => b
-            ..status = 'pending'
-            ..uuid = taskUuid
-            ..entry = now
-            ..description = r'hello\',
-        ).toJson(),
-      );
+      var payload = {
+        'description': 'hello\\', // ignore: use_raw_strings
+        'entry': '${iso8601Basic.format(now)}',
+        'status': 'pending',
+        'uuid': '$taskUuid'
+      };
 
-      expect(() => json.decode(payload), returnsNormally);
-      expect(
-        payload,
-        '{'
-        '"status":"pending",'
-        '"uuid":"$taskUuid",'
-        '"entry":"${iso8601Basic.format(now)}",'
-        '"description":"hello\\\\"' // ignore: use_raw_strings
-        '}',
-      );
-
-      var response = await taskdClient.synchronize(payload);
+      var response = await taskdClient.synchronize(json.encode(payload));
 
       expect(response.header['code'], '200');
       expect(response.header['status'], 'Ok');
@@ -223,12 +209,7 @@ void main() {
       );
       expect(
         task,
-        '{'
-        '"description":"hello\\\\\x00",'
-        '"entry":"${iso8601Basic.format(now)}",'
-        '"status":"pending",'
-        '"uuid":"$taskUuid"'
-        '}',
+        json.encode(payload).replaceAll('hello\\\\', 'hello\\\\\x00'),
       );
     });
   });

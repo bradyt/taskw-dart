@@ -101,14 +101,14 @@ void main() {
       ),
     ].forEach(storage.data.mergeTask);
     storage.data.allData();
+    expect(() => storage.home.synchronize('test'),
+        throwsA(isA<TaskserverConfigurationException>()));
+    storage.taskrc.addTaskrc(File('$home/.taskrc').readAsStringSync());
     for (var entry in {
-      '.taskrc': '.taskrc',
       'taskd.ca': '.task/ca.cert.pem',
       'taskd.certificate': '.task/first_last.cert.pem',
       'taskd.key': '.task/first_last.key.pem',
     }.entries) {
-      expect(() => storage.home.synchronize('test'),
-          throwsA(isA<TaskserverConfigurationException>()));
       storage.guiPemFiles.addPemFile(
         key: entry.key,
         contents: File('$home/${entry.value}').readAsStringSync(),
