@@ -1,0 +1,3 @@
+- Updated "new task" dialog
+  + Declutter, move to bottom sheet
+  + Allow consecutive inputs

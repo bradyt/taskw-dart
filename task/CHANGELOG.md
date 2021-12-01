@@ -1,7 +1,7 @@
 # 0.2.2
 
-- Improved "new task" dialog
-  + Replace alert dialog with bottom sheet
+- Updated "new task" dialog
+  + Declutter, move to bottom sheet
   + Allow consecutive inputs
 
 # 0.2.1
