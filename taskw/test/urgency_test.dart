@@ -12,6 +12,23 @@ import 'package:taskj/json.dart';
 import 'package:taskw/taskw.dart';
 
 void main() {
+  test('test urgency rounding', () {
+    for (var entry in <double, String>{
+      42: '42',
+      111.111: '111.1',
+      11.111: '11.1',
+      1.111: '1.11',
+      0.9999: '1',
+      0.1999: '0.2',
+      0.001: '0',
+      0.009: '0.01',
+      10.05: '10.1',
+      10.049: '10',
+      1.01: '1.01',
+    }.entries) {
+      expect(formatUrgency(entry.key), entry.value);
+    }
+  });
   test('test urgency', () {
     Task createTask({DateTime? due, String? priority, List<String>? tags}) {
       return Task(

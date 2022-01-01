@@ -68,7 +68,7 @@ class TaskListView extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      ' ${urgency(task).toStringAsFixed(1).replaceFirst(RegExp(r'.0$'), '')}',
+                      formatUrgency(urgency(task)),
                       style: GoogleFonts.firaMono(),
                     ),
                   ],

@@ -1,5 +1,16 @@
 import 'package:taskj/json.dart';
 
+String formatUrgency(double urgency) {
+  var result = urgency.toStringAsFixed(2);
+  if (result.length > 4) {
+    result = urgency.toStringAsFixed(1);
+  }
+  if (result.contains('.')) {
+    result = result.replaceFirst(RegExp(r'\.?0+$'), '');
+  }
+  return result;
+}
+
 double urgency(Task task) {
   // https://github.com/GothenburgBitFactory/taskwarrior/blob/v2.5.3/src/Task.cpp#L1912-L2031
   // https://github.com/GothenburgBitFactory/taskwarrior/blob/v2.5.3/src/Context.cpp#L146-L160
