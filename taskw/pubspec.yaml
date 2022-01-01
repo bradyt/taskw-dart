@@ -21,5 +21,6 @@ dependencies:
   uuid:
 
 dev_dependencies:
+  args:
   test:
   test_cov:

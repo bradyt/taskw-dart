@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:taskc/storage.dart';
@@ -5,18 +6,29 @@ import 'package:taskc/taskc.dart';
 import 'package:taskc/taskc_impl.dart';
 import 'package:taskc/taskrc.dart';
 
+enum TaskserverProgress {
+  connecting,
+  securing,
+  sending,
+  waiting,
+  receiving,
+}
+
 class TaskdClient {
   TaskdClient({
     this.taskrc,
     this.client,
     this.pemFilePaths,
     this.throwOnBadCertificate,
-  });
+  }) : progressController = StreamController();
 
   final Taskrc? taskrc;
   final String? client;
   final PemFilePaths? pemFilePaths;
   final void Function(X509Certificate)? throwOnBadCertificate;
+  final StreamController<TaskserverProgress> progressController;
+
+  Stream get progress => progressController.stream;
 
   PemFilePaths _pemFilePaths() {
     return pemFilePaths ??
@@ -45,10 +57,14 @@ class TaskdClient {
       );
     }
 
+    progressController.add(TaskserverProgress.connecting);
+
     var socket = await Socket.connect(
       taskrc!.server!.address,
       taskrc!.server!.port,
     );
+
+    progressController.add(TaskserverProgress.securing);
 
     var secureSocket = await SecureSocket.secure(
       socket,
@@ -63,10 +79,20 @@ class TaskdClient {
       payload: payload,
     );
 
-    var responseBytes = await send(
-      socket: secureSocket,
-      bytes: Codec.encode(_message),
-    );
+    progressController.add(TaskserverProgress.sending);
+
+    secureSocket.add(Codec.encode(_message));
+
+    progressController.add(TaskserverProgress.waiting);
+
+    var responseBytes = BytesBuilder();
+
+    await secureSocket.listen((event) {
+      if (responseBytes.isEmpty) {
+        progressController.add(TaskserverProgress.receiving);
+      }
+      responseBytes.add(event);
+    }).asFuture();
 
     await secureSocket.close();
     await socket.close();
@@ -75,7 +101,7 @@ class TaskdClient {
       throw EmptyResponseException();
     }
 
-    var response = Response.fromString(Codec.decode(responseBytes));
+    var response = Response.fromString(Codec.decode(responseBytes.takeBytes()));
 
     if (![
       '200',
