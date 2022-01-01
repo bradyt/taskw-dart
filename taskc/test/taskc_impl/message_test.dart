@@ -185,10 +185,10 @@ void main() {
       var taskUuid = const Uuid().v1();
       var now = DateTime.now().toUtc();
       var payload = {
-        'description': 'hello\\', // ignore: use_raw_strings
-        'entry': '${iso8601Basic.format(now)}',
+        'description': r'hello\',
+        'entry': iso8601Basic.format(now),
         'status': 'pending',
-        'uuid': '$taskUuid'
+        'uuid': taskUuid
       };
 
       var response = await taskdClient.synchronize(json.encode(payload));
