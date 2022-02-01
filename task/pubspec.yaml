@@ -23,7 +23,6 @@ dependencies:
   linkify:
   package_info_plus:
   path_provider:
-  path_provider_macos:
   taskc:
     path: ../taskc
   taskj:
