@@ -7,6 +7,7 @@ export 'src/comparator.dart';
 export 'src/datetime_differences.dart';
 export 'src/modify.dart';
 export 'src/profiles.dart';
+export 'src/projects.dart';
 export 'src/query.dart';
 export 'src/task_parser.dart';
 export 'src/urgency.dart';
