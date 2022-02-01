@@ -188,22 +188,27 @@ void main() {
 
       var version = await Taskwarrior.version();
 
-      // Assumes task executable before
+      // The tests below may focus on support for 2.5.3, when dependencies
+      // default as strings, with an option json.depends.array.
+
+      // Tests may also work after the following commit, when dependencies are
+      // always arrays:
       // <https://github.com/GothenburgBitFactory/taskwarrior/commit/20af583e21666d4825bfb81fcd1264c786bf4d01>.
-      // Tests may be improved to detect task executable version. Such an
-      // improvement may be postponed until either the commit is on stable, or
-      // someone wants to run tests where bleeding edge Taskwarrior is
-      // installed, either in CI or personal computer.
+
+      // Focus is still on 2.5.3 because of a Taskwarrior bug. Once the
+      // following commit is released, project and tests will likely shift away
+      // from 2.5.3:
+      // <https://github.com/GothenburgBitFactory/taskwarrior/commit/28e268bd26f558aff967887b53941ecb3a270a73>.
+
       await taskwarrior.modify(['1', 'dep:2,3,4']);
       var string = (json.decode(await taskwarrior.export()) as List)[0] as Map;
 
-      if (version[0] <= 2 && version[1] <= 5) {
-        expect(string['depends'], isA<String>());
-        expect((string['depends'] as String).split(',').length, 3);
-        expect(Task.fromJson(string).toJson(), string);
+      if (!(version[0] <= 2 && version[1] <= 5)) {
+        string['depends'] = (string['depends'] as List).join(',');
       }
-      // I expect the rest of the tests to work for stable and bleeding edge
-      // Taskwarrior.
+      expect(string['depends'], isA<String>());
+      expect((string['depends'] as String).split(',').length, 3);
+      expect(Task.fromJson(string).toJson(), string);
 
       await taskwarrior.modify(['1', 'dep:']);
       var empty = (json.decode(await taskwarrior.export()) as List)[0];
