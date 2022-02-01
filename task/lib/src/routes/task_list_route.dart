@@ -128,6 +128,7 @@ class TaskListRoute extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: ListView(
+              primary: false,
               key: const PageStorageKey('tags-filter'),
               children: [
                 Card(
@@ -215,6 +216,7 @@ class ProfilesColumn extends StatelessWidget {
       children: [
         Expanded(
           child: ListView(
+            primary: false,
             children: [
               ListTile(
                 title: const Text('Profiles'),
