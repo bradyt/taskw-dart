@@ -23,6 +23,7 @@ class GUIPemFiles {
     if (File('${home.path}/$key').existsSync()) {
       return File('${home.path}/$key').readAsStringSync();
     }
+    return null;
   }
 
   void removePemFile(String pemFileKey) {
@@ -69,6 +70,7 @@ class GUIPemFiles {
     if (fileByKey(key).existsSync()) {
       return fileByKey(key).readAsStringSync();
     }
+    return null;
   }
 
   String? pemFilename(String key) {

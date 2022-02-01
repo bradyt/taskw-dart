@@ -15,5 +15,6 @@ class Taskrc {
     if (_taskrc.existsSync()) {
       return _taskrc.readAsStringSync();
     }
+    return null;
   }
 }

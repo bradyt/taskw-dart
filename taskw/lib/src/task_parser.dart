@@ -55,7 +55,7 @@ Parser attributeNamePrimitive() =>
     string('until');
 
 Parser tagPrimitive() =>
-    (char('+') & wordPrimitive()).pick(1).map((value) => Tag(value));
+    (char('+') & wordPrimitive()).pick(1).cast<String>().map(Tag.new);
 Parser attributePrimitive() =>
     (attributeNamePrimitive() & char(':') & wordPrimitive().optional())
         .map((value) => Attribute(value[0], value[2]));
