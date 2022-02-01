@@ -138,38 +138,7 @@ class TaskListRoute extends StatelessWidget {
                   ),
                 ),
                 const Divider(),
-                ExpansionTile(
-                  key: const PageStorageKey('project-filter'),
-                  title: Text(
-                    'project:${storageWidget.projectFilter}',
-                    style: GoogleFonts.firaMono(),
-                  ),
-                  children: [
-                    for (var entry in storageWidget.projects.entries)
-                      RadioListTile(
-                        toggleable: true,
-                        value: entry.key,
-                        groupValue: storageWidget.projectFilter,
-                        onChanged: (_) =>
-                            storageWidget.toggleProjectFilter(entry.key),
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                entry.key,
-                                style: GoogleFonts.firaMono(),
-                              ),
-                            ),
-                            Text(
-                              '${entry.value.frequency}',
-                              style: GoogleFonts.firaMono(),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
+                const ProjectsColumn(),
                 const Divider(),
                 Wrap(
                   spacing: 4,
@@ -425,6 +394,58 @@ class ProfilesColumn extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+class ProjectsColumn extends StatelessWidget {
+  const ProjectsColumn({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var storageWidget = StorageWidget.of(context);
+
+    return ExpansionTile(
+      key: const PageStorageKey('project-filter'),
+      title: Text(
+        'project:${storageWidget.projectFilter}',
+        style: GoogleFonts.firaMono(),
+      ),
+      children: [
+        for (var entry in storageWidget.projects.entries)
+          ProjectTile(entry.key, entry.value.frequency),
+      ],
+    );
+  }
+}
+
+class ProjectTile extends StatelessWidget {
+  const ProjectTile(this.project, this.frequency, {Key? key}) : super(key: key);
+
+  final String project;
+  final int frequency;
+  @override
+  Widget build(BuildContext context) {
+    return RadioListTile(
+      toggleable: true,
+      value: project,
+      groupValue: StorageWidget.of(context).projectFilter,
+      onChanged: (_) => StorageWidget.of(context).toggleProjectFilter(project),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Text(
+              project,
+              style: GoogleFonts.firaMono(),
+            ),
+          ),
+          Text(
+            '$frequency',
+            style: GoogleFonts.firaMono(),
+          ),
+        ],
+      ),
     );
   }
 }
