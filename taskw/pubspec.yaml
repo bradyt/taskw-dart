@@ -14,6 +14,7 @@ dependencies:
   collection:
   intl:
   petitparser:
+  quiver:
   taskc:
     path: ../taskc
   taskj:
