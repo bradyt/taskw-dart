@@ -30,3 +30,11 @@ RUN curl -O https://taskwarrior.org/download/task-2.5.3.tar.gz \
     && make install \
     && cd .. \
     && rm -r task-2.5.3
+
+ADD taskc/pubspec.yaml taskc/pubspec.yaml
+ADD taskj/pubspec.yaml taskj/pubspec.yaml
+ADD taskw/pubspec.yaml taskw/pubspec.yaml
+
+RUN dart pub get -C taskc
+RUN dart pub get -C taskj
+RUN dart pub get -C taskw

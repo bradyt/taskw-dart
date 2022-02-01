@@ -1,9 +1,13 @@
 run:
-	docker build . -t this && \
+	docker build .. -t this \
+	-f Dockerfile && \
 	docker run --rm \
 	-it \
 	this
 
-push:
-	docker build -t bradyt/dart-task .
+local:
+	docker build -t bradyt/dart-task .. \
+	-f Dockerfile
+
+push: local
 	docker push bradyt/dart-task
