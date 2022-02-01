@@ -1,0 +1,19 @@
+# -*- conf -*-
+# task show | grep -e 'report.*filter'
+report.active.filter               status:pending and +ACTIVE
+report.blocked.filter              status:pending -WAITING +BLOCKED
+report.blocking.filter             status:pending -WAITING +BLOCKING
+report.completed.filter            status:completed
+report.list.filter                 status:pending -WAITING
+report.long.filter                 status:pending -WAITING
+report.ls.filter                   status:pending -WAITING
+report.minimal.filter              status:pending
+report.newest.filter               status:pending
+report.next.filter                 status:pending -WAITING limit:page
+report.oldest.filter               status:pending
+report.overdue.filter              status:pending and +OVERDUE
+report.ready.filter                +READY
+report.recurring.filter            status:pending and (+PARENT or +CHILD)
+report.timesheet.filter            (+PENDING and start.after:now-4wks) or (+COMPLETED and end.after:now-4wks)
+report.unblocked.filter            status:pending -WAITING -BLOCKED
+report.waiting.filter              +WAITING
