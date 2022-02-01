@@ -1,6 +1,6 @@
 # 0.2.4
 
-- Add radio indicator to indicate selected project filter
+- Add radio widget to indicate selected project filter
 - Add "d:" prefix to indicate due date in task list view
 - Add start feature
   + Toggle start date
