@@ -2,6 +2,12 @@
 
 - Add radio indicator to indicate selected project filter
 - Add "d:" prefix to indicate due date in task list view
+- Add start feature
+  + Toggle start date
+  + Display start age in list view
+  + Sort by start date
+  + Add 4 to urgency
+  + Remove start date when marking task completed
 
 # 0.2.3
 

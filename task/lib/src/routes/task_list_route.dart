@@ -85,6 +85,7 @@ class TaskListRoute extends StatelessWidget {
                     for (var sort in [
                       'id',
                       'entry',
+                      'start',
                       'due',
                       'priority',
                       'project',

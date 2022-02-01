@@ -39,6 +39,10 @@ double urgency(Task task) {
     result += 15;
   }
 
+  if (task.start != null) {
+    result += 4;
+  }
+
   switch (task.priority) {
     case 'H':
       result += 6;

@@ -39,6 +39,9 @@ class _DetailRouteState extends State<DetailRoute> {
         case 'status':
           modify.setStatus(newValue);
           break;
+        case 'start':
+          modify.setStart(newValue);
+          break;
         case 'due':
           modify.setDue(newValue);
           break;
@@ -194,6 +197,12 @@ class AttributeWidget extends StatelessWidget {
         );
       case 'status':
         return StatusWidget(
+          name: name,
+          value: localValue,
+          callback: callback,
+        );
+      case 'start':
+        return StartWidget(
           name: name,
           value: localValue,
           callback: callback,
@@ -371,6 +380,53 @@ class StatusWidget extends StatelessWidget {
               return callback('deleted');
             case 'deleted':
               return callback('pending');
+          }
+        },
+      ),
+    );
+  }
+}
+
+class StartWidget extends StatelessWidget {
+  const StartWidget({
+    required this.name,
+    required this.value,
+    required this.callback,
+    Key? key,
+  }) : super(key: key);
+
+  final String name;
+  final dynamic value;
+  final void Function(dynamic) callback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              Text(
+                '${'$name:'.padRight(13)}$value',
+                style: GoogleFonts.firaMono(),
+              ),
+            ],
+          ),
+        ),
+        onTap: () {
+          if (value != null) {
+            callback(null);
+          } else {
+            var now = DateTime.now().toUtc();
+            callback(DateTime.utc(
+              now.year,
+              now.month,
+              now.day,
+              now.hour,
+              now.minute,
+              now.second,
+            ));
           }
         },
       ),

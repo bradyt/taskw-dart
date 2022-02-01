@@ -12,6 +12,17 @@ int Function(Task, Task) compareTasks(String column) {
       case 'entry':
         result = a.entry.compareTo(b.entry);
         break;
+      case 'start':
+        if (a.start == null && b.start == null) {
+          result = 0;
+        } else if (a.start == null) {
+          return  1;
+        } else if (b.start == null) {
+          return  -1;
+        } else {
+          result = a.start!.compareTo(b.start!);
+        }
+        break;
       case 'due':
         if (a.due == null && b.due == null) {
           result = 0;

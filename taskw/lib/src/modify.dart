@@ -37,6 +37,12 @@ class Modify {
         'new': _draft.status,
       };
     }
+    if (_draft.start != _saved.start) {
+      result['start'] = {
+        'old': _saved.start,
+        'new': _draft.start,
+      };
+    }
     if (_draft.end != _saved.end) {
       result['end'] = {
         'old': _saved.end,
@@ -107,6 +113,13 @@ class Modify {
           ..end = now,
       );
     }
+    if (status == 'completed') {
+      _draft = _draft.rebuild((b) => b..start = null);
+    }
+  }
+
+  void setStart(DateTime? start) {
+    _draft = _draft.rebuild((b) => b..start = start);
   }
 
   void setDue(DateTime? due) {
