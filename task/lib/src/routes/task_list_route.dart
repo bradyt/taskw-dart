@@ -417,7 +417,8 @@ class ProjectsColumn extends StatelessWidget {
       ),
       children: [
         for (var entry in storageWidget.projects.entries)
-          ProjectTile(entry.key, entry.value.nodeData),
+          if (entry.value.nodeData.parent == null)
+            ProjectTile(entry.key, entry.value.nodeData),
       ],
     );
   }
@@ -430,6 +431,41 @@ class ProjectTile extends StatelessWidget {
   final ProjectNode node;
   @override
   Widget build(BuildContext context) {
+    if (node.children.isNotEmpty) {
+      return ExpansionTile(
+        textColor: Theme.of(context).textTheme.subtitle1!.color,
+        controlAffinity: ListTileControlAffinity.leading,
+        leading: Radio(
+          toggleable: true,
+          value: project,
+          groupValue: StorageWidget.of(context).projectFilter,
+          onChanged: (_) =>
+              StorageWidget.of(context).toggleProjectFilter(project),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: Text(
+                project,
+                style: GoogleFonts.firaMono(),
+              ),
+            ),
+            Text(
+              '(${node.tasks}) ${node.subtasks}',
+              style: GoogleFonts.firaMono(),
+            ),
+          ],
+        ),
+        children: [
+          for (var project in node.children)
+            ProjectTile(
+              project,
+              StorageWidget.of(context).projects[project]!.nodeData,
+            ),
+        ],
+      );
+    }
     return RadioListTile(
       toggleable: true,
       value: project,
@@ -445,9 +481,7 @@ class ProjectTile extends StatelessWidget {
             ),
           ),
           Text(
-            (node.children.isEmpty)
-                ? '${node.subtasks}'
-                : '(${node.tasks}) ${node.subtasks}',
+            '${node.subtasks}',
             style: GoogleFonts.firaMono(),
           ),
         ],

@@ -1,3 +1,9 @@
+# 0.2.6
+
+- Tap non-leaf project filters to fold/hide subproject filters
+  + Non-leaf projects indicated by contributing task count in parentheses
+  + Unfortunately, toggling a non-leaf project filter is less convenient
+
 # 0.2.5
 
 - Updates to project filter UI
