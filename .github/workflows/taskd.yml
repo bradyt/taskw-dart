@@ -19,7 +19,7 @@ jobs:
       image: bradyt/dart-task
     steps:
     - uses: actions/checkout@v2
-    - run: echo '/sdks/flutter/bin' >> $GITHUB_PATH
+    - run: echo '/usr/lib/dart/bin' >> $GITHUB_PATH
 
     - run: taskd status
     - run: task --version

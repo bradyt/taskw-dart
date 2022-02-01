@@ -1,10 +1,12 @@
-watch: get
+watch: get task/.packages
 	flutter analyze --watch
 
 analyze: get
-	dart analyze
+	cd taskc && dart analyze
+	cd taskj && dart analyze
+	cd taskw && dart analyze
 
-get: taskc/pubspec.lock taskj/pubspec.lock taskw/pubspec.lock task/.packages
+get: taskc/pubspec.lock taskj/pubspec.lock taskw/pubspec.lock
 
 taskc/pubspec.lock:
 	cd taskc && dart pub get
@@ -22,12 +24,10 @@ docs: get
 	cd taskw && dartdoc .
 	cd taskc && dartdoc .
 	cd taskj && dartdoc .
-	cd task && dartdoc .
 
 format:
 	dart format taskc --fix --output none --set-exit-if-changed --summary none
 	dart format taskw --fix --output none --set-exit-if-changed --summary none
-	dart format task --fix --output none --set-exit-if-changed --summary none
 
 install:
 	dart pub global activate -spath taskc
