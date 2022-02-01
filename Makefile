@@ -36,3 +36,7 @@ test: get
 	cd taskj && dart test
 	cd taskc && dart test -j 1
 	cd taskw && dart test
+
+built_value:
+	cd taskc && dart run build_runner build
+	cd taskj && dart run build_runner build
