@@ -1,3 +1,7 @@
+# 0.2.4
+
+- Add radio indicator to indicate selected project filter
+
 # 0.2.3
 
 - Fix bugs in parsing of new task

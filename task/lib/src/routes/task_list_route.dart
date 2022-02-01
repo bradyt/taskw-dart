@@ -145,8 +145,11 @@ class TaskListRoute extends StatelessWidget {
                   ),
                   children: [
                     for (var entry in storageWidget.projects.entries)
-                      ListTile(
-                        onTap: () =>
+                      RadioListTile(
+                        toggleable: true,
+                        value: entry.key,
+                        groupValue: storageWidget.projectFilter,
+                        onChanged: (_) =>
                             storageWidget.toggleProjectFilter(entry.key),
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
