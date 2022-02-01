@@ -16,9 +16,9 @@ int Function(Task, Task) compareTasks(String column) {
         if (a.start == null && b.start == null) {
           result = 0;
         } else if (a.start == null) {
-          return  1;
+          return 1;
         } else if (b.start == null) {
-          return  -1;
+          return -1;
         } else {
           result = a.start!.compareTo(b.start!);
         }
