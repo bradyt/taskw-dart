@@ -1,0 +1,23 @@
+name: flutter
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+  schedule:
+    - cron: 0 0 1 * *
+  workflow_dispatch:
+
+jobs:
+  flutter:
+    runs-on: ubuntu-latest
+    container:
+      image: cirrusci/flutter:stable
+    steps:
+    - uses: actions/checkout@v2
+    - run: echo '/sdks/flutter/bin' >> $GITHUB_PATH
+    - run: dart --disable-analytics
+    - run: flutter config --no-analytics
+    - run: cd task && flutter pub get
+    - run: cd task && dart format . --fix --output none --set-exit-if-changed --summary none
+    - run: cd task && flutter analyze
