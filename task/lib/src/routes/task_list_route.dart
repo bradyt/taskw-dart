@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:taskw/taskw.dart';
+
 import 'package:task/task.dart';
 
 class TaskListRoute extends StatelessWidget {
@@ -413,17 +415,17 @@ class ProjectsColumn extends StatelessWidget {
       ),
       children: [
         for (var entry in storageWidget.projects.entries)
-          ProjectTile(entry.key, entry.value.frequency),
+          ProjectTile(entry.key, entry.value.nodeData),
       ],
     );
   }
 }
 
 class ProjectTile extends StatelessWidget {
-  const ProjectTile(this.project, this.frequency, {Key? key}) : super(key: key);
+  const ProjectTile(this.project, this.node, {Key? key}) : super(key: key);
 
   final String project;
-  final int frequency;
+  final ProjectNode node;
   @override
   Widget build(BuildContext context) {
     return RadioListTile(
@@ -441,7 +443,9 @@ class ProjectTile extends StatelessWidget {
             ),
           ),
           Text(
-            '$frequency',
+            (node.children.isEmpty)
+                ? '${node.subtasks}'
+                : '(${node.tasks}) ${node.subtasks}',
             style: GoogleFonts.firaMono(),
           ),
         ],

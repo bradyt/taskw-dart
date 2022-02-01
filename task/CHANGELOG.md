@@ -1,3 +1,13 @@
+# 0.2.5
+
+- Updates to project filter UI
+  + Task count:
+    * Project's task count includes those of subprojects
+    * Non-leaf project shows contributing task count in parentheses
+  + Changes to project list
+    * List now includes nearest common ancestor project
+    * Still omits projects with one adjacent subproject and zero tasks
+
 # 0.2.4
 
 - Add radio widget to indicate selected project filter

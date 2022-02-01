@@ -27,11 +27,11 @@ class TagMetadata {
 
 class ProjectMetadata {
   ProjectMetadata({
-    required this.frequency,
+    required this.nodeData,
     required this.selected,
   });
 
-  final int frequency;
+  final ProjectNode nodeData;
   final bool selected;
 }
 
@@ -219,11 +219,12 @@ class _StorageWidgetState extends State<StorageWidget> {
         }
       }
     }
+    var tree = sparseDecoratedProjectTree(frequencies);
     return SplayTreeMap.of(
       {
-        for (var entry in frequencies.entries)
+        for (var entry in tree.entries)
           entry.key: ProjectMetadata(
-            frequency: entry.value,
+            nodeData: tree[entry.key]!,
             selected: false,
           ),
       },
