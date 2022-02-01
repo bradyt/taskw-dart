@@ -1,5 +1,8 @@
 name: taskd-free CI testing
 
+env:
+  PUB_CACHE: '/root/.pub-cache'
+
 on:
   pull_request:
   push:
@@ -20,7 +23,7 @@ jobs:
     - uses: actions/checkout@v2
     - run: echo '/usr/lib/dart/bin' >> $GITHUB_PATH
     - run: dart --disable-analytics
-    - run: dart pub get
+    - run: dart pub get --offline
       working-directory: ${{ matrix.working-directory }}
     - run: dart test
       working-directory: ${{ matrix.working-directory }}

@@ -1,5 +1,8 @@
 name: beginning of CI that requires taskd on localhost
 
+env:
+  PUB_CACHE: '/root/.pub-cache'
+
 defaults:
   run:
     working-directory: taskc
@@ -27,5 +30,5 @@ jobs:
 
     - run: dart --disable-analytics
 
-    - run: dart pub get
+    - run: dart pub get --offline
     - run: dart test -j 1

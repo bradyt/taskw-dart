@@ -8,6 +8,11 @@ analyze: get
 
 get: taskc/pubspec.lock taskj/pubspec.lock taskw/pubspec.lock
 
+get-offline:
+	dart pub get --offline -C taskc
+	dart pub get --offline -C taskj
+	dart pub get --offline -C taskw
+
 taskc/pubspec.lock:
 	cd taskc && dart pub get
 
