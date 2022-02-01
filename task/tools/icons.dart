@@ -46,5 +46,16 @@ void main() {
         '../${size.platform}/Runner/Assets.xcassets/AppIcon.appiconset/${size.filename}',
       ],
     );
+    Process.run(
+      'convert',
+      [
+        '-density',
+        '1200',
+        '-resize',
+        size.dimensions,
+        'noun_checkmark_violet.svg',
+        '../${size.platform}/Runner/Assets.xcassets/AppIcon-beta.appiconset/${size.filename}',
+      ],
+    );
   }
 }
