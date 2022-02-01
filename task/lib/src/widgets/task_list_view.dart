@@ -57,7 +57,7 @@ class TaskListView extends StatelessWidget {
                           '${(task.id == 0) ? '-' : task.id} '
                                   '${pendingFilter ? '' : '${task.status[0].toUpperCase()} '}'
                                   '${age(task.entry)} '
-                                  '${(task.due != null) ? when(task.due!) : ''} '
+                                  '${(task.due != null) ? 'd:${when(task.due!)}' : ''} '
                                   '${task.priority ?? ''} '
                                   '${task.project ?? ''} '
                                   '[${task.tags?.join(',') ?? ''}]'
