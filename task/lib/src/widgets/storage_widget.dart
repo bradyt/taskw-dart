@@ -209,19 +209,19 @@ class _StorageWidgetState extends State<StorageWidget> {
   }
 
   Map<String, ProjectMetadata> _projects() {
-    var frequency = <String, int>{};
+    var frequencies = <String, int>{};
     for (var task in storage.data.pendingData()) {
       if (task.project != null) {
-        if (frequency.containsKey(task.project)) {
-          frequency[task.project!] = (frequency[task.project] ?? 0) + 1;
+        if (frequencies.containsKey(task.project)) {
+          frequencies[task.project!] = (frequencies[task.project] ?? 0) + 1;
         } else {
-          frequency[task.project!] = 1;
+          frequencies[task.project!] = 1;
         }
       }
     }
     return SplayTreeMap.of(
       {
-        for (var entry in frequency.entries)
+        for (var entry in frequencies.entries)
           entry.key: ProjectMetadata(
             frequency: entry.value,
             selected: false,
