@@ -16,6 +16,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:taskj/json.dart';
+import 'package:taskw/taskw.dart';
 
 import 'package:task/main.dart';
 import 'package:task/task.dart';
@@ -49,5 +50,24 @@ void main() {
         ),
       ),
     );
+  });
+  testWidgets('test project column', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Material(
+          child: ProjectsColumn(
+            {
+              'a': ProjectNode(),
+            },
+            'foo',
+            (_) {},
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('project:foo'));
+    await tester.pump();
+    expect(find.text('a'), findsOneWidget);
+    expect(find.text('0'), findsOneWidget);
   });
 }

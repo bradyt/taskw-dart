@@ -25,16 +25,6 @@ class TagMetadata {
   final bool selected;
 }
 
-class ProjectMetadata {
-  ProjectMetadata({
-    required this.nodeData,
-    required this.selected,
-  });
-
-  final ProjectNode nodeData;
-  final bool selected;
-}
-
 class StorageWidget extends StatefulWidget {
   const StorageWidget({required this.profile, required this.child, Key? key})
       : super(key: key);
@@ -60,7 +50,7 @@ class _StorageWidgetState extends State<StorageWidget> {
   late List<Task> queriedTasks;
   late List<Task> searchedTasks;
   late Map<String, TagMetadata> globalTags;
-  late Map<String, ProjectMetadata> projects;
+  late Map<String, ProjectNode> projects;
   bool sortHeaderVisible = false;
   bool searchVisible = false;
   var searchController = TextEditingController();
@@ -208,7 +198,7 @@ class _StorageWidgetState extends State<StorageWidget> {
     });
   }
 
-  Map<String, ProjectMetadata> _projects() {
+  Map<String, ProjectNode> _projects() {
     var frequencies = <String, int>{};
     for (var task in storage.data.pendingData()) {
       if (task.project != null) {
@@ -219,16 +209,7 @@ class _StorageWidgetState extends State<StorageWidget> {
         }
       }
     }
-    var tree = sparseDecoratedProjectTree(frequencies);
-    return SplayTreeMap.of(
-      {
-        for (var entry in tree.entries)
-          entry.key: ProjectMetadata(
-            nodeData: tree[entry.key]!,
-            selected: false,
-          ),
-      },
-    );
+    return SplayTreeMap.of(sparseDecoratedProjectTree(frequencies));
   }
 
   void togglePendingFilter() {
@@ -450,7 +431,7 @@ class InheritedStorage extends InheritedModel<String> {
   final Storage storage;
   final List<Task> tasks;
   final Map<String, TagMetadata> globalTags;
-  final Map<String, ProjectMetadata> projects;
+  final Map<String, ProjectNode> projects;
   final bool pendingFilter;
   final String projectFilter;
   final bool tagUnion;

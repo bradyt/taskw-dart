@@ -32,6 +32,7 @@ class FilterDrawer extends StatelessWidget {
               ProjectsColumn(
                 storageWidget.projects,
                 storageWidget.projectFilter,
+                storageWidget.toggleProjectFilter,
               ),
               const Divider(),
               Wrap(
