@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:io/io.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 
@@ -14,27 +15,31 @@ import 'package:taskc/taskrc.dart' as rc;
 import 'package:taskj/json.dart';
 
 void main() {
-  var taskdData = Directory('../fixture/var/taskd').absolute.path;
+  var uuid = const Uuid().v1();
+  var fixture = Directory('../fixture/var/taskd').absolute.path;
+  var taskdData =
+      Directory('test/taskc_impl/tmp/$uuid/var/taskd').absolute.path;
   var taskd = Taskd(taskdData);
   late rc.Taskrc taskrc;
   late TaskdClient taskdClient;
+  var port = 1027;
 
   setUpAll(() async {
+    await copyPath(fixture, taskdData);
     await taskd.initialize();
     await taskd.setAddressAndPort(
       address: 'localhost',
-      port: 53589,
+      port: port,
     );
     unawaited(taskd.start());
     await Future.delayed(const Duration(seconds: 1));
 
     var userKey = await taskd.addUser('First Last');
-    var uuid = const Uuid().v1();
-    var home = Directory('test/taskc_impl/tmp/$uuid').absolute.path;
+    var home = Directory('test/taskc_impl/tmp/$uuid/home').absolute.path;
     await taskd.initializeClient(
       home: home,
       address: 'localhost',
-      port: 53589,
+      port: port,
       fullName: 'First Last',
       fileName: 'first_last',
       userKey: userKey,
@@ -112,7 +117,7 @@ void main() {
     });
     test('count tasks', () async {
       await File(
-              '../fixture/var/taskd/orgs/Public/users/${taskrc.credentials!.key}/tx.data')
+              '$taskdData/orgs/Public/users/${taskrc.credentials!.key}/tx.data')
           .delete();
 
       await taskdClient.synchronize(
@@ -175,7 +180,7 @@ void main() {
       await taskd.initializeClient(
         home: home,
         address: 'localhost',
-        port: 53589,
+        port: port,
         fullName: 'First Last',
         fileName: 'first_last',
         userKey: userKey,

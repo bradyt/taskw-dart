@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:io/io.dart';
 import 'package:path/path.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
@@ -12,18 +13,21 @@ import 'package:taskw/taskw.dart';
 
 void main() {
   group('Test statistics method;', () {
-    var taskd = Taskd(normalize(absolute('../fixture/var/taskd')));
     var uuid = const Uuid().v1();
-    var home = Directory('test/taskc/tmp/$uuid').absolute.path;
+    var fixture = Directory('../fixture/var/taskd').absolute.path;
+    var taskdData = Directory('test/taskc/tmp/$uuid/var/taskd').absolute.path;
+    var taskd = Taskd(normalize(taskdData));
+    var home = Directory('test/taskc/tmp/$uuid/home').absolute.path;
 
     late Storage storage;
 
     setUpAll(() async {
       await Directory(home).create(recursive: true);
+      await copyPath(fixture, taskdData);
       await taskd.initialize();
       await taskd.setAddressAndPort(
         address: 'localhost',
-        port: 53589,
+        port: 1024,
       );
       unawaited(taskd.start());
       await Future.delayed(const Duration(seconds: 1));
@@ -31,7 +35,7 @@ void main() {
       await taskd.initializeClient(
         home: home,
         address: 'localhost',
-        port: 53589,
+        port: 1024,
         fullName: 'First Last',
         fileName: 'first_last',
         userKey: userKey,

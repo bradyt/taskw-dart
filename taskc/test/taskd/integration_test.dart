@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:io/io.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
@@ -15,11 +16,14 @@ void main() {
 
   group('Checking result of passing TASKDDATA location.', () {
     var uuid = const Uuid().v1();
-    var taskdData = Directory('../fixture/var/taskd').absolute.path;
-    var home = Directory('test/taskd/tmp/$uuid').absolute.path;
+    var fixture = Directory('../fixture/var/taskd').absolute.path;
+    var taskdData = Directory('test/taskd/tmp/$uuid/var/taskd').absolute.path;
+    var home = Directory('test/taskd/tmp/$uuid/home').absolute.path;
+    var port = 1029;
 
     setUpAll(() async {
       await Directory(home).create(recursive: true);
+      await copyPath(fixture, taskdData);
     });
 
     test('Test taskdSetup method.', () async {
@@ -27,13 +31,13 @@ void main() {
       await taskd.initialize();
       await taskd.setAddressAndPort(
         address: 'localhost',
-        port: 53589,
+        port: port,
       );
       var userKey = await taskd.addUser('First Last');
       var taskwarrior = await taskd.initializeClient(
         home: home,
         address: 'localhost',
-        port: 53589,
+        port: port,
         fileName: 'first_last',
         fullName: 'First Last',
         userKey: userKey,

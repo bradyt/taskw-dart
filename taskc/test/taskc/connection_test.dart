@@ -1,29 +1,34 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:path/path.dart';
+import 'package:io/io.dart';
 import 'package:test/test.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:taskc/taskd.dart';
 import 'package:taskc/taskrc.dart';
 
 void main() {
   var address = 'localhost';
-  var port = 53589;
+  var port = 1026;
   var pemFilePaths = PemFilePaths.fromTaskrc({
     'taskd.certificate': '../fixture/var/taskd/pki/first_last.cert.pem',
     'taskd.key': '../fixture/var/taskd/pki/first_last.key.pem',
     'taskd.ca': '../fixture/var/taskd/pki/ca.cert.pem',
   });
 
-  var taskd = Taskd(normalize(absolute('../fixture/var/taskd')));
+  var uuid = const Uuid().v1();
+  var fixture = Directory('../fixture/var/taskd').absolute.path;
+  var taskdData = Directory('test/taskd/tmp/$uuid/var/taskd').absolute.path;
+  var taskd = Taskd(taskdData);
   // var taskwarrior = Taskwarrior(absolute('../fixture'));
 
   setUpAll(() async {
+    await copyPath(fixture, taskdData);
     await taskd.initialize();
     await taskd.setAddressAndPort(
-      address: 'localhost',
-      port: 53589,
+      address: address,
+      port: port,
     );
     unawaited(taskd.start());
     await Future.delayed(const Duration(seconds: 1));

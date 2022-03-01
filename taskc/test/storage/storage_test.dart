@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:built_collection/built_collection.dart';
+import 'package:io/io.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:test/test.dart';
@@ -19,20 +20,23 @@ void main() {
     stdout.writeln('${record.level.name}: ${record.time}: ${record.message}');
   });
 
-  var taskd = Taskd(normalize(absolute('../fixture/var/taskd')));
-
   var uuid = const Uuid().v1();
-  var home = Directory('test/taskc/tmp/$uuid').absolute.path;
+  var fixture = Directory('../fixture/var/taskd').absolute.path;
+  var taskdData = Directory('test/taskc/tmp/$uuid/var/taskd').absolute.path;
+  var taskd = Taskd(taskdData);
+
+  var home = Directory('test/taskc/tmp/$uuid/home').absolute.path;
 
   late String credentialsKey;
   late File txData;
 
   setUpAll(() async {
     await Directory(home).create(recursive: true);
+    await copyPath(fixture, taskdData);
     await taskd.initialize();
     await taskd.setAddressAndPort(
       address: 'localhost',
-      port: 53589,
+      port: 1025,
     );
     unawaited(taskd.start());
     await Future.delayed(const Duration(seconds: 1));
@@ -41,7 +45,7 @@ void main() {
     await taskd.initializeClient(
       home: home,
       address: 'localhost',
-      port: 53589,
+      port: 1025,
       fullName: 'First Last',
       fileName: 'first_last',
       userKey: userKey,
