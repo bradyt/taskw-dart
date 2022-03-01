@@ -77,6 +77,7 @@ void main() {
       'wait:1980-01-01',
       'wait:2037-01-01',
       'pro:home',
+      'start:1980-01-01',
     ];
 
     for (var mods in modses) {
