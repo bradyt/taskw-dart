@@ -12,7 +12,8 @@ import 'package:taskw/taskw.dart';
 void main() {
   test('test profiles', () {
     var uuid = const Uuid().v1();
-    var now = DateTime.now().toUtc();
+    var now = DateTime.parse(iso8601Basic.format(DateTime.now().toUtc()));
+
     var storage = Storage(
       Directory(
         'test/profile-testing/modify/${const Uuid().v1()}',
@@ -74,19 +75,11 @@ void main() {
         '  old: 0\n'
         '  new: 1';
     expect(
-      draft.changes.entries.map((entry) {
-        var _old = entry.value['old'];
-        var _new = entry.value['new'];
-        if (_old is DateTime) {
-          _old = _old.toLocal();
-        }
-        if (_new is DateTime) {
-          _new = _new.toLocal();
-        }
-        return '${entry.key}:\n'
-            '  old: $_old\n'
-            '  new: $_new';
-      }).join('\n'),
+      draft.changes.entries
+          .map((entry) => '${entry.key}:\n'
+              '  old: ${entry.value['old']}\n'
+              '  new: ${entry.value['new']}')
+          .join('\n'),
       expected,
     );
 

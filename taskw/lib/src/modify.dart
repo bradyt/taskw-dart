@@ -1,4 +1,5 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:collection/collection.dart';
 
 import 'package:taskj/json.dart';
 
@@ -25,71 +26,47 @@ class Modify {
 
   Map<dynamic, Map> get changes {
     var result = <dynamic, Map>{};
-    if (_draft.description != _saved.description) {
-      result['description'] = {
-        'old': _saved.description,
-        'new': _draft.description,
-      };
-    }
-    if (_draft.status != _saved.status) {
-      result['status'] = {
-        'old': _saved.status,
-        'new': _draft.status,
-      };
-    }
-    if (_draft.start != _saved.start) {
-      result['start'] = {
-        'old': _saved.start,
-        'new': _draft.start,
-      };
-    }
-    if (_draft.end != _saved.end) {
-      result['end'] = {
-        'old': _saved.end,
-        'new': _draft.end,
-      };
-    }
-    if (_draft.due != _saved.due) {
-      result['due'] = {
-        'old': _saved.due,
-        'new': _draft.due,
-      };
-    }
-    if (_draft.wait != _saved.wait) {
-      result['wait'] = {
-        'old': _saved.wait,
-        'new': _draft.wait,
-      };
-    }
-    if (_draft.until != _saved.until) {
-      result['until'] = {
-        'old': _saved.until,
-        'new': _draft.until,
-      };
-    }
-    if (_draft.priority != _saved.priority) {
-      result['priority'] = {
-        'old': _saved.priority,
-        'new': _draft.priority,
-      };
-    }
-    if (_draft.project != _saved.project) {
-      result['project'] = {
-        'old': _saved.project,
-        'new': _draft.project,
-      };
-    }
-    if (_draft.tags != _saved.tags) {
-      result['tags'] = {
-        'old': _saved.tags,
-        'new': _draft.tags,
-      };
-    }
-    if (_draft.annotations != _saved.annotations) {
-      result['annotations'] = {
-        'old': _saved.annotations?.length ?? 0,
-        'new': _draft.annotations?.length ?? 0,
-      };
+    var savedJson = _saved.toJson();
+    var draftJson = _draft.toJson();
+
+    for (var entry in {
+      for (var key in [
+        'description',
+        'status',
+        'start',
+        'end',
+        'due',
+        'wait',
+        'until',
+        'priority',
+        'project',
+        'tags',
+        'annotations',
+      ])
+        key: (value) {
+          if (value != null &&
+              ['start', 'end', 'due', 'wait', 'until'].contains(key)) {
+            return DateTime.parse(value).toLocal();
+          } else if (key == 'annotations') {
+            return (value as List?)?.length ?? 0;
+          }
+          return value;
+        },
+    }.entries) {
+      var key = entry.key;
+      var savedValue = savedJson[key];
+      var draftValue = draftJson[key];
+
+      if (draftValue != savedValue &&
+          !(key == 'tags' &&
+              const ListEquality().equals(draftValue, savedValue)) &&
+          !(key == 'annotations' &&
+              const DeepCollectionEquality().equals(draftValue, savedValue))) {
+        result[key] = {
+          'old': entry.value(savedValue),
+          'new': entry.value(draftValue),
+        };
+      }
     }
     return result;
   }

@@ -118,28 +118,14 @@ class _DetailRouteState extends State<DetailRoute> {
                       title: const Text('Review changes:'),
                       content: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            for (var change in modify.changes.entries)
-                              (change) {
-                                change as MapEntry<dynamic, Map>;
-                                var _old = change.value['old'];
-                                var _new = change.value['new'];
-                                if (_old is DateTime) {
-                                  _old = _old.toLocal();
-                                }
-                                if (_new is DateTime) {
-                                  _new = _new.toLocal();
-                                }
-                                return Text(
-                                  '${change.key}:\n'
-                                  '  old: $_old\n'
-                                  '  new: $_new',
-                                  style: GoogleFonts.firaMono(),
-                                );
-                              }(change),
-                          ],
+                        child: Text(
+                          modify.changes
+                              .entries.map((entry) => '${entry.key}:\n'
+                                  '  old: ${entry.value['old']}\n'
+                                  '  new: ${entry.value['new']}')
+                              .toList()
+                              .join('\n'),
+                          style: GoogleFonts.firaMono(),
                         ),
                       ),
                       actions: [
