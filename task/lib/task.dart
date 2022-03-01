@@ -9,6 +9,7 @@ export 'package:task/src/routes/tags_route.dart';
 export 'package:task/src/routes/task_list_route.dart';
 export 'package:task/src/widgets/add_task_bottom_sheet.dart';
 export 'package:task/src/widgets/delete_profile_dialog.dart';
+export 'package:task/src/widgets/filter_drawer.dart';
 export 'package:task/src/widgets/profiles_widget.dart';
 export 'package:task/src/widgets/rename_profile_dialog.dart';
 export 'package:task/src/widgets/rename_tab_dialog.dart';
