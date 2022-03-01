@@ -8,8 +8,8 @@ class Tag {
 
   final String tag;
 
-  @override
-  String toString() => 'Tag($tag)';
+  // @override
+  // String toString() => 'Tag($tag)';
 }
 
 class Attribute {
@@ -21,8 +21,8 @@ class Attribute {
   final String key;
   final String? value;
 
-  @override
-  String toString() => 'Attribute($key, $value)';
+  // @override
+  // String toString() => 'Attribute($key, $value)';
 }
 
 Parser wordPrimitive() => (char(' ').not() & any()).plus().flatten();

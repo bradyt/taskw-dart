@@ -50,4 +50,19 @@ void main() {
     var task = taskParser('don\'t silently drop apostrophe');
     expect(task.description, 'don\'t silently drop apostrophe');
   });
+  test('Test for code coverage', () {
+    var now = '2000-01-01T00:00:00';
+    var task = taskParser(
+      'foo +x '
+      'project:\'bar\' stat:completed pri:H wait:$now due:$now until:$now',
+    );
+    expect(task.description, 'foo');
+    expect(task.tags, ['x']);
+    expect(task.status, 'completed');
+    expect(task.project, 'bar');
+    expect(task.priority, 'H');
+    expect(task.wait, DateTime.parse(now).toUtc());
+    expect(task.due, DateTime.parse(now).toUtc());
+    expect(task.until, DateTime.parse(now).toUtc());
+  });
 }
