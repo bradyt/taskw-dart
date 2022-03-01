@@ -29,6 +29,7 @@ dependencies:
     path: ../taskj
   taskw:
     path: ../taskw
+  tuple:
   url_launcher:
   uuid:
 

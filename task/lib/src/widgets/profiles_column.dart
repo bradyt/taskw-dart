@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tuple/tuple.dart';
 
 import 'package:task/task.dart';
 
@@ -262,50 +263,27 @@ class ManageProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var triples = [
+      Tuple3(Icons.edit, 'Rename profile', rename),
+      Tuple3(Icons.link, 'Configure Taskserver', configure),
+      Tuple3(Icons.file_download, 'Export tasks', export),
+      Tuple3(Icons.copy, 'Copy config to new profile', copy),
+      Tuple3(Icons.delete, 'Delete profile', delete),
+    ];
+
     return ExpansionTile(
       key: const PageStorageKey<String>('manage-profile'),
       title: const Text('Manage selected profile'),
       children: [
-        ListTile(
-          leading: const Padding(
-            padding: EdgeInsets.all(12),
-            child: Icon(Icons.edit),
-          ),
-          title: const Text('Rename profile'),
-          onTap: rename,
-        ),
-        ListTile(
-          leading: const Padding(
-            padding: EdgeInsets.all(12),
-            child: Icon(Icons.link),
-          ),
-          title: const Text('Configure Taskserver'),
-          onTap: configure,
-        ),
-        ListTile(
-          leading: const Padding(
-            padding: EdgeInsets.all(12),
-            child: Icon(Icons.file_download),
-          ),
-          title: const Text('Export tasks'),
-          onTap: export,
-        ),
-        ListTile(
-          leading: const Padding(
-            padding: EdgeInsets.all(12),
-            child: Icon(Icons.copy),
-          ),
-          title: const Text('Copy config to new profile'),
-          onTap: copy,
-        ),
-        ListTile(
-          leading: const Padding(
-            padding: EdgeInsets.all(12),
-            child: Icon(Icons.delete),
-          ),
-          title: const Text('Delete profile'),
-          onTap: delete,
-        ),
+        for (var triple in triples)
+          ListTile(
+            leading: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Icon(triple.item1),
+            ),
+            title: Text(triple.item2),
+            onTap: triple.item3,
+          )
       ],
     );
   }
