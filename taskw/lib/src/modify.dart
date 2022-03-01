@@ -71,64 +71,53 @@ class Modify {
     return result;
   }
 
-  void setDescription(String description) {
-    _draft = _draft.rebuild((b) => b..description = description);
-  }
-
-  void setStatus(String status) {
-    if (status == 'pending') {
-      _draft = _draft.rebuild(
-        (b) => b
-          ..status = status
-          ..end = null,
-      );
-    } else {
-      var now = DateTime.now().toUtc();
-      _draft = _draft.rebuild(
-        (b) => b
-          ..status = status
-          ..end = now,
-      );
-    }
-    if (status == 'completed') {
-      _draft = _draft.rebuild((b) => b..start = null);
-    }
-  }
-
-  void setStart(DateTime? start) {
-    _draft = _draft.rebuild((b) => b..start = start);
-  }
-
-  void setDue(DateTime? due) {
-    _draft = _draft.rebuild((b) => b..due = due);
-  }
-
-  void setWait(DateTime? wait) {
+  // ignore: avoid_annotating_with_dynamic
+  void set(String key, dynamic value) {
     _draft = _draft.rebuild(
-      (b) => b
-        ..status = 'waiting'
-        ..wait = wait,
+      (b) {
+        switch (key) {
+          case 'description':
+            b.description = value;
+            break;
+          case 'status':
+            b
+              ..status = value
+              ..start = (value == 'pending') ? _saved.start : null
+              ..end = (value == 'pending') ? null : DateTime.now().toUtc();
+            break;
+          case 'start':
+            b.start = value;
+            break;
+          case 'due':
+            b.due = value;
+            break;
+          case 'wait':
+            b.wait = value;
+            break;
+          case 'until':
+            b.until = value;
+            break;
+          case 'priority':
+            b.priority = value;
+            break;
+          case 'project':
+            b.project = value;
+            break;
+          case 'tags':
+            b.tags = BuiltList<String>(
+                    (value as ListBuilder).build().toList().cast<String>())
+                .toBuilder();
+            break;
+          case 'annotations':
+            var foo = BuiltList<Annotation>(
+                    (value as ListBuilder).build().toList().cast<Annotation>())
+                .toBuilder();
+
+            b.annotations = foo;
+            break;
+        }
+      },
     );
-  }
-
-  void setUntil(DateTime? until) {
-    _draft = _draft.rebuild((b) => b..until = until);
-  }
-
-  void setPriority(String? priority) {
-    _draft = _draft.rebuild((b) => b..priority = priority);
-  }
-
-  void setProject(String? project) {
-    _draft = _draft.rebuild((b) => b..project = project);
-  }
-
-  void setTags(ListBuilder<String>? tags) {
-    _draft = _draft.rebuild((b) => b..tags = tags);
-  }
-
-  void setAnnotations(ListBuilder<Annotation>? annotations) {
-    _draft = _draft.rebuild((b) => b..annotations = annotations);
   }
 
   void save({required DateTime Function() modified}) {

@@ -32,29 +32,31 @@ void main() {
     )
       ..draft
       ..id
-      ..setDescription('bar')
-      ..setStatus('pending')
-      ..setStatus('completed')
-      ..setDue(now)
-      ..setWait(now)
-      ..setUntil(now)
-      ..setPriority('H')
-      ..setStart(now)
-      ..setProject('x.y.z')
-      ..setTags(ListBuilder(['baz']))
-      ..setAnnotations(ListBuilder([
-        Annotation(
-          (b) => b
-            ..entry = now
-            ..description = 'baz',
-        )
-      ]));
+      ..set('description', 'bar')
+      ..set('status', 'pending')
+      ..set('status', 'completed')
+      ..set('due', now)
+      ..set('wait', now)
+      ..set('until', now)
+      ..set('priority', 'H')
+      ..set('start', now)
+      ..set('project', 'x.y.z')
+      ..set('tags', ListBuilder(['baz']))
+      ..set(
+          'annotations',
+          ListBuilder([
+            Annotation(
+              (b) => b
+                ..entry = now
+                ..description = 'baz',
+            )
+          ]));
     var expected = 'description:\n'
         '  old: foo\n'
         '  new: bar\n'
         'status:\n'
         '  old: pending\n'
-        '  new: waiting\n'
+        '  new: completed\n'
         'start:\n'
         '  old: null\n'
         '  new: ${now.toLocal()}\n'

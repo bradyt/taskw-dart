@@ -32,39 +32,7 @@ class _DetailRouteState extends State<DetailRoute> {
 
   void Function(dynamic) callback(String name) {
     return (newValue) {
-      switch (name) {
-        case 'description':
-          modify.setDescription(newValue);
-          break;
-        case 'status':
-          modify.setStatus(newValue);
-          break;
-        case 'start':
-          modify.setStart(newValue);
-          break;
-        case 'due':
-          modify.setDue(newValue);
-          break;
-        case 'wait':
-          modify.setWait(newValue);
-          break;
-        case 'until':
-          modify.setUntil(newValue);
-          break;
-        case 'priority':
-          modify.setPriority(newValue);
-          break;
-        case 'project':
-          modify.setProject(newValue);
-          break;
-        case 'tags':
-          modify.setTags(newValue);
-          break;
-        case 'annotations':
-          modify.setAnnotations(newValue);
-          break;
-        default:
-      }
+      modify.set(name, newValue);
       setState(() {});
     };
   }
