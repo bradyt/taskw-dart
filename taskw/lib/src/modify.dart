@@ -12,23 +12,21 @@ class Modify {
   })  : _getTask = getTask,
         _mergeTask = mergeTask,
         _uuid = uuid {
-    _draft = _getTask(_uuid);
-    _saved = _getTask(_uuid);
+    _draft = Draft(_getTask(_uuid));
   }
 
   final Task Function(String) _getTask;
   final void Function(Task) _mergeTask;
   final String _uuid;
-  late Task _draft;
-  late Task _saved;
+  late Draft _draft;
 
-  Task get draft => _draft;
-  int get id => _saved.id!;
+  Task get draft => _draft.draft;
+  int get id => _draft.original.id!;
 
   Map<dynamic, Map> get changes {
     var result = <dynamic, Map>{};
-    var savedJson = _saved.toJson();
-    var draftJson = _draft.toJson();
+    var savedJson = _draft.original.toJson();
+    var draftJson = _draft.draft.toJson();
 
     for (var entry in {
       for (var key in [
@@ -74,20 +72,12 @@ class Modify {
 
   // ignore: avoid_annotating_with_dynamic
   void set(String key, dynamic value) {
-    _draft = patch(_draft, {
-      key: value,
-      if (key == 'status') ...{
-        'start': (value == 'completed') ? null : _saved.start,
-        'end': (value == 'pending') ? null : DateTime.now().toUtc(),
-      },
-    });
+    _draft.set(key, value);
   }
 
   void save({required DateTime Function() modified}) {
-    _mergeTask(
-      _draft = _draft.rebuild((b) => b..modified = modified()),
-    );
-    _saved = _getTask(_uuid);
-    _draft = _getTask(_uuid);
+    _draft.set('modified', modified());
+    _mergeTask(_draft.draft);
+    _draft = Draft(_getTask(_uuid));
   }
 }

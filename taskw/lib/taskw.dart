@@ -4,6 +4,7 @@
 library taskw;
 
 export 'src/comparator.dart';
+export 'src/draft.dart';
 export 'src/datetime_differences.dart';
 export 'src/modify.dart';
 export 'src/patch.dart';

@@ -3,11 +3,14 @@ import 'package:built_collection/built_collection.dart';
 import 'package:taskj/json.dart';
 
 Task patch(Task task, Map<String, dynamic> updates) {
-  var result = task;
-  for (var update in updates.entries) {
-    result = _patch(task, update.key, update.value);
-  }
-  return result;
+  return updates.entries.fold(
+    task,
+    (result, entry) => _patch(
+      result,
+      entry.key,
+      entry.value,
+    ),
+  );
 }
 
 // ignore: avoid_annotating_with_dynamic

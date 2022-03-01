@@ -87,18 +87,18 @@ void main() {
     }
 
     var aSecondAgo =
-        DateTime.now().add(const Duration(seconds: -1)).toIso8601String();
+        DateTime.now().add(const Duration(seconds: -2)).toIso8601String();
     var inASecond =
-        DateTime.now().add(const Duration(seconds: 2)).toIso8601String();
+        DateTime.now().add(const Duration(seconds: 3)).toIso8601String();
     var todayModses = [
       'due:$aSecondAgo',
       'sch:$aSecondAgo',
-      'wait: $aSecondAgo',
-      'until: $aSecondAgo',
+      'wait:$aSecondAgo',
+      'until:$aSecondAgo',
       'due:$inASecond',
       'sch:$inASecond',
-      'wait: $inASecond',
-      'until: $inASecond',
+      'wait:$inASecond',
+      'until:$inASecond',
     ];
 
     for (var mods in todayModses) {
