@@ -38,7 +38,14 @@ void main() {
       ..setWait(now)
       ..setUntil(now)
       ..setPriority('H')
-      ..setTags(ListBuilder(['baz']));
+      ..setTags(ListBuilder(['baz']))
+      ..setAnnotations(ListBuilder([
+        Annotation(
+          (b) => b
+            ..entry = now
+            ..description = 'baz',
+        )
+      ]));
     var expected = 'description:\n'
         '  old: foo\n'
         '  new: bar\n'
@@ -62,7 +69,10 @@ void main() {
         '  new: H\n'
         'tags:\n'
         '  old: null\n'
-        '  new: [baz]';
+        '  new: [baz]\n'
+        'annotations:\n'
+        '  old: 0\n'
+        '  new: 1';
     expect(
       draft.changes.entries.map((entry) {
         var _old = entry.value['old'];
@@ -81,6 +91,6 @@ void main() {
     );
 
     draft.save(modified: () => DateTime.now().toUtc());
-    expect(draft.changes.isEmpty, true);
+    expect(draft.changes, {});
   });
 }
