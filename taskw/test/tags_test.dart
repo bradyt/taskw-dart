@@ -8,17 +8,24 @@ import 'package:taskw/taskw.dart';
 
 void main() {
   test('Test sparse decorated tree implementation', () {
+    var now = DateTime.now().toUtc();
     var tasks = [
       for (var tags in ['a,b', 'a,c', null])
         Task.fromJson({
           'status': 'pending',
           'uuid': const Uuid().v1(),
-          'entry': '${DateTime.now()}',
+          'entry': '$now',
           'description': 'foo',
           'tags': tags?.split(','),
         }),
     ];
 
     expect(tagFrequencies(tasks), {'a': 2, 'b': 1, 'c': 1});
+    expect(tagSet(tasks), {'a', 'b', 'c'});
+    expect(tagsLastModified(tasks), {
+      'a': now,
+      'b': now,
+      'c': now,
+    });
   });
 }
