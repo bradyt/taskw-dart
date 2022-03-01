@@ -74,7 +74,7 @@ class TagsRouteState extends State<TagsRoute> {
                     FilterChip(
                       onSelected: (_) => _removeTag(tag),
                       label: Text(
-                        '+tag ${_pendingTags?[tag]?.frequency ?? 0}',
+                        '+$tag ${_pendingTags?[tag]?.frequency ?? 0}',
                         style: GoogleFonts.firaMono(),
                       ),
                     ),
