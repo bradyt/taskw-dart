@@ -171,4 +171,33 @@ void main() {
     expect(find.byType(Radio<String>), findsOneWidget);
     await tester.tap(find.byType(Radio<String>));
   });
+  testWidgets('test select profile widget', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Material(
+          child: SelectProfile(
+            'foo',
+            const {
+              'foo': null,
+              'bar': null,
+            },
+            (_) {},
+          ),
+        ),
+      ),
+    );
+    expect(find.byType(ExpansionTile), findsOneWidget);
+    await tester.tap(find.text('Select profile'));
+    await tester.pumpAndSettle();
+    expect(find.byType(Radio<String>), findsNWidgets(2));
+    expect(find.widgetWithText(ListTile, 'bar'), findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.widgetWithText(ListTile, 'bar'),
+            matching: find.byType(Radio<String>)),
+        findsOneWidget);
+    await tester.tap(find.descendant(
+        of: find.widgetWithText(ListTile, 'bar'),
+        matching: find.byType(Radio<String>)));
+  });
 }
