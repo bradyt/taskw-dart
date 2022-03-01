@@ -7,27 +7,28 @@
 
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:uuid/uuid.dart';
+
 import 'package:task/main.dart';
+import 'package:task/task.dart';
 
 void main() {
   // ignore: avoid_types_on_closure_parameters
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(TaskApp());
+  testWidgets('simple home page test', (WidgetTester tester) async {
+    var testingDirectory = Directory('test/profiles/${const Uuid().v1()}')
+      ..createSync(recursive: true);
+    await tester.pumpWidget(
+      ProfilesWidget(
+        baseDirectory: testingDirectory,
+        child: TaskApp(),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.byIcon(Icons.add), findsOneWidget);
   });
 }
