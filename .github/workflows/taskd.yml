@@ -31,4 +31,4 @@ jobs:
     - run: dart --disable-analytics
 
     - run: dart pub get --offline
-    - run: dart test -j 1
+    - run: dart test
