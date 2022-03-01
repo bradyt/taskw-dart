@@ -51,16 +51,11 @@ class QueryUI {
   String toString() => toMap().toString();
 }
 
-class ProfilesColumn extends StatelessWidget {
-  const ProfilesColumn({Key? key}) : super(key: key);
+class MainDrawer extends StatelessWidget {
+  const MainDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var profilesWidget = ProfilesWidget.of(context);
-
-    var profilesMap = profilesWidget.profilesMap;
-    var currentProfile = profilesWidget.currentProfile;
-
     var storageWidget = StorageWidget.of(context);
 
     var queries = Queries(
@@ -96,141 +91,153 @@ class ProfilesColumn extends StatelessWidget {
       );
     });
 
+    return SingleChildScrollView(
+      primary: false,
+      child: Column(
+        children: [
+          const ProfilesColumn(),
+          const Divider(),
+          QueriesColumn(queryUIs, queries.addTab),
+          if (Platform.isAndroid) ...[
+            const Divider(),
+            const ListTile(
+              title: Text('Privacy policy:'),
+              subtitle: Text('This app does not collect data.'),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class ProfilesColumn extends StatelessWidget {
+  const ProfilesColumn({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var profilesWidget = ProfilesWidget.of(context);
+
+    var profilesMap = profilesWidget.profilesMap;
+    var currentProfile = profilesWidget.currentProfile;
+
     return Column(
       children: [
-        Expanded(
-          child: ListView(
-            primary: false,
-            children: [
-              ListTile(
-                title: const Text('Profiles'),
-                trailing: IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () => profilesWidget.addProfile(),
-                ),
-              ),
-              ExpansionTile(
-                key: const PageStorageKey<String>('task-list'),
-                title: const Text('Select profile'),
-                children: [
-                  for (var entry in profilesMap.entries)
-                    ListTile(
-                      leading: Radio<String>(
-                        value: entry.key,
-                        groupValue: currentProfile,
-                        onChanged: (profile) =>
-                            profilesWidget.selectProfile(profile!),
-                      ),
-                      title: SingleChildScrollView(
-                        key:
-                            PageStorageKey<String>('scroll-title-${entry.key}'),
-                        scrollDirection: Axis.horizontal,
-                        child: Text(
-                          entry.value ?? '',
-                          style: GoogleFonts.firaMono(),
-                        ),
-                      ),
-                      subtitle: SingleChildScrollView(
-                        key: PageStorageKey<String>(
-                            'scroll-subtitle-${entry.key}'),
-                        scrollDirection: Axis.horizontal,
-                        child: Text(
-                          entry.key,
-                          style: GoogleFonts.firaMono(),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              ExpansionTile(
-                key: const PageStorageKey<String>('manage-profile'),
-                title: const Text('Manage selected profile'),
-                children: [
-                  ListTile(
-                    leading: const Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Icon(Icons.edit),
-                    ),
-                    title: const Text('Rename profile'),
-                    onTap: () => showDialog(
-                      context: context,
-                      builder: (context) => RenameProfileDialog(
-                        profile: currentProfile,
-                        alias: profilesMap[currentProfile],
-                        context: context,
-                      ),
-                    ),
-                  ),
-                  ListTile(
-                    leading: const Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Icon(Icons.link),
-                    ),
-                    title: const Text('Configure Taskserver'),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ConfigureTaskserverRoute(),
-                      ),
-                    ),
-                  ),
-                  ListTile(
-                      leading: const Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Icon(Icons.file_download),
-                      ),
-                      title: const Text('Export tasks'),
-                      onTap: () {
-                        var tasks = ProfilesWidget.of(context)
-                            .getStorage(currentProfile)
-                            .data
-                            .export();
-                        var now = DateTime.now()
-                            .toIso8601String()
-                            .replaceAll(RegExp(r'[-:]'), '')
-                            .replaceAll(RegExp(r'\..*'), '');
-                        exportTasks(
-                          contents: tasks,
-                          suggestedName: 'tasks-$now.txt',
-                        );
-                      }),
-                  ListTile(
-                    leading: const Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Icon(Icons.copy),
-                    ),
-                    title: const Text('Copy config to new profile'),
-                    onTap: () => ProfilesWidget.of(context)
-                        .copyConfigToNewProfile(currentProfile),
-                  ),
-                  ListTile(
-                    leading: const Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Icon(Icons.delete),
-                    ),
-                    title: const Text('Delete profile'),
-                    onTap: () => showDialog(
-                      context: context,
-                      builder: (context) => DeleteProfileDialog(
-                        profile: currentProfile,
-                        context: context,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const Divider(),
-              QueriesColumn(queryUIs, queries.addTab),
-            ],
+        ListTile(
+          title: const Text('Profiles'),
+          trailing: IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => profilesWidget.addProfile(),
           ),
         ),
-        if (Platform.isAndroid) ...[
-          const Divider(),
-          const ListTile(
-            title: Text('Privacy policy:'),
-            subtitle: Text('This app does not collect data.'),
-          ),
-        ],
+        ExpansionTile(
+          key: const PageStorageKey<String>('task-list'),
+          title: const Text('Select profile'),
+          children: [
+            for (var entry in profilesMap.entries)
+              ListTile(
+                leading: Radio<String>(
+                  value: entry.key,
+                  groupValue: currentProfile,
+                  onChanged: (profile) =>
+                      profilesWidget.selectProfile(profile!),
+                ),
+                title: SingleChildScrollView(
+                  key: PageStorageKey<String>('scroll-title-${entry.key}'),
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                    entry.value ?? '',
+                    style: GoogleFonts.firaMono(),
+                  ),
+                ),
+                subtitle: SingleChildScrollView(
+                  key: PageStorageKey<String>('scroll-subtitle-${entry.key}'),
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                    entry.key,
+                    style: GoogleFonts.firaMono(),
+                  ),
+                ),
+              ),
+          ],
+        ),
+        ExpansionTile(
+          key: const PageStorageKey<String>('manage-profile'),
+          title: const Text('Manage selected profile'),
+          children: [
+            ListTile(
+              leading: const Padding(
+                padding: EdgeInsets.all(12),
+                child: Icon(Icons.edit),
+              ),
+              title: const Text('Rename profile'),
+              onTap: () => showDialog(
+                context: context,
+                builder: (context) => RenameProfileDialog(
+                  profile: currentProfile,
+                  alias: profilesMap[currentProfile],
+                  context: context,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Padding(
+                padding: EdgeInsets.all(12),
+                child: Icon(Icons.link),
+              ),
+              title: const Text('Configure Taskserver'),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ConfigureTaskserverRoute(),
+                ),
+              ),
+            ),
+            ListTile(
+                leading: const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Icon(Icons.file_download),
+                ),
+                title: const Text('Export tasks'),
+                onTap: () {
+                  var tasks = ProfilesWidget.of(context)
+                      .getStorage(currentProfile)
+                      .data
+                      .export();
+                  var now = DateTime.now()
+                      .toIso8601String()
+                      .replaceAll(RegExp(r'[-:]'), '')
+                      .replaceAll(RegExp(r'\..*'), '');
+                  exportTasks(
+                    contents: tasks,
+                    suggestedName: 'tasks-$now.txt',
+                  );
+                }),
+            ListTile(
+              leading: const Padding(
+                padding: EdgeInsets.all(12),
+                child: Icon(Icons.copy),
+              ),
+              title: const Text('Copy config to new profile'),
+              onTap: () => ProfilesWidget.of(context)
+                  .copyConfigToNewProfile(currentProfile),
+            ),
+            ListTile(
+              leading: const Padding(
+                padding: EdgeInsets.all(12),
+                child: Icon(Icons.delete),
+              ),
+              title: const Text('Delete profile'),
+              onTap: () => showDialog(
+                context: context,
+                builder: (context) => DeleteProfileDialog(
+                  profile: currentProfile,
+                  context: context,
+                ),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }

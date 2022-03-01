@@ -110,7 +110,7 @@ class TaskListRoute extends StatelessWidget {
       ),
       drawer: const Drawer(
         child: SafeArea(
-          child: ProfilesColumn(),
+          child: MainDrawer(),
         ),
       ),
       body: Column(
