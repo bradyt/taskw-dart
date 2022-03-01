@@ -87,8 +87,8 @@ class _DetailRouteState extends State<DetailRoute> {
                       content: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Text(
-                          modify.changes
-                              .entries.map((entry) => '${entry.key}:\n'
+                          modify.changes.entries
+                              .map((entry) => '${entry.key}:\n'
                                   '  old: ${entry.value['old']}\n'
                                   '  new: ${entry.value['new']}')
                               .toList()
