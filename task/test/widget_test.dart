@@ -147,9 +147,28 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Material(
-          child: QueriesColumn(),
+          child: QueriesColumn(const [], () {}),
         ),
       ),
     );
+  });
+  testWidgets('test queries expansion tile', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Material(
+          child: QueryExpansionTile(
+            QueryUI(
+              uuid: 'foo',
+              selectedUuid: 'bar',
+              select: () {},
+              rename: () {},
+              delete: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(find.byType(Radio<String>), findsOneWidget);
+    await tester.tap(find.byType(Radio<String>));
   });
 }

@@ -6,6 +6,51 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:task/task.dart';
 
+class Queries {
+  const Queries({
+    required this.tabUuids,
+    required this.tabAlias,
+    required this.initialTabIndex,
+    required this.setInitialTabIndex,
+    required this.addTab,
+    required this.removeTab,
+  });
+
+  final List<String> tabUuids;
+  final String? Function(String) tabAlias;
+  final int initialTabIndex;
+  final void Function(int) setInitialTabIndex;
+  final void Function() addTab;
+  final void Function(int) removeTab;
+}
+
+class QueryUI {
+  const QueryUI({
+    required this.selectedUuid,
+    required this.select,
+    required this.uuid,
+    required this.rename,
+    required this.delete,
+    this.alias,
+  });
+
+  final String selectedUuid;
+  final String uuid;
+  final void Function() select;
+  final void Function() rename;
+  final void Function() delete;
+  final String? alias;
+
+  Map toMap() => {
+        'uuid': uuid,
+        'selected': selectedUuid == uuid,
+        if (alias != null) 'alias': alias,
+      };
+
+  @override
+  String toString() => toMap().toString();
+}
+
 class ProfilesColumn extends StatelessWidget {
   const ProfilesColumn({Key? key}) : super(key: key);
 
@@ -15,6 +60,41 @@ class ProfilesColumn extends StatelessWidget {
 
     var profilesMap = profilesWidget.profilesMap;
     var currentProfile = profilesWidget.currentProfile;
+
+    var storageWidget = StorageWidget.of(context);
+
+    var queries = Queries(
+      tabUuids: storageWidget.tabUuids(),
+      tabAlias: storageWidget.tabAlias,
+      initialTabIndex: storageWidget.initialTabIndex(),
+      setInitialTabIndex: storageWidget.setInitialTabIndex,
+      addTab: storageWidget.addTab,
+      removeTab: storageWidget.removeTab,
+    );
+
+    var tabUuids = queries.tabUuids;
+    var tabAlias = queries.tabAlias;
+    var initialTabIndex = queries.initialTabIndex;
+    var setInitialTabIndex = queries.setInitialTabIndex;
+    var removeTab = queries.removeTab;
+
+    var queryUIs = tabUuids.asMap().entries.map((entry) {
+      return QueryUI(
+        uuid: entry.value,
+        alias: tabAlias(entry.value),
+        select: () => setInitialTabIndex(entry.key),
+        selectedUuid: tabUuids[initialTabIndex],
+        rename: () => showDialog(
+          context: context,
+          builder: (_) => RenameTabDialog(
+            tab: entry.value,
+            alias: null,
+            context: context,
+          ),
+        ),
+        delete: () => removeTab(entry.key),
+      );
+    });
 
     return Column(
       children: [
@@ -140,7 +220,7 @@ class ProfilesColumn extends StatelessWidget {
                 ],
               ),
               const Divider(),
-              const QueriesColumn(),
+              QueriesColumn(queryUIs, queries.addTab),
             ],
           ),
         ),
@@ -157,72 +237,71 @@ class ProfilesColumn extends StatelessWidget {
 }
 
 class QueriesColumn extends StatelessWidget {
-  const QueriesColumn({
+  const QueriesColumn(
+    this.queryUIs,
+    this.addQuery, {
     Key? key,
   }) : super(key: key);
 
+  final Iterable<QueryUI> queryUIs;
+  final void Function() addQuery;
+
   @override
   Widget build(BuildContext context) {
-    var storageWidget = StorageWidget.of(context);
-
-    var tabUuids = storageWidget.tabUuids();
-    var tabAlias = storageWidget.tabAlias;
-    var initialTabIndex = storageWidget.initialTabIndex();
-    var setInitialTabIndex = storageWidget.setInitialTabIndex;
-    var addTab = storageWidget.addTab;
-    var removeTab = storageWidget.removeTab;
-
     return Column(
       children: [
         ListTile(
           title: const Text('Queries'),
           trailing: IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () => addTab(),
+            onPressed: addQuery,
           ),
         ),
-        for (var entry in tabUuids.asMap().entries)
-          ExpansionTile(
-            key: PageStorageKey<String>('exp-${entry.value}'),
-            leading: Radio<int>(
-              value: entry.key,
-              groupValue: initialTabIndex,
-              onChanged: (tabUuid) => setInitialTabIndex(entry.key),
-            ),
-            title: SingleChildScrollView(
-              key: PageStorageKey<String>('scroll-${entry.key}'),
-              scrollDirection: Axis.horizontal,
-              child: Text(
-                tabAlias(entry.value) ?? entry.value,
-                style: GoogleFonts.firaMono(),
-              ),
-            ),
-            children: [
-              ListTile(
-                leading: const Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Icon(Icons.edit),
-                ),
-                title: const Text('Rename query'),
-                onTap: () => showDialog(
-                  context: context,
-                  builder: (context) => RenameTabDialog(
-                    tab: entry.value,
-                    alias: null,
-                    context: context,
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: const Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Icon(Icons.delete),
-                ),
-                title: const Text('Delete query'),
-                onTap: () => removeTab(entry.key),
-              ),
-            ],
+        for (var queryUI in queryUIs) QueryExpansionTile(queryUI),
+      ],
+    );
+  }
+}
+
+class QueryExpansionTile extends StatelessWidget {
+  const QueryExpansionTile(this.queryUI, {Key? key}) : super(key: key);
+
+  final QueryUI queryUI;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      key: PageStorageKey<String>('exp-${queryUI.uuid}'),
+      leading: Radio<String>(
+        value: queryUI.uuid,
+        groupValue: queryUI.selectedUuid,
+        onChanged: (_) => queryUI.select(),
+      ),
+      title: SingleChildScrollView(
+        key: PageStorageKey<String>('scroll-${queryUI.uuid}'),
+        scrollDirection: Axis.horizontal,
+        child: Text(
+          queryUI.alias ?? queryUI.uuid,
+          style: GoogleFonts.firaMono(),
+        ),
+      ),
+      children: [
+        ListTile(
+          leading: const Padding(
+            padding: EdgeInsets.all(12),
+            child: Icon(Icons.edit),
           ),
+          title: const Text('Rename query'),
+          onTap: queryUI.rename,
+        ),
+        ListTile(
+          leading: const Padding(
+            padding: EdgeInsets.all(12),
+            child: Icon(Icons.delete),
+          ),
+          title: const Text('Delete query'),
+          onTap: queryUI.delete,
+        ),
       ],
     );
   }
