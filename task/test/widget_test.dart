@@ -143,4 +143,13 @@ void main() {
       ),
     );
   });
+  testWidgets('test queries column', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Material(
+          child: QueriesColumn(),
+        ),
+      ),
+    );
+  });
 }
