@@ -19,6 +19,12 @@ void main() {
     late Storage storage;
 
     setUpAll(() async {
+      await Directory(home).create(recursive: true);
+      await taskd.initialize();
+      await taskd.setAddressAndPort(
+        address: 'localhost',
+        port: 53589,
+      );
       unawaited(taskd.start());
       await Future.delayed(const Duration(seconds: 1));
       var userKey = await taskd.addUser('First Last');
