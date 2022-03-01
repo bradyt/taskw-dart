@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
+import 'package:taskj/json.dart';
+
 import 'package:task/task.dart';
 
 class TaskListView extends StatelessWidget {
-  const TaskListView({Key? key}) : super(key: key);
+  const TaskListView({
+      required this.taskData,
+      required this.pendingFilter,
+    Key? key,
+  }) : super(key: key);
+
+  final List<Task> taskData;
+  final bool pendingFilter;
 
   @override
   Widget build(BuildContext context) {
-    var taskData = StorageWidget.of(context).tasks;
-    var pendingFilter = StorageWidget.of(context).pendingFilter;
-
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
       children: [

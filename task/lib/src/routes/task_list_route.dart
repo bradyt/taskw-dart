@@ -21,6 +21,9 @@ class TaskListRoute extends StatelessWidget {
     var title = profilesMap[currentProfile] ?? currentProfile;
     var subtitle = storageWidget.tabAlias(tabUuid) ?? tabUuid;
 
+    var taskData = storageWidget.tasks;
+    var pendingFilter = storageWidget.pendingFilter;
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -115,9 +118,12 @@ class TaskListRoute extends StatelessWidget {
                 ),
               ),
             ),
-          const Expanded(
+          Expanded(
             child: Scrollbar(
-              child: TaskListView(),
+              child: TaskListView(
+                taskData: taskData,
+                pendingFilter: pendingFilter,
+              ),
             ),
           ),
         ],

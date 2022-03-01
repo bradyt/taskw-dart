@@ -98,4 +98,26 @@ void main() {
     expect(find.text('a'), findsOneWidget);
     await tester.tap(find.text('a'));
   });
+  testWidgets('test task list view', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Material(
+          child: TaskListView(
+            taskData: [
+              Task(
+                (b) => b
+                  ..status = 'pending'
+                  ..uuid = const Uuid().v1()
+                  ..entry = DateTime.now()
+                  ..description = 'foo',
+              ),
+            ],
+            pendingFilter: true,
+          ),
+        ),
+      ),
+    );
+    expect(find.text('foo'), findsOneWidget);
+    await tester.tap(find.text('foo'));
+  });
 }
