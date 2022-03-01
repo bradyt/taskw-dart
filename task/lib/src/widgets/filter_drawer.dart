@@ -60,29 +60,7 @@ class FilterDrawer extends StatelessWidget {
                 storageWidget.toggleProjectFilter,
               ),
               const Divider(),
-              Wrap(
-                spacing: 4,
-                children: [
-                  FilterChip(
-                    onSelected: (_) => tagFilters.toggleTagUnion(),
-                    label: Text(
-                      tagFilters.tagUnion ? 'OR' : 'AND',
-                      style: GoogleFonts.firaMono(),
-                    ),
-                  ),
-                  for (var entry in tagFilters.tags.entries)
-                    FilterChip(
-                      onSelected: (_) => tagFilters.toggleTagFilter(entry.key),
-                      label: Text(
-                        entry.value.display,
-                        style: GoogleFonts.firaMono(
-                          fontWeight:
-                              entry.value.selected ? FontWeight.w700 : null,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+              TagFiltersWrap(tagFilters),
             ],
           ),
         ),
@@ -113,4 +91,33 @@ class TagFilters {
   final void Function() toggleTagUnion;
   final Map<String, TagFilterMetadata> tags;
   final void Function(String) toggleTagFilter;
+}
+
+class TagFiltersWrap extends StatelessWidget {
+  const TagFiltersWrap(this.filters, {Key? key}) : super(key: key);
+
+  final TagFilters filters;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 4,
+      children: [
+        FilterChip(
+            onSelected: (_) => filters.toggleTagUnion(),
+            label: Text(filters.tagUnion ? 'OR' : 'AND',
+                style: GoogleFonts.firaMono())),
+        for (var entry in filters.tags.entries)
+          FilterChip(
+            onSelected: (_) => filters.toggleTagFilter(entry.key),
+            label: Text(
+              entry.value.display,
+              style: GoogleFonts.firaMono(
+                fontWeight: entry.value.selected ? FontWeight.w700 : null,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
 }

@@ -78,4 +78,24 @@ void main() {
     expect(find.text('a.b'), findsOneWidget);
     await tester.tap(find.text('a.b'));
   });
+  testWidgets('test tag filter wrap', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Material(
+          child: TagFiltersWrap(
+            TagFilters(
+              tagUnion: false,
+              toggleTagUnion: () {},
+              tags: {'a': TagFilterMetadata(display: 'a', selected: false)},
+              toggleTagFilter: (_) {},
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(find.text('AND'), findsOneWidget);
+    await tester.tap(find.text('AND'));
+    expect(find.text('a'), findsOneWidget);
+    await tester.tap(find.text('a'));
+  });
 }
