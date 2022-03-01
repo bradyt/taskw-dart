@@ -207,6 +207,11 @@ void main() {
           child: ManageProfile(
             'foo',
             const {},
+            () {},
+            () {},
+            () {},
+            () {},
+            () {},
           ),
         ),
       ),

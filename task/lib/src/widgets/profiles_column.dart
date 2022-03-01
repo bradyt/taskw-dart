@@ -147,7 +147,47 @@ class ProfilesColumn extends StatelessWidget {
           ),
         ),
         SelectProfile(currentProfile, profilesMap, selectProfile),
-        ManageProfile(currentProfile, profilesMap),
+        ManageProfile(
+          currentProfile,
+          profilesMap,
+          () => showDialog(
+            context: context,
+            builder: (context) => RenameProfileDialog(
+              profile: currentProfile,
+              alias: profilesMap[currentProfile],
+              context: context,
+            ),
+          ),
+          () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const ConfigureTaskserverRoute(),
+            ),
+          ),
+          () {
+            var tasks = ProfilesWidget.of(context)
+                .getStorage(currentProfile)
+                .data
+                .export();
+            var now = DateTime.now()
+                .toIso8601String()
+                .replaceAll(RegExp(r'[-:]'), '')
+                .replaceAll(RegExp(r'\..*'), '');
+            exportTasks(
+              contents: tasks,
+              suggestedName: 'tasks-$now.txt',
+            );
+          },
+          () =>
+              ProfilesWidget.of(context).copyConfigToNewProfile(currentProfile),
+          () => showDialog(
+            context: context,
+            builder: (context) => DeleteProfileDialog(
+              profile: currentProfile,
+              context: context,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -203,12 +243,22 @@ class SelectProfile extends StatelessWidget {
 class ManageProfile extends StatelessWidget {
   const ManageProfile(
     this.currentProfile,
-    this.profilesMap, {
+    this.profilesMap,
+    this.rename,
+    this.configure,
+    this.export,
+    this.copy,
+    this.delete, {
     Key? key,
   }) : super(key: key);
 
   final String currentProfile;
   final Map profilesMap;
+  final void Function() rename;
+  final void Function() configure;
+  final void Function() export;
+  final void Function() copy;
+  final void Function() delete;
 
   @override
   Widget build(BuildContext context) {
@@ -222,14 +272,7 @@ class ManageProfile extends StatelessWidget {
             child: Icon(Icons.edit),
           ),
           title: const Text('Rename profile'),
-          onTap: () => showDialog(
-            context: context,
-            builder: (context) => RenameProfileDialog(
-              profile: currentProfile,
-              alias: profilesMap[currentProfile],
-              context: context,
-            ),
-          ),
+          onTap: rename,
         ),
         ListTile(
           leading: const Padding(
@@ -237,41 +280,23 @@ class ManageProfile extends StatelessWidget {
             child: Icon(Icons.link),
           ),
           title: const Text('Configure Taskserver'),
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const ConfigureTaskserverRoute(),
-            ),
-          ),
+          onTap: configure,
         ),
         ListTile(
-            leading: const Padding(
-              padding: EdgeInsets.all(12),
-              child: Icon(Icons.file_download),
-            ),
-            title: const Text('Export tasks'),
-            onTap: () {
-              var tasks = ProfilesWidget.of(context)
-                  .getStorage(currentProfile)
-                  .data
-                  .export();
-              var now = DateTime.now()
-                  .toIso8601String()
-                  .replaceAll(RegExp(r'[-:]'), '')
-                  .replaceAll(RegExp(r'\..*'), '');
-              exportTasks(
-                contents: tasks,
-                suggestedName: 'tasks-$now.txt',
-              );
-            }),
+          leading: const Padding(
+            padding: EdgeInsets.all(12),
+            child: Icon(Icons.file_download),
+          ),
+          title: const Text('Export tasks'),
+          onTap: export,
+        ),
         ListTile(
           leading: const Padding(
             padding: EdgeInsets.all(12),
             child: Icon(Icons.copy),
           ),
           title: const Text('Copy config to new profile'),
-          onTap: () =>
-              ProfilesWidget.of(context).copyConfigToNewProfile(currentProfile),
+          onTap: copy,
         ),
         ListTile(
           leading: const Padding(
@@ -279,13 +304,7 @@ class ManageProfile extends StatelessWidget {
             child: Icon(Icons.delete),
           ),
           title: const Text('Delete profile'),
-          onTap: () => showDialog(
-            context: context,
-            builder: (context) => DeleteProfileDialog(
-              profile: currentProfile,
-              context: context,
-            ),
-          ),
+          onTap: delete,
         ),
       ],
     );
