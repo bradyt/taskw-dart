@@ -47,3 +47,5 @@ app.*.map.json
 
 /vendor/bundle/
 /Gemfile.lock
+
+coverage/
