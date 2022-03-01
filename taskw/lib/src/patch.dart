@@ -39,6 +39,9 @@ Task _patch(Task task, String key, dynamic value) {
         case 'until':
           b.until = value;
           break;
+        case 'modified':
+          b.modified = value;
+          break;
         case 'priority':
           b.priority = value;
           break;
