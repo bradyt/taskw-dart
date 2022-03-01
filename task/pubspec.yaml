@@ -21,7 +21,7 @@ dependencies:
   flutter_linkify:
   google_fonts:
   linkify:
-  package_info_plus:
+  package_info_plus: '>0.0.1'
   path_provider:
   taskc:
     path: ../taskc
