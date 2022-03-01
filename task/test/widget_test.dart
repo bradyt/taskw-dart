@@ -200,4 +200,16 @@ void main() {
         of: find.widgetWithText(ListTile, 'bar'),
         matching: find.byType(Radio<String>)));
   });
+  testWidgets('test manage profile widget', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Material(
+          child: ManageProfile(
+            'foo',
+            const {},
+          ),
+        ),
+      ),
+    );
+  });
 }
