@@ -106,6 +106,40 @@ class MainDrawer extends StatelessWidget {
             currentProfile,
             profilesWidget.addProfile,
             profilesWidget.selectProfile,
+            () => showDialog(
+              context: context,
+              builder: (context) => RenameProfileDialog(
+                profile: currentProfile,
+                alias: profilesMap[currentProfile],
+                context: context,
+              ),
+            ),
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const ConfigureTaskserverRoute(),
+              ),
+            ),
+            () {
+              var tasks =
+                  profilesWidget.getStorage(currentProfile).data.export();
+              var now = DateTime.now()
+                  .toIso8601String()
+                  .replaceAll(RegExp(r'[-:]'), '')
+                  .replaceAll(RegExp(r'\..*'), '');
+              exportTasks(
+                contents: tasks,
+                suggestedName: 'tasks-$now.txt',
+              );
+            },
+            () => profilesWidget.copyConfigToNewProfile(currentProfile),
+            () => showDialog(
+              context: context,
+              builder: (context) => DeleteProfileDialog(
+                profile: currentProfile,
+                context: context,
+              ),
+            ),
           ),
           const Divider(),
           QueriesColumn(queryUIs, queries.addTab),
@@ -127,7 +161,12 @@ class ProfilesColumn extends StatelessWidget {
     this.profilesMap,
     this.currentProfile,
     this.addProfile,
-    this.selectProfile, {
+    this.selectProfile,
+    this.rename,
+    this.configure,
+    this.export,
+    this.copy,
+    this.delete, {
     Key? key,
   }) : super(key: key);
 
@@ -135,6 +174,11 @@ class ProfilesColumn extends StatelessWidget {
   final String currentProfile;
   final void Function() addProfile;
   final void Function(String) selectProfile;
+  final void Function() rename;
+  final void Function() configure;
+  final void Function() export;
+  final void Function() copy;
+  final void Function() delete;
 
   @override
   Widget build(BuildContext context) {
@@ -148,45 +192,7 @@ class ProfilesColumn extends StatelessWidget {
           ),
         ),
         SelectProfile(currentProfile, profilesMap, selectProfile),
-        ManageProfile(
-          () => showDialog(
-            context: context,
-            builder: (context) => RenameProfileDialog(
-              profile: currentProfile,
-              alias: profilesMap[currentProfile],
-              context: context,
-            ),
-          ),
-          () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const ConfigureTaskserverRoute(),
-            ),
-          ),
-          () {
-            var tasks = ProfilesWidget.of(context)
-                .getStorage(currentProfile)
-                .data
-                .export();
-            var now = DateTime.now()
-                .toIso8601String()
-                .replaceAll(RegExp(r'[-:]'), '')
-                .replaceAll(RegExp(r'\..*'), '');
-            exportTasks(
-              contents: tasks,
-              suggestedName: 'tasks-$now.txt',
-            );
-          },
-          () =>
-              ProfilesWidget.of(context).copyConfigToNewProfile(currentProfile),
-          () => showDialog(
-            context: context,
-            builder: (context) => DeleteProfileDialog(
-              profile: currentProfile,
-              context: context,
-            ),
-          ),
-        ),
+        ManageProfile(rename, configure, export, copy, delete),
       ],
     );
   }
