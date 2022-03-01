@@ -38,3 +38,6 @@ ADD taskw/pubspec.yaml taskw/pubspec.yaml
 RUN dart pub get -C taskc
 RUN dart pub get -C taskj
 RUN dart pub get -C taskw
+
+RUN dart pub global activate test_cov
+RUN dart pub global activate dlcov
