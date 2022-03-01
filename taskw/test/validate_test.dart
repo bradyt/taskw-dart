@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 import 'package:taskw/taskw.dart';
 
 void main() {
-  test('test validation of task description', () {
+  test('test validation', () {
     expect(
       () => validateTaskDescription('foo'),
       returnsNormally,
@@ -14,6 +14,18 @@ void main() {
     );
     expect(
       () => validateTaskDescription(r'\'),
+      throwsException,
+    );
+    expect(
+      () => validateTaskDescription('hello\nworld'),
+      throwsException,
+    );
+    expect(
+      () => validateTaskProject(r'foo\'),
+      throwsException,
+    );
+    expect(
+      () => validateTaskTags('do not'),
       throwsException,
     );
   });
