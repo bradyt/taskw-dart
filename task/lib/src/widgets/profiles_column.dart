@@ -16,10 +16,6 @@ class ProfilesColumn extends StatelessWidget {
     var profilesMap = profilesWidget.profilesMap;
     var currentProfile = profilesWidget.currentProfile;
 
-    var storageWidget = StorageWidget.of(context);
-
-    var tabUuids = storageWidget.tabUuids();
-
     return Column(
       children: [
         Expanded(
@@ -144,57 +140,7 @@ class ProfilesColumn extends StatelessWidget {
                 ],
               ),
               const Divider(),
-              ListTile(
-                title: const Text('Queries'),
-                trailing: IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () => storageWidget.addTab(),
-                ),
-              ),
-              for (var entry in tabUuids.asMap().entries)
-                ExpansionTile(
-                  key: PageStorageKey<String>('exp-${entry.value}'),
-                  leading: Radio<int>(
-                    value: entry.key,
-                    groupValue: storageWidget.initialTabIndex(),
-                    onChanged: (tabUuid) =>
-                        storageWidget.setInitialTabIndex(entry.key),
-                  ),
-                  title: SingleChildScrollView(
-                    key: PageStorageKey<String>('scroll-${entry.key}'),
-                    scrollDirection: Axis.horizontal,
-                    child: Text(
-                      StorageWidget.of(context).tabAlias(entry.value) ??
-                          entry.value,
-                      style: GoogleFonts.firaMono(),
-                    ),
-                  ),
-                  children: [
-                    ListTile(
-                      leading: const Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Icon(Icons.edit),
-                      ),
-                      title: const Text('Rename query'),
-                      onTap: () => showDialog(
-                        context: context,
-                        builder: (context) => RenameTabDialog(
-                          tab: entry.value,
-                          alias: null,
-                          context: context,
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Icon(Icons.delete),
-                      ),
-                      title: const Text('Delete query'),
-                      onTap: () => storageWidget.removeTab(entry.key),
-                    ),
-                  ],
-                ),
+              const QueriesColumn(),
             ],
           ),
         ),
@@ -205,6 +151,78 @@ class ProfilesColumn extends StatelessWidget {
             subtitle: Text('This app does not collect data.'),
           ),
         ],
+      ],
+    );
+  }
+}
+
+class QueriesColumn extends StatelessWidget {
+  const QueriesColumn({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var storageWidget = StorageWidget.of(context);
+
+    var tabUuids = storageWidget.tabUuids();
+    var tabAlias = storageWidget.tabAlias;
+    var initialTabIndex = storageWidget.initialTabIndex();
+    var setInitialTabIndex = storageWidget.setInitialTabIndex;
+    var addTab = storageWidget.addTab;
+    var removeTab = storageWidget.removeTab;
+
+    return Column(
+      children: [
+        ListTile(
+          title: const Text('Queries'),
+          trailing: IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => addTab(),
+          ),
+        ),
+        for (var entry in tabUuids.asMap().entries)
+          ExpansionTile(
+            key: PageStorageKey<String>('exp-${entry.value}'),
+            leading: Radio<int>(
+              value: entry.key,
+              groupValue: initialTabIndex,
+              onChanged: (tabUuid) => setInitialTabIndex(entry.key),
+            ),
+            title: SingleChildScrollView(
+              key: PageStorageKey<String>('scroll-${entry.key}'),
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                tabAlias(entry.value) ?? entry.value,
+                style: GoogleFonts.firaMono(),
+              ),
+            ),
+            children: [
+              ListTile(
+                leading: const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Icon(Icons.edit),
+                ),
+                title: const Text('Rename query'),
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (context) => RenameTabDialog(
+                    tab: entry.value,
+                    alias: null,
+                    context: context,
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Icon(Icons.delete),
+                ),
+                title: const Text('Delete query'),
+                onTap: () => removeTab(entry.key),
+              ),
+            ],
+          ),
       ],
     );
   }
