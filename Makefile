@@ -26,9 +26,9 @@ task/.packages:
 	cd task && dart pub get
 
 docs: get
-	cd taskw && dartdoc .
-	cd taskc && dartdoc .
-	cd taskj && dartdoc .
+	cd taskw && dart doc .
+	cd taskc && dart doc .
+	cd taskj && dart doc .
 
 format:
 	dart format taskc --fix --output none --set-exit-if-changed --summary none
