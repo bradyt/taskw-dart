@@ -70,7 +70,7 @@ class ProjectTile extends StatelessWidget {
 
     var node = inheritedProjects.projects[project]!;
     var projectFilter = inheritedProjects.projectFilter;
-    void callback(String? project) => inheritedProjects.callback(project!);
+    void callback(_) => inheritedProjects.callback(project);
 
     var title = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -103,7 +103,7 @@ class ProjectTile extends StatelessWidget {
               onChanged: callback,
             ),
             title: title,
-            children: [for (var project in node.children) ProjectTile(project)],
+            children: node.children.map(ProjectTile.new).toList(),
           );
   }
 }

@@ -19,7 +19,7 @@ class TagsRoute extends StatefulWidget {
 }
 
 class TagsRouteState extends State<TagsRoute> {
-  Map<String, TagMetadata>? _globalTags;
+  Map<String, TagMetadata>? _pendingTags;
   ListBuilder<String>? draftTags;
 
   void _addTag(String tag) {
@@ -51,7 +51,7 @@ class TagsRouteState extends State<TagsRoute> {
   }
 
   Future<void> _initialize() async {
-    _globalTags = StorageWidget.of(context).globalTags;
+    _pendingTags = StorageWidget.of(context).pendingTags;
     setState(() {});
   }
 
@@ -74,18 +74,18 @@ class TagsRouteState extends State<TagsRoute> {
                     FilterChip(
                       onSelected: (_) => _removeTag(tag),
                       label: Text(
-                        '+$tag',
+                        '+tag ${_pendingTags?[tag]?.frequency ?? 0}',
                         style: GoogleFonts.firaMono(),
                       ),
                     ),
                 const Divider(),
-                if (_globalTags != null)
-                  for (var tag in _globalTags!.entries.where((tag) =>
+                if (_pendingTags != null)
+                  for (var tag in _pendingTags!.entries.where((tag) =>
                       !(draftTags?.build().contains(tag.key) ?? false)))
                     FilterChip(
                       onSelected: (_) => _addTag(tag.key),
                       label: Text(
-                        '-${tag.key}',
+                        '${tag.key} ${tag.value.frequency}',
                         style: GoogleFonts.firaMono(),
                       ),
                     ),

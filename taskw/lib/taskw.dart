@@ -9,6 +9,7 @@ export 'src/modify.dart';
 export 'src/profiles.dart';
 export 'src/projects.dart';
 export 'src/query.dart';
+export 'src/tags.dart';
 export 'src/task_parser.dart';
 export 'src/urgency.dart';
 export 'src/validate.dart';

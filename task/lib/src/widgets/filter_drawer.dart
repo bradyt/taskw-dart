@@ -11,6 +11,31 @@ class FilterDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     var storageWidget = StorageWidget.of(context);
 
+    var pendingTags = storageWidget.pendingTags;
+
+    var selectedTagsMap = {
+      for (var tag in storageWidget.selectedTags) tag.substring(1): tag,
+    };
+
+    var keys = (pendingTags.keys.toSet()..addAll(selectedTagsMap.keys)).toList()
+      ..sort();
+
+    var tags = {
+      for (var tag in keys)
+        tag: TagFilterMetadata(
+          display:
+              '${selectedTagsMap[tag] ?? tag} ${pendingTags[tag]?.frequency ?? 0}',
+          selected: selectedTagsMap.containsKey(tag),
+        ),
+    };
+
+    var tagFilters = TagFilters(
+      tagUnion: storageWidget.tagUnion,
+      toggleTagUnion: storageWidget.toggleTagUnion,
+      tags: tags,
+      toggleTagFilter: storageWidget.toggleTagFilter,
+    );
+
     return Drawer(
       child: SafeArea(
         child: Padding(
@@ -39,35 +64,23 @@ class FilterDrawer extends StatelessWidget {
                 spacing: 4,
                 children: [
                   FilterChip(
-                    onSelected: (_) => storageWidget.toggleTagUnion(),
+                    onSelected: (_) => tagFilters.toggleTagUnion(),
                     label: Text(
-                      storageWidget.tagUnion ? 'OR' : 'AND',
+                      tagFilters.tagUnion ? 'OR' : 'AND',
                       style: GoogleFonts.firaMono(),
                     ),
                   ),
-                  // ignore: unnecessary_null_comparison
-                  if (storageWidget.globalTags != null)
-                    for (var tag in storageWidget.globalTags.entries.where(
-                        (entry) =>
-                            entry.value.frequency > 0 || entry.value.selected))
-                      FilterChip(
-                        onSelected: (_) =>
-                            storageWidget.toggleTagFilter(tag.key),
-                        label: Text(
-                          '${storageWidget.selectedTags.firstWhere(
-                            (selectedTag) =>
-                                selectedTag.substring(1) == tag.key,
-                            orElse: () => tag.key,
-                          )} ${tag.value.frequency}',
-                          style: GoogleFonts.firaMono(
-                            fontWeight: storageWidget.selectedTags.any(
-                                    (selectedTag) =>
-                                        selectedTag.substring(1) == tag.key)
-                                ? FontWeight.w700
-                                : null,
-                          ),
+                  for (var entry in tagFilters.tags.entries)
+                    FilterChip(
+                      onSelected: (_) => tagFilters.toggleTagFilter(entry.key),
+                      label: Text(
+                        entry.value.display,
+                        style: GoogleFonts.firaMono(
+                          fontWeight:
+                              entry.value.selected ? FontWeight.w700 : null,
                         ),
                       ),
+                    ),
                 ],
               ),
             ],
@@ -76,4 +89,28 @@ class FilterDrawer extends StatelessWidget {
       ),
     );
   }
+}
+
+class TagFilterMetadata {
+  const TagFilterMetadata({
+    required this.display,
+    required this.selected,
+  });
+
+  final String display;
+  final bool selected;
+}
+
+class TagFilters {
+  const TagFilters({
+    required this.tagUnion,
+    required this.toggleTagUnion,
+    required this.tags,
+    required this.toggleTagFilter,
+  });
+
+  final bool tagUnion;
+  final void Function() toggleTagUnion;
+  final Map<String, TagFilterMetadata> tags;
+  final void Function(String) toggleTagFilter;
 }

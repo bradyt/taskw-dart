@@ -1,10 +1,7 @@
 import 'dart:collection';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-
-import 'package:built_collection/built_collection.dart';
 
 import 'package:taskc/storage.dart';
 import 'package:taskj/json.dart';
@@ -23,6 +20,15 @@ class TagMetadata {
   final DateTime lastModified;
   final int frequency;
   final bool selected;
+
+  Map toJson() => {
+        'lastModified': lastModified,
+        'frequency': frequency,
+        'selected': selected,
+      };
+
+  @override
+  String toString() => toJson().toString();
 }
 
 class StorageWidget extends StatefulWidget {
@@ -49,7 +55,7 @@ class _StorageWidgetState extends State<StorageWidget> {
   late Set<String> selectedTags;
   late List<Task> queriedTasks;
   late List<Task> searchedTasks;
-  late Map<String, TagMetadata> globalTags;
+  late Map<String, TagMetadata> pendingTags;
   late Map<String, ProjectNode> projects;
   bool sortHeaderVisible = false;
   bool searchVisible = false;
@@ -81,7 +87,7 @@ class _StorageWidgetState extends State<StorageWidget> {
     selectedSort = Query(storage.tabs.tab()).getSelectedSort();
     selectedTags = Query(storage.tabs.tab()).getSelectedTags();
     _refreshTasks();
-    globalTags = tags();
+    pendingTags = _pendingTags();
     projects = _projects();
     if (searchVisible) {
       toggleSearch();
@@ -145,56 +151,25 @@ class _StorageWidgetState extends State<StorageWidget> {
                   (annotation) => annotation.description.contains(searchTerm)))
           .toList();
     }
-    globalTags = tags();
+    pendingTags = _pendingTags();
     projects = _projects();
   }
 
-  Map<String, TagMetadata> tags() {
-    var frequency = <String, int>{};
-    for (var task in storage.data.pendingData()) {
-      for (var tag in task.tags?.asList() ?? []) {
-        if (frequency.containsKey(tag)) {
-          frequency[tag] = (frequency[tag] ?? 0) + 1;
-        } else {
-          frequency[tag] = 1;
-        }
-      }
-    }
-    var modified = <String, DateTime>{};
-    for (var task in storage.data.allData()) {
-      var _modified = task.modified ?? DateTime.now().toUtc();
-      for (var tag in task.tags?.asList() ?? []) {
-        if (modified.containsKey(tag)) {
-          modified[tag] = DateTime.fromMicrosecondsSinceEpoch(
-            max(
-              _modified.microsecondsSinceEpoch,
-              modified[tag]?.microsecondsSinceEpoch ??
-                  DateTime.now().toUtc().microsecondsSinceEpoch,
-            ),
-            isUtc: true,
-          );
-        } else {
-          modified[tag] = _modified;
-        }
-      }
-    }
-    var setOfTags = storage.data
-        .allData()
-        .map((task) => task.tags)
-        .expand((tags) => tags ?? BuiltList())
-        .toSet();
+  Map<String, TagMetadata> _pendingTags() {
+    var frequency = tagFrequencies(storage.data.pendingData());
+    var modified = tagsLastModified(storage.data.pendingData());
+    var setOfTags = tagSet(storage.data.pendingData());
     return SplayTreeMap.of({
-      if (setOfTags.isNotEmpty)
-        for (var tag in setOfTags)
-          tag: TagMetadata(
-            frequency: frequency[tag] ?? 0,
-            lastModified: modified[tag]!,
-            selected: selectedTags
-                .map(
-                  (filter) => filter.substring(1),
-                )
-                .contains(tag),
-          ),
+      for (var tag in setOfTags)
+        tag: TagMetadata(
+          frequency: frequency[tag] ?? 0,
+          lastModified: modified[tag]!,
+          selected: selectedTags
+              .map(
+                (filter) => filter.substring(1),
+              )
+              .contains(tag),
+        ),
     });
   }
 
@@ -270,7 +245,7 @@ class _StorageWidgetState extends State<StorageWidget> {
     try {
       var header = await storage.home.synchronize(await client());
       _refreshTasks();
-      globalTags = tags();
+      pendingTags = _pendingTags();
       projects = _projects();
       setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -357,7 +332,7 @@ class _StorageWidgetState extends State<StorageWidget> {
     return InheritedStorage(
       storage: storage,
       tasks: searchedTasks,
-      globalTags: globalTags,
+      pendingTags: pendingTags,
       projects: projects,
       pendingFilter: pendingFilter,
       projectFilter: projectFilter,
@@ -395,7 +370,7 @@ class InheritedStorage extends InheritedModel<String> {
   const InheritedStorage({
     required this.storage,
     required this.tasks,
-    required this.globalTags,
+    required this.pendingTags,
     required this.projects,
     required this.pendingFilter,
     required this.projectFilter,
@@ -430,7 +405,7 @@ class InheritedStorage extends InheritedModel<String> {
 
   final Storage storage;
   final List<Task> tasks;
-  final Map<String, TagMetadata> globalTags;
+  final Map<String, TagMetadata> pendingTags;
   final Map<String, ProjectNode> projects;
   final bool pendingFilter;
   final String projectFilter;

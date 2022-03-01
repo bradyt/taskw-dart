@@ -57,7 +57,8 @@ void main() {
         home: Material(
           child: ProjectsColumn(
             {
-              'a': ProjectNode(),
+              'a': ProjectNode()..children = {'a.b'},
+              'a.b': ProjectNode()..parent = 'a',
             },
             'foo',
             (_) {},
@@ -69,5 +70,12 @@ void main() {
     await tester.pump();
     expect(find.text('a'), findsOneWidget);
     expect(find.text('0'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('a'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('a'));
+
+    expect(find.text('a.b'), findsOneWidget);
+    await tester.tap(find.text('a.b'));
   });
 }
