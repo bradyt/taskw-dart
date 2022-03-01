@@ -55,6 +55,8 @@ void main() {
       expect(tasks.length, 2);
       expect(tasks[0].description, 'foo');
       expect(tasks[1].description, 'bar');
+
+      profiles.copyConfigToNewProfile(profiles.getCurrentProfile()!);
     });
   });
 }
