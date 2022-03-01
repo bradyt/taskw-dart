@@ -56,6 +56,11 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var profilesWidget = ProfilesWidget.of(context);
+
+    var profilesMap = ProfilesWidget.of(context).profilesMap;
+    var currentProfile = ProfilesWidget.of(context).currentProfile;
+
     var storageWidget = StorageWidget.of(context);
 
     var queries = Queries(
@@ -95,7 +100,12 @@ class MainDrawer extends StatelessWidget {
       primary: false,
       child: Column(
         children: [
-          const ProfilesColumn(),
+          ProfilesColumn(
+            profilesMap,
+            currentProfile,
+            profilesWidget.addProfile,
+            profilesWidget.selectProfile,
+          ),
           const Divider(),
           QueriesColumn(queryUIs, queries.addTab),
           if (Platform.isAndroid) ...[
@@ -112,131 +122,170 @@ class MainDrawer extends StatelessWidget {
 }
 
 class ProfilesColumn extends StatelessWidget {
-  const ProfilesColumn({Key? key}) : super(key: key);
+  const ProfilesColumn(
+    this.profilesMap,
+    this.currentProfile,
+    this.addProfile,
+    this.selectProfile, {
+    Key? key,
+  }) : super(key: key);
+
+  final Map profilesMap;
+  final String currentProfile;
+  final void Function() addProfile;
+  final void Function(String) selectProfile;
 
   @override
   Widget build(BuildContext context) {
-    var profilesWidget = ProfilesWidget.of(context);
-
-    var profilesMap = profilesWidget.profilesMap;
-    var currentProfile = profilesWidget.currentProfile;
-
     return Column(
       children: [
         ListTile(
           title: const Text('Profiles'),
           trailing: IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () => profilesWidget.addProfile(),
+            onPressed: addProfile,
           ),
         ),
-        ExpansionTile(
-          key: const PageStorageKey<String>('task-list'),
-          title: const Text('Select profile'),
-          children: [
-            for (var entry in profilesMap.entries)
-              ListTile(
-                leading: Radio<String>(
-                  value: entry.key,
-                  groupValue: currentProfile,
-                  onChanged: (profile) =>
-                      profilesWidget.selectProfile(profile!),
-                ),
-                title: SingleChildScrollView(
-                  key: PageStorageKey<String>('scroll-title-${entry.key}'),
-                  scrollDirection: Axis.horizontal,
-                  child: Text(
-                    entry.value ?? '',
-                    style: GoogleFonts.firaMono(),
-                  ),
-                ),
-                subtitle: SingleChildScrollView(
-                  key: PageStorageKey<String>('scroll-subtitle-${entry.key}'),
-                  scrollDirection: Axis.horizontal,
-                  child: Text(
-                    entry.key,
-                    style: GoogleFonts.firaMono(),
-                  ),
-                ),
+        SelectProfile(currentProfile, profilesMap, selectProfile),
+        ManageProfile(currentProfile, profilesMap),
+      ],
+    );
+  }
+}
+
+class SelectProfile extends StatelessWidget {
+  const SelectProfile(
+    this.currentProfile,
+    this.profilesMap,
+    this.selectProfile, {
+    Key? key,
+  }) : super(key: key);
+
+  final String currentProfile;
+  final Map profilesMap;
+  final void Function(String) selectProfile;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      key: const PageStorageKey<String>('task-list'),
+      title: const Text('Select profile'),
+      children: [
+        for (var entry in profilesMap.entries)
+          ListTile(
+            leading: Radio<String>(
+              value: entry.key,
+              groupValue: currentProfile,
+              onChanged: (profile) => selectProfile(profile!),
+            ),
+            title: SingleChildScrollView(
+              key: PageStorageKey<String>('scroll-title-${entry.key}'),
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                entry.value ?? '',
+                style: GoogleFonts.firaMono(),
               ),
-          ],
+            ),
+            subtitle: SingleChildScrollView(
+              key: PageStorageKey<String>('scroll-subtitle-${entry.key}'),
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                entry.key,
+                style: GoogleFonts.firaMono(),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class ManageProfile extends StatelessWidget {
+  const ManageProfile(
+    this.currentProfile,
+    this.profilesMap, {
+    Key? key,
+  }) : super(key: key);
+
+  final String currentProfile;
+  final Map profilesMap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      key: const PageStorageKey<String>('manage-profile'),
+      title: const Text('Manage selected profile'),
+      children: [
+        ListTile(
+          leading: const Padding(
+            padding: EdgeInsets.all(12),
+            child: Icon(Icons.edit),
+          ),
+          title: const Text('Rename profile'),
+          onTap: () => showDialog(
+            context: context,
+            builder: (context) => RenameProfileDialog(
+              profile: currentProfile,
+              alias: profilesMap[currentProfile],
+              context: context,
+            ),
+          ),
         ),
-        ExpansionTile(
-          key: const PageStorageKey<String>('manage-profile'),
-          title: const Text('Manage selected profile'),
-          children: [
-            ListTile(
-              leading: const Padding(
-                padding: EdgeInsets.all(12),
-                child: Icon(Icons.edit),
-              ),
-              title: const Text('Rename profile'),
-              onTap: () => showDialog(
-                context: context,
-                builder: (context) => RenameProfileDialog(
-                  profile: currentProfile,
-                  alias: profilesMap[currentProfile],
-                  context: context,
-                ),
-              ),
+        ListTile(
+          leading: const Padding(
+            padding: EdgeInsets.all(12),
+            child: Icon(Icons.link),
+          ),
+          title: const Text('Configure Taskserver'),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const ConfigureTaskserverRoute(),
             ),
-            ListTile(
-              leading: const Padding(
-                padding: EdgeInsets.all(12),
-                child: Icon(Icons.link),
-              ),
-              title: const Text('Configure Taskserver'),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const ConfigureTaskserverRoute(),
-                ),
-              ),
+          ),
+        ),
+        ListTile(
+            leading: const Padding(
+              padding: EdgeInsets.all(12),
+              child: Icon(Icons.file_download),
             ),
-            ListTile(
-                leading: const Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Icon(Icons.file_download),
-                ),
-                title: const Text('Export tasks'),
-                onTap: () {
-                  var tasks = ProfilesWidget.of(context)
-                      .getStorage(currentProfile)
-                      .data
-                      .export();
-                  var now = DateTime.now()
-                      .toIso8601String()
-                      .replaceAll(RegExp(r'[-:]'), '')
-                      .replaceAll(RegExp(r'\..*'), '');
-                  exportTasks(
-                    contents: tasks,
-                    suggestedName: 'tasks-$now.txt',
-                  );
-                }),
-            ListTile(
-              leading: const Padding(
-                padding: EdgeInsets.all(12),
-                child: Icon(Icons.copy),
-              ),
-              title: const Text('Copy config to new profile'),
-              onTap: () => ProfilesWidget.of(context)
-                  .copyConfigToNewProfile(currentProfile),
+            title: const Text('Export tasks'),
+            onTap: () {
+              var tasks = ProfilesWidget.of(context)
+                  .getStorage(currentProfile)
+                  .data
+                  .export();
+              var now = DateTime.now()
+                  .toIso8601String()
+                  .replaceAll(RegExp(r'[-:]'), '')
+                  .replaceAll(RegExp(r'\..*'), '');
+              exportTasks(
+                contents: tasks,
+                suggestedName: 'tasks-$now.txt',
+              );
+            }),
+        ListTile(
+          leading: const Padding(
+            padding: EdgeInsets.all(12),
+            child: Icon(Icons.copy),
+          ),
+          title: const Text('Copy config to new profile'),
+          onTap: () =>
+              ProfilesWidget.of(context).copyConfigToNewProfile(currentProfile),
+        ),
+        ListTile(
+          leading: const Padding(
+            padding: EdgeInsets.all(12),
+            child: Icon(Icons.delete),
+          ),
+          title: const Text('Delete profile'),
+          onTap: () => showDialog(
+            context: context,
+            builder: (context) => DeleteProfileDialog(
+              profile: currentProfile,
+              context: context,
             ),
-            ListTile(
-              leading: const Padding(
-                padding: EdgeInsets.all(12),
-                child: Icon(Icons.delete),
-              ),
-              title: const Text('Delete profile'),
-              onTap: () => showDialog(
-                context: context,
-                builder: (context) => DeleteProfileDialog(
-                  profile: currentProfile,
-                  context: context,
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );
