@@ -289,6 +289,7 @@ class _StorageWidgetState extends State<StorageWidget> {
     pendingFilter = Query(storage.tabs.tab()).getPendingFilter();
     selectedSort = Query(storage.tabs.tab()).getSelectedSort();
     selectedTags = Query(storage.tabs.tab()).getSelectedTags();
+    projectFilter = Query(storage.tabs.tab()).projectFilter();
     _refreshTasks();
     setState(() {});
   }

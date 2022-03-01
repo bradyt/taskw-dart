@@ -1,10 +1,11 @@
 # 0.2.6
 
+- Breaking change: tag editing UI buttons limited to tags from pending tasks
+- Fix: Project filter wasn't updating when selecting query
 - Allow sort by `modified`, display `modified` in task list view
 - Tap non-leaf project filters to fold/hide subproject filters
   + Non-leaf projects indicated by contributing task count in parentheses
   + Unfortunately, toggling a non-leaf project filter is less convenient
-- Breaking change: tag editing UI buttons limited to tags from pending tasks
 
 # 0.2.5
 
