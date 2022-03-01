@@ -7,7 +7,7 @@ import 'package:taskj/json.dart';
 import 'package:taskw/taskw.dart';
 
 void main() {
-  test('Test sparse decorated tree implementation', () {
+  test('Test tags', () {
     var now = DateTime.now().toUtc();
     var tasks = [
       for (var tags in ['a,b', 'a,c', null])
@@ -27,5 +27,20 @@ void main() {
       'b': now,
       'c': now,
     });
+  });
+  test('Test modified tags', () {
+    var now1 = DateTime.now().toUtc();
+    var now2 = DateTime.now().toUtc();
+    var tasks = [
+      for (var now in [now1, now2])
+        Task.fromJson({
+          'status': 'pending',
+          'uuid': const Uuid().v1(),
+          'entry': '$now',
+          'description': 'foo',
+          'tags': ['a'],
+        }),
+    ];
+    expect(tagsLastModified(tasks), {'a': now2});
   });
 }

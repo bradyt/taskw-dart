@@ -30,8 +30,7 @@ Map<String, DateTime> tagsLastModified(Iterable<Task> tasks) {
         modified[tag] = DateTime.fromMicrosecondsSinceEpoch(
           max(
             _modified.microsecondsSinceEpoch,
-            modified[tag]?.microsecondsSinceEpoch ??
-                DateTime.now().toUtc().microsecondsSinceEpoch,
+            modified[tag]!.microsecondsSinceEpoch,
           ),
           isUtc: true,
         );
