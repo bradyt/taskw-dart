@@ -211,30 +211,55 @@ class SelectProfile extends StatelessWidget {
       title: const Text('Select profile'),
       children: [
         for (var entry in profilesMap.entries)
-          ListTile(
-            leading: Radio<String>(
-              value: entry.key,
-              groupValue: currentProfile,
-              onChanged: (profile) => selectProfile(profile!),
-            ),
-            title: SingleChildScrollView(
-              key: PageStorageKey<String>('scroll-title-${entry.key}'),
-              scrollDirection: Axis.horizontal,
-              child: Text(
-                entry.value ?? '',
-                style: GoogleFonts.firaMono(),
-              ),
-            ),
-            subtitle: SingleChildScrollView(
-              key: PageStorageKey<String>('scroll-subtitle-${entry.key}'),
-              scrollDirection: Axis.horizontal,
-              child: Text(
-                entry.key,
-                style: GoogleFonts.firaMono(),
-              ),
-            ),
+          SelectProfileListTile(
+            currentProfile,
+            entry.key,
+            () => selectProfile(entry.key),
+            entry.value,
           ),
       ],
+    );
+  }
+}
+
+class SelectProfileListTile extends StatelessWidget {
+  const SelectProfileListTile(
+    this.selectedUuid,
+    this.uuid,
+    this.select, [
+    this.alias,
+    Key? key,
+  ]) : super(key: key);
+
+  final String selectedUuid;
+  final String uuid;
+  final void Function() select;
+  final String? alias;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Radio<String>(
+        value: uuid,
+        groupValue: selectedUuid,
+        onChanged: (_) => select(),
+      ),
+      title: SingleChildScrollView(
+        key: PageStorageKey<String>('scroll-title-$uuid'),
+        scrollDirection: Axis.horizontal,
+        child: Text(
+          alias ?? '',
+          style: GoogleFonts.firaMono(),
+        ),
+      ),
+      subtitle: SingleChildScrollView(
+        key: PageStorageKey<String>('scroll-subtitle-$uuid'),
+        scrollDirection: Axis.horizontal,
+        child: Text(
+          uuid,
+          style: GoogleFonts.firaMono(),
+        ),
+      ),
     );
   }
 }
