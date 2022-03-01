@@ -242,5 +242,23 @@ void main() {
       expect(Task.fromJson(stringDeps).toJson(), stringDeps);
       expect(Task.fromJson(arrayDeps).toJson(), stringDeps);
     });
+
+    test('code coverage', () {
+      var jsonAnnotation = {
+        'entry': '20000101T000000Z',
+        'description': 'foo',
+      };
+      expect(Annotation.fromJson(jsonAnnotation).toJson(), jsonAnnotation);
+      expect(
+        () => serializers.serialize(DateTime.now()),
+        throwsA(
+          isA<ArgumentError>().having(
+            (error) => error.message,
+            'message',
+            'Must be in utc for serialization.',
+          ),
+        ),
+      );
+    });
   });
 }

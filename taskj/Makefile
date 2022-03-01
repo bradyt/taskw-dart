@@ -13,7 +13,7 @@ watch:
 	dart run build_runner watch
 
 coverage:
-	find . -name '*.dart' -o -name '*.yaml' | entr -cs 'dart run test_coverage --no-badge --min-coverage=99; genhtml -o coverage coverage/lcov.info'
+	find . -name '*.dart' -o -name '*.yaml' | entr -cs 'dart run test_cov; dart run remove_from_coverage -f coverage/lcov.info -r \.g\.dart; genhtml -o coverage coverage/lcov.info'
 
 install:
 	dart pub global activate -spath .
