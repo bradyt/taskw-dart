@@ -5,37 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:task/task.dart';
 
 class FilterDrawer extends StatelessWidget {
-  const FilterDrawer({Key? key}) : super(key: key);
+  const FilterDrawer(this.filters, {Key? key}) : super(key: key);
+
+  final Filters filters;
 
   @override
   Widget build(BuildContext context) {
-    var storageWidget = StorageWidget.of(context);
-
-    var pendingTags = storageWidget.pendingTags;
-
-    var selectedTagsMap = {
-      for (var tag in storageWidget.selectedTags) tag.substring(1): tag,
-    };
-
-    var keys = (pendingTags.keys.toSet()..addAll(selectedTagsMap.keys)).toList()
-      ..sort();
-
-    var tags = {
-      for (var tag in keys)
-        tag: TagFilterMetadata(
-          display:
-              '${selectedTagsMap[tag] ?? tag} ${pendingTags[tag]?.frequency ?? 0}',
-          selected: selectedTagsMap.containsKey(tag),
-        ),
-    };
-
-    var tagFilters = TagFilters(
-      tagUnion: storageWidget.tagUnion,
-      toggleTagUnion: storageWidget.toggleTagUnion,
-      tags: tags,
-      toggleTagFilter: storageWidget.toggleTagFilter,
-    );
-
     return Drawer(
       child: SafeArea(
         child: Padding(
@@ -47,20 +22,20 @@ class FilterDrawer extends StatelessWidget {
               Card(
                 child: ListTile(
                   title: Text(
-                    'filter:${storageWidget.pendingFilter ? 'status:pending' : ''}',
+                    'filter:${filters.pendingFilter ? 'status:pending' : ''}',
                     style: GoogleFonts.firaMono(),
                   ),
-                  onTap: storageWidget.togglePendingFilter,
+                  onTap: filters.togglePendingFilter,
                 ),
               ),
               const Divider(),
               ProjectsColumn(
-                storageWidget.projects,
-                storageWidget.projectFilter,
-                storageWidget.toggleProjectFilter,
+                filters.projects,
+                filters.projectFilter,
+                filters.toggleProjectFilter,
               ),
               const Divider(),
-              TagFiltersWrap(tagFilters),
+              TagFiltersWrap(filters.tagFilters),
             ],
           ),
         ),

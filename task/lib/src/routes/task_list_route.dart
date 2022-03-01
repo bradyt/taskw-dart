@@ -6,6 +6,24 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:task/task.dart';
 
+class Filters {
+  const Filters({
+    required this.pendingFilter,
+    required this.togglePendingFilter,
+    required this.tagFilters,
+    required this.projects,
+    required this.projectFilter,
+    required this.toggleProjectFilter,
+  });
+
+  final bool pendingFilter;
+  final void Function() togglePendingFilter;
+  final TagFilters tagFilters;
+  final dynamic projects;
+  final String projectFilter;
+  final void Function(String) toggleProjectFilter;
+}
+
 class TaskListRoute extends StatelessWidget {
   const TaskListRoute({Key? key}) : super(key: key);
 
@@ -23,6 +41,40 @@ class TaskListRoute extends StatelessWidget {
 
     var taskData = storageWidget.tasks;
     var pendingFilter = storageWidget.pendingFilter;
+
+    var pendingTags = storageWidget.pendingTags;
+
+    var selectedTagsMap = {
+      for (var tag in storageWidget.selectedTags) tag.substring(1): tag,
+    };
+
+    var keys = (pendingTags.keys.toSet()..addAll(selectedTagsMap.keys)).toList()
+      ..sort();
+
+    var tags = {
+      for (var tag in keys)
+        tag: TagFilterMetadata(
+          display:
+              '${selectedTagsMap[tag] ?? tag} ${pendingTags[tag]?.frequency ?? 0}',
+          selected: selectedTagsMap.containsKey(tag),
+        ),
+    };
+
+    var tagFilters = TagFilters(
+      tagUnion: storageWidget.tagUnion,
+      toggleTagUnion: storageWidget.toggleTagUnion,
+      tags: tags,
+      toggleTagFilter: storageWidget.toggleTagFilter,
+    );
+
+    var filters = Filters(
+      pendingFilter: pendingFilter,
+      togglePendingFilter: storageWidget.togglePendingFilter,
+      projects: storageWidget.projects,
+      projectFilter: storageWidget.projectFilter,
+      toggleProjectFilter: storageWidget.toggleProjectFilter,
+      tagFilters: tagFilters,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -128,7 +180,7 @@ class TaskListRoute extends StatelessWidget {
           ),
         ],
       ),
-      endDrawer: const FilterDrawer(),
+      endDrawer: FilterDrawer(filters),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showModalBottomSheet(
           context: context,

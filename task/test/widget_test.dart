@@ -120,4 +120,27 @@ void main() {
     expect(find.text('foo'), findsOneWidget);
     await tester.tap(find.text('foo'));
   });
+  testWidgets('test filter drawer', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Material(
+          child: FilterDrawer(
+            Filters(
+              pendingFilter: true,
+              togglePendingFilter: () {},
+              projects: <String, ProjectNode>{},
+              toggleProjectFilter: (_) {},
+              projectFilter: '',
+              tagFilters: TagFilters(
+                tags: {},
+                toggleTagFilter: (_) {},
+                tagUnion: false,
+                toggleTagUnion: () {},
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
 }
