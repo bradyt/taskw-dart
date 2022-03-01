@@ -7,8 +7,6 @@ List<String> projectPath(String project) {
   return result;
 }
 
-String? projectParent(String project) => ancestor(project, 1);
-
 String? ancestor(String project, int distance) {
   var parts = project.split('.');
   if (distance > parts.length - 1) {
