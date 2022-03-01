@@ -39,6 +39,8 @@ void main() {
       ..setWait(now)
       ..setUntil(now)
       ..setPriority('H')
+      ..setStart(now)
+      ..setProject('x.y.z')
       ..setTags(ListBuilder(['baz']))
       ..setAnnotations(ListBuilder([
         Annotation(
@@ -53,6 +55,9 @@ void main() {
         'status:\n'
         '  old: pending\n'
         '  new: waiting\n'
+        'start:\n'
+        '  old: null\n'
+        '  new: ${now.toLocal()}\n'
         'end:\n'
         '  old: null\n'
         '  new: ${(draft.changes['end']!['new'] as DateTime).toLocal()}\n'
@@ -68,6 +73,9 @@ void main() {
         'priority:\n'
         '  old: null\n'
         '  new: H\n'
+        'project:\n'
+        '  old: null\n'
+        '  new: x.y.z\n'
         'tags:\n'
         '  old: null\n'
         '  new: [baz]\n'
