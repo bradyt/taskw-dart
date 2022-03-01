@@ -70,7 +70,7 @@ class ProjectTile extends StatelessWidget {
 
     var node = inheritedProjects.projects[project]!;
     var projectFilter = inheritedProjects.projectFilter;
-    void callback(_) => inheritedProjects.callback(project);
+    var callback = inheritedProjects.callback;
 
     var title = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,23 +85,23 @@ class ProjectTile extends StatelessWidget {
       ],
     );
 
+    var radio = Radio(
+      toggleable: true,
+      value: project,
+      groupValue: projectFilter,
+      onChanged: (_) => callback(project),
+    );
+
     return (node.children.isEmpty)
-        ? RadioListTile(
-            toggleable: true,
-            value: project,
-            groupValue: projectFilter,
-            onChanged: callback,
+        ? ListTile(
+            leading: radio,
             title: title,
+            onTap: () => callback(project),
           )
         : ExpansionTile(
             textColor: Theme.of(context).textTheme.subtitle1!.color,
             controlAffinity: ListTileControlAffinity.leading,
-            leading: Radio(
-              toggleable: true,
-              value: project,
-              groupValue: projectFilter,
-              onChanged: callback,
-            ),
+            leading: radio,
             title: title,
             children: node.children.map(ProjectTile.new).toList(),
           );
