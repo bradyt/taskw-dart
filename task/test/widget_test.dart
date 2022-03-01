@@ -205,8 +205,6 @@ void main() {
       MaterialApp(
         home: Material(
           child: ManageProfile(
-            'foo',
-            const {},
             () {},
             () {},
             () {},

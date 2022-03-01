@@ -149,8 +149,6 @@ class ProfilesColumn extends StatelessWidget {
         ),
         SelectProfile(currentProfile, profilesMap, selectProfile),
         ManageProfile(
-          currentProfile,
-          profilesMap,
           () => showDialog(
             context: context,
             builder: (context) => RenameProfileDialog(
@@ -243,8 +241,6 @@ class SelectProfile extends StatelessWidget {
 
 class ManageProfile extends StatelessWidget {
   const ManageProfile(
-    this.currentProfile,
-    this.profilesMap,
     this.rename,
     this.configure,
     this.export,
@@ -253,8 +249,6 @@ class ManageProfile extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final String currentProfile;
-  final Map profilesMap;
   final void Function() rename;
   final void Function() configure;
   final void Function() export;
