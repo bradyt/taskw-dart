@@ -1,7 +1,8 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:collection/collection.dart';
 
 import 'package:taskj/json.dart';
+
+import 'package:taskw/taskw.dart';
 
 class Modify {
   Modify({
@@ -73,51 +74,13 @@ class Modify {
 
   // ignore: avoid_annotating_with_dynamic
   void set(String key, dynamic value) {
-    _draft = _draft.rebuild(
-      (b) {
-        switch (key) {
-          case 'description':
-            b.description = value;
-            break;
-          case 'status':
-            b
-              ..status = value
-              ..start = (value == 'pending') ? _saved.start : null
-              ..end = (value == 'pending') ? null : DateTime.now().toUtc();
-            break;
-          case 'start':
-            b.start = value;
-            break;
-          case 'due':
-            b.due = value;
-            break;
-          case 'wait':
-            b.wait = value;
-            break;
-          case 'until':
-            b.until = value;
-            break;
-          case 'priority':
-            b.priority = value;
-            break;
-          case 'project':
-            b.project = value;
-            break;
-          case 'tags':
-            b.tags = BuiltList<String>(
-                    (value as ListBuilder).build().toList().cast<String>())
-                .toBuilder();
-            break;
-          case 'annotations':
-            var foo = BuiltList<Annotation>(
-                    (value as ListBuilder).build().toList().cast<Annotation>())
-                .toBuilder();
-
-            b.annotations = foo;
-            break;
-        }
+    _draft = patch(_draft, {
+      key: value,
+      if (key == 'status') ...{
+        'start': (value == 'completed') ? null : _saved.start,
+        'end': (value == 'pending') ? null : DateTime.now().toUtc(),
       },
-    );
+    });
   }
 
   void save({required DateTime Function() modified}) {

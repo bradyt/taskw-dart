@@ -1,0 +1,58 @@
+import 'package:built_collection/built_collection.dart';
+
+import 'package:taskj/json.dart';
+
+Task patch(Task task, Map<String, dynamic> updates) {
+  var result = task;
+  for (var update in updates.entries) {
+    result = _patch(task, update.key, update.value);
+  }
+  return result;
+}
+
+// ignore: avoid_annotating_with_dynamic
+Task _patch(Task task, String key, dynamic value) {
+  return task.rebuild(
+    (b) {
+      switch (key) {
+        case 'description':
+          b.description = value;
+          break;
+        case 'status':
+          b.status = value;
+          break;
+        case 'start':
+          b.start = value;
+          break;
+        case 'end':
+          b.end = value;
+          break;
+        case 'due':
+          b.due = value;
+          break;
+        case 'wait':
+          b.wait = value;
+          break;
+        case 'until':
+          b.until = value;
+          break;
+        case 'priority':
+          b.priority = value;
+          break;
+        case 'project':
+          b.project = value;
+          break;
+        case 'tags':
+          b.tags = BuiltList<String>(
+                  (value as ListBuilder).build().toList().cast<String>())
+              .toBuilder();
+          break;
+        case 'annotations':
+          b.annotations = BuiltList<Annotation>(
+                  (value as ListBuilder).build().toList().cast<Annotation>())
+              .toBuilder();
+          break;
+      }
+    },
+  );
+}
