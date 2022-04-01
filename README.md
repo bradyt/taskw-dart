@@ -16,7 +16,7 @@ Features:
   - [F-Droid](https://f-droid.org/en/packages/info.tangential.task/)
   - [Play Store](https://play.google.com/store/apps/details?id=info.tangential.task)
 - iOS
-  - [App Store](https://apps.apple.com/app/task-add/id1553253179)
+  - [App Store](https://apps.apple.com/app/task-add/id1553253179?platform=iphone)
 
 To install or run from source code, see
 [task/README.md](task/README.md).
