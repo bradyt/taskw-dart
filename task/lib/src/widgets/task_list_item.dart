@@ -6,8 +6,7 @@ import 'package:taskj/json.dart';
 import 'package:taskw/taskw.dart';
 
 class TaskListItem extends StatelessWidget {
-  const TaskListItem(this.task, {this.pendingFilter = false, Key? key})
-      : super(key: key);
+  const TaskListItem(this.task, {this.pendingFilter = false, super.key});
 
   final Task task;
   final bool pendingFilter;

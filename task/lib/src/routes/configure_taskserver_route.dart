@@ -151,8 +151,7 @@ class _ConfigureTaskserverRouteState extends State<ConfigureTaskserverRoute> {
 }
 
 class PemWidget extends StatefulWidget {
-  const PemWidget({required this.storage, required this.pem, Key? key})
-      : super(key: key);
+  const PemWidget({required this.storage, required this.pem, super.key});
 
   final Storage storage;
   final String pem;
@@ -228,7 +227,7 @@ class _PemWidgetState extends State<PemWidget> {
 }
 
 class TaskrcWidget extends StatefulWidget {
-  const TaskrcWidget(this.storage, {Key? key}) : super(key: key);
+  const TaskrcWidget(this.storage, {super.key});
 
   final Storage storage;
 

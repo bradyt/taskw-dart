@@ -46,7 +46,7 @@ void main([List<String> args = const []]) {
 }
 
 class TaskApp extends StatelessWidget {
-  const TaskApp({Key? key}) : super(key: key);
+  const TaskApp({super.key});
 
   @override
   Widget build(BuildContext context) {

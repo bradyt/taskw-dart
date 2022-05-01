@@ -7,7 +7,7 @@ import 'package:taskw/taskw.dart';
 import 'package:task/task.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
-  const AddTaskBottomSheet({Key? key}) : super(key: key);
+  const AddTaskBottomSheet({super.key});
 
   @override
   State<AddTaskBottomSheet> createState() => _AddTaskBottomSheetState();

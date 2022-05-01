@@ -11,8 +11,8 @@ class AnnotationsRoute extends StatefulWidget {
   const AnnotationsRoute({
     required this.value,
     required this.callback,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final ListBuilder<Annotation>? value;
   final void Function(ListBuilder<Annotation>?) callback;

@@ -8,8 +8,8 @@ class TaskListView extends StatelessWidget {
   const TaskListView({
     required this.taskData,
     required this.pendingFilter,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final List<Task> taskData;
   final bool pendingFilter;

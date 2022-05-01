@@ -9,9 +9,9 @@ class InheritedProjects extends InheritedWidget {
     required this.projects,
     required this.projectFilter,
     required this.callback,
-    required Widget child,
-    Key? key,
-  }) : super(key: key, child: child);
+    required super.child,
+    super.key,
+  });
 
   final Map<String, ProjectNode> projects;
   final String projectFilter;
@@ -30,8 +30,7 @@ class InheritedProjects extends InheritedWidget {
 
 class ProjectsColumn extends StatelessWidget {
   const ProjectsColumn(this.projects, this.projectFilter, this.callback,
-      {Key? key})
-      : super(key: key);
+      {super.key});
 
   final Map<String, ProjectNode> projects;
   final String projectFilter;
@@ -60,7 +59,7 @@ class ProjectsColumn extends StatelessWidget {
 }
 
 class ProjectTile extends StatelessWidget {
-  const ProjectTile(this.project, {Key? key}) : super(key: key);
+  const ProjectTile(this.project, {super.key});
 
   final String project;
 

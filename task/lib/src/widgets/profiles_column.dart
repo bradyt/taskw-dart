@@ -53,7 +53,7 @@ class QueryUI {
 }
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({Key? key}) : super(key: key);
+  const MainDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -167,8 +167,8 @@ class ProfilesColumn extends StatelessWidget {
     this.export,
     this.copy,
     this.delete, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Map profilesMap;
   final String currentProfile;
@@ -203,8 +203,8 @@ class SelectProfile extends StatelessWidget {
     this.currentProfile,
     this.profilesMap,
     this.selectProfile, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String currentProfile;
   final Map profilesMap;
@@ -277,8 +277,8 @@ class ManageProfile extends StatelessWidget {
     this.export,
     this.copy,
     this.delete, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final void Function() rename;
   final void Function() configure;
@@ -318,8 +318,8 @@ class QueriesColumn extends StatelessWidget {
   const QueriesColumn(
     this.queryUIs,
     this.addQuery, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Iterable<QueryUI> queryUIs;
   final void Function() addQuery;
@@ -342,7 +342,7 @@ class QueriesColumn extends StatelessWidget {
 }
 
 class QueryExpansionTile extends StatelessWidget {
-  const QueryExpansionTile(this.queryUI, {Key? key}) : super(key: key);
+  const QueryExpansionTile(this.queryUI, {super.key});
 
   final QueryUI queryUI;
 

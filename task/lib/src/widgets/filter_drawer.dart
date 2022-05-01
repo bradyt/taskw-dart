@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:task/task.dart';
 
 class FilterDrawer extends StatelessWidget {
-  const FilterDrawer(this.filters, {Key? key}) : super(key: key);
+  const FilterDrawer(this.filters, {super.key});
 
   final Filters filters;
 
@@ -69,7 +69,7 @@ class TagFilters {
 }
 
 class TagFiltersWrap extends StatelessWidget {
-  const TagFiltersWrap(this.filters, {Key? key}) : super(key: key);
+  const TagFiltersWrap(this.filters, {super.key});
 
   final TagFilters filters;
 

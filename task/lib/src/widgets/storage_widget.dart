@@ -32,8 +32,7 @@ class TagMetadata {
 }
 
 class StorageWidget extends StatefulWidget {
-  const StorageWidget({required this.profile, required this.child, Key? key})
-      : super(key: key);
+  const StorageWidget({required this.profile, required this.child, super.key});
 
   final Directory profile;
   final Widget child;
@@ -400,9 +399,9 @@ class InheritedStorage extends InheritedModel<String> {
     required this.renameTab,
     required this.tabAlias,
     required this.serverCertExists,
-    required Widget child,
-    Key? key,
-  }) : super(child: child, key: key);
+    required super.child,
+    super.key,
+  });
 
   final Storage storage;
   final List<Task> tasks;

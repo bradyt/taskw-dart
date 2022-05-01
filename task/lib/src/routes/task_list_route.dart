@@ -23,7 +23,7 @@ class Filters {
 }
 
 class TaskListRoute extends StatelessWidget {
-  const TaskListRoute({Key? key}) : super(key: key);
+  const TaskListRoute({super.key});
 
   @override
   Widget build(BuildContext context) {
