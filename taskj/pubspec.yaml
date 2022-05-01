@@ -8,6 +8,7 @@ environment:
   sdk: '>=2.17.0 <3.0.0'
 
 dependencies:
+  built_collection:
   built_value:
   collection:
   intl:

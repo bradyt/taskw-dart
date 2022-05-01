@@ -11,11 +11,19 @@ executables:
   taskd-setup: taskd_setup
 
 dependencies:
+  args:
+  built_collection:
   built_value:
   collection:
   crypto:
   intl:
+  logging:
+  path:
   pem:
+  taskj:
+    path: ../taskj
+  taskw:
+    path: ../taskw
   uuid:
 
 dev_dependencies:
@@ -24,8 +32,4 @@ dev_dependencies:
   coverage:
   io:
   lints:
-  taskj:
-    path: ../taskj
-  taskw:
-    path: ../taskw
   test:

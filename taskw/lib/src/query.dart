@@ -72,17 +72,17 @@ class Query {
   }
 
   void toggleTagFilter(String tag) {
-    var _tags = getSelectedTags();
-    if (_tags.contains('+$tag')) {
-      _tags
+    var tags = getSelectedTags();
+    if (tags.contains('+$tag')) {
+      tags
         ..remove('+$tag')
         ..add('-$tag');
-    } else if (_tags.contains('-$tag')) {
-      _tags.remove('-$tag');
+    } else if (tags.contains('-$tag')) {
+      tags.remove('-$tag');
     } else {
-      _tags.add('+$tag');
+      tags.add('+$tag');
     }
-    _selectedTags.writeAsStringSync(json.encode(_tags.toList()));
+    _selectedTags.writeAsStringSync(json.encode(tags.toList()));
   }
 
   Set<String> getSelectedTags() {

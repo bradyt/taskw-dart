@@ -85,9 +85,9 @@ class Data {
   String export() {
     var string = allData()
         .map((task) {
-          var _task = task.toJson();
+          var jsonTask = task.toJson();
 
-          _task['urgency'] = num.parse(urgency(task)
+          jsonTask['urgency'] = num.parse(urgency(task)
               .toStringAsFixed(1)
               .replaceFirst(RegExp(r'.0$'), ''));
 
@@ -116,7 +116,7 @@ class Data {
             'urgency',
           ].asMap().map((key, value) => MapEntry(value, key));
 
-          var fallbackOrder = _task.keys
+          var fallbackOrder = jsonTask.keys
               .toList()
               .asMap()
               .map((key, value) => MapEntry(value, key));
@@ -128,7 +128,7 @@ class Data {
             );
           }
 
-          return json.encode(SplayTreeMap.of(_task, (key1, key2) {
+          return json.encode(SplayTreeMap.of(jsonTask, (key1, key2) {
             return keyOrder[key1]!.compareTo(keyOrder[key2]!);
           }));
         })
@@ -174,11 +174,11 @@ class Data {
   }
 
   String payload() {
-    var _payload = '';
+    var payload = '';
     if (File('${home.path}/.task/backlog.data').existsSync()) {
-      _payload = File('${home.path}/.task/backlog.data').readAsStringSync();
+      payload = File('${home.path}/.task/backlog.data').readAsStringSync();
     }
-    return _payload;
+    return payload;
   }
 
   void mergeSynchronizeResponse(Payload payload) {

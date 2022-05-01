@@ -22,22 +22,22 @@ Map<String, int> tagFrequencies(Iterable<Task> tasks) {
 }
 
 Map<String, DateTime> tagsLastModified(Iterable<Task> tasks) {
-  var modified = <String, DateTime>{};
+  var modifiedMap = <String, DateTime>{};
   for (var task in tasks) {
-    var _modified = task.modified ?? task.start ?? task.entry;
+    var modified = task.modified ?? task.start ?? task.entry;
     for (var tag in task.tags?.asList() ?? []) {
-      if (modified.containsKey(tag)) {
-        modified[tag] = DateTime.fromMicrosecondsSinceEpoch(
+      if (modifiedMap.containsKey(tag)) {
+        modifiedMap[tag] = DateTime.fromMicrosecondsSinceEpoch(
           max(
-            _modified.microsecondsSinceEpoch,
-            modified[tag]!.microsecondsSinceEpoch,
+            modified.microsecondsSinceEpoch,
+            modifiedMap[tag]!.microsecondsSinceEpoch,
           ),
           isUtc: true,
         );
       } else {
-        modified[tag] = _modified;
+        modifiedMap[tag] = modified;
       }
     }
   }
-  return modified;
+  return modifiedMap;
 }

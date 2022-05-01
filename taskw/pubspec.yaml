@@ -11,6 +11,8 @@ executables:
   mesh: mesh
 
 dependencies:
+  args:
+  built_collection:
   collection:
   intl:
   petitparser:
@@ -22,7 +24,6 @@ dependencies:
   uuid:
 
 dev_dependencies:
-  args:
   coverage:
   lints:
   test:

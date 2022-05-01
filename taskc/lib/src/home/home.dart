@@ -37,9 +37,9 @@ class Home {
   }
 
   Future<Map> synchronize(String client) async {
-    var _payload = _data.payload();
+    var payload = _data.payload();
     var response = await _taskdClient(client).synchronize(
-      _payload,
+      payload,
     );
     _data.mergeSynchronizeResponse(response.payload);
     return response.header;

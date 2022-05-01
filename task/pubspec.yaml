@@ -10,6 +10,7 @@ environment:
   flutter: ^3.0.0
 
 dependencies:
+  built_collection:
   cupertino_icons:
   file_picker_writable:
   file_selector:

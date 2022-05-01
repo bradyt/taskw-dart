@@ -51,23 +51,23 @@ class NextCommand extends Command {
     var result = StringBuffer();
     var edge = '─' * (width - 4);
     for (var task in tasks) {
-      var _description = task.description;
-      if (_description.length > width - 4) {
-        _description = '${_description.substring(0, width - 7)}...';
+      var description = task.description;
+      if (description.length > width - 4) {
+        description = '${description.substring(0, width - 7)}...';
       }
       // var annotations = task.annotations?.length ?? 0;
-      var firstLine = _description.padRight(width - 4);
-      var _urgency = formatUrgency(task.urgency!);
+      var firstLine = description.padRight(width - 4);
+      var urgency = formatUrgency(task.urgency!);
       var left = '${task.id} ${age(task.entry)}'
               '${(task.due != null) ? ' d:${when(task.due!)}' : ''}'
               '${task.priority != null ? ' ${task.priority}' : ''}'
               '${(task.tags != null) ? ' ${task.tags}' : ''}'
           .trim();
-      if (left.length > width - _urgency.length - 4) {
-        left = '${left.substring(0, width - _urgency.length - 8).trim()}...';
+      if (left.length > width - urgency.length - 4) {
+        left = '${left.substring(0, width - urgency.length - 8).trim()}...';
       }
       var secondLine =
-          '$left '.padRight(width - _urgency.length - 4) + _urgency;
+          '$left '.padRight(width - urgency.length - 4) + urgency;
 
       result.write(
         '''

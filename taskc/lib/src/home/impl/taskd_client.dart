@@ -72,7 +72,7 @@ class TaskdClient {
       onBadCertificate: _onBadCertificate,
     );
 
-    var _message = message(
+    var messageString = message(
       type: type,
       client: client,
       credentials: taskrc?.credentials,
@@ -81,7 +81,7 @@ class TaskdClient {
 
     progressController.add(TaskserverProgress.sending);
 
-    secureSocket.add(Codec.encode(_message));
+    secureSocket.add(Codec.encode(messageString));
 
     progressController.add(TaskserverProgress.waiting);
 
