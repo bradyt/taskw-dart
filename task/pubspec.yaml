@@ -33,6 +33,9 @@ dependencies:
   url_launcher:
   uuid:
 
+dependency_overrides:
+  win32: '>2.3.1'
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
