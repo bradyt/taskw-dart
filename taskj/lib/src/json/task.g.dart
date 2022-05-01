@@ -175,7 +175,7 @@ class _$TaskSerializer implements StructuredSerializer<Task> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
@@ -185,19 +185,19 @@ class _$TaskSerializer implements StructuredSerializer<Task> {
           break;
         case 'status':
           result.status = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
         case 'uuid':
           result.uuid = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
         case 'entry':
           result.entry = serializers.deserialize(value,
-              specifiedType: const FullType(DateTime)) as DateTime;
+              specifiedType: const FullType(DateTime))! as DateTime;
           break;
         case 'description':
           result.description = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
         case 'start':
           result.start = serializers.deserialize(value,
@@ -333,7 +333,7 @@ class _$Task extends Task {
   final double? urgency;
 
   factory _$Task([void Function(TaskBuilder)? updates]) =>
-      (new TaskBuilder()..update(updates)).build();
+      (new TaskBuilder()..update(updates))._build();
 
   _$Task._(
       {this.id,
@@ -360,10 +360,10 @@ class _$Task extends Task {
       this.udas,
       this.urgency})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(status, 'Task', 'status');
-    BuiltValueNullFieldError.checkNotNull(uuid, 'Task', 'uuid');
-    BuiltValueNullFieldError.checkNotNull(entry, 'Task', 'entry');
-    BuiltValueNullFieldError.checkNotNull(description, 'Task', 'description');
+    BuiltValueNullFieldError.checkNotNull(status, r'Task', 'status');
+    BuiltValueNullFieldError.checkNotNull(uuid, r'Task', 'uuid');
+    BuiltValueNullFieldError.checkNotNull(entry, r'Task', 'entry');
+    BuiltValueNullFieldError.checkNotNull(description, r'Task', 'description');
   }
 
   @override
@@ -446,7 +446,7 @@ class _$Task extends Task {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('Task')
+    return (newBuiltValueToStringHelper(r'Task')
           ..add('id', id)
           ..add('status', status)
           ..add('uuid', uuid)
@@ -617,19 +617,22 @@ class TaskBuilder implements Builder<Task, TaskBuilder> {
   }
 
   @override
-  _$Task build() {
+  Task build() => _build();
+
+  _$Task _build() {
     _$Task _$result;
     try {
       _$result = _$v ??
           new _$Task._(
               id: id,
               status: BuiltValueNullFieldError.checkNotNull(
-                  status, 'Task', 'status'),
-              uuid: BuiltValueNullFieldError.checkNotNull(uuid, 'Task', 'uuid'),
-              entry:
-                  BuiltValueNullFieldError.checkNotNull(entry, 'Task', 'entry'),
+                  status, r'Task', 'status'),
+              uuid:
+                  BuiltValueNullFieldError.checkNotNull(uuid, r'Task', 'uuid'),
+              entry: BuiltValueNullFieldError.checkNotNull(
+                  entry, r'Task', 'entry'),
               description: BuiltValueNullFieldError.checkNotNull(
-                  description, 'Task', 'description'),
+                  description, r'Task', 'description'),
               start: start,
               end: end,
               due: due,
@@ -659,7 +662,7 @@ class TaskBuilder implements Builder<Task, TaskBuilder> {
         _annotations?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'Task', _$failedField, e.toString());
+            r'Task', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -668,4 +671,4 @@ class TaskBuilder implements Builder<Task, TaskBuilder> {
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,no_leading_underscores_for_local_identifiers,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new,unnecessary_lambdas
