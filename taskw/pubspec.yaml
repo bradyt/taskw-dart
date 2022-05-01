@@ -24,5 +24,6 @@ dependencies:
 dev_dependencies:
   args:
   coverage:
+  lints:
   test:
   test_cov:

@@ -19,6 +19,7 @@ dev_dependencies:
   build_runner:
   built_value_generator:
   coverage:
+  lints:
   remove_from_coverage:
   taskc:
     path: ../taskc

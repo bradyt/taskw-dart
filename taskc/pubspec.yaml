@@ -23,6 +23,7 @@ dev_dependencies:
   built_value_generator:
   coverage:
   io:
+  lints:
   taskj:
     path: ../taskj
   taskw:
