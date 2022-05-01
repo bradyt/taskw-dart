@@ -137,9 +137,11 @@ packages:
   file_picker_writable:
     dependency: "direct main"
     description:
-      name: file_picker_writable
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: "fix-build-with-flutter-3.0"
+      resolved-ref: "636b6aef10b610033c74f8afdc6c444ed56097f8"
+      url: "https://github.com/bradyt/file_picker_writable.git"
+    source: git
     version: "2.0.1"
   file_selector:
     dependency: "direct main"
