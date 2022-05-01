@@ -1,3 +1,7 @@
+# 0.2.7
+
+- Allow line breaks in description
+
 # 0.2.6
 
 - Breaking change: tag editing UI buttons limited to tags from pending tasks

@@ -11,13 +11,6 @@ void validateTaskDescription(String description) {
       description,
       description.length - 1,
     );
-  } else if (description.contains('\n')) {
-    throw FormatException(
-      'Taskwarrior documentation on JSON format indicates your task '
-      'description should not contain newline characters.',
-      description,
-      description.indexOf('\n'),
-    );
   }
 }
 
