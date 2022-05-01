@@ -23,6 +23,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: echo '/usr/lib/dart/bin' >> $GITHUB_PATH
+    - run: echo '/root/.pub-cache/bin' >> $GITHUB_PATH
 
     - run: taskd status
     - run: task --version
@@ -31,4 +32,6 @@ jobs:
     - run: dart --disable-analytics
 
     - run: dart pub get --offline
-    - run: dart test
+    - run: dart run coverage:test_with_coverage
+    - run: genhtml -o coverage coverage/lcov.info
+    - run: dlcov -c 50.2
