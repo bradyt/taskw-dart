@@ -57,7 +57,7 @@ class AnnotationsRouteState extends State<AnnotationsRoute> {
             elevation: 0,
             child: ListTile(
               title: SelectableLinkify(
-                onOpen: (link) => launch(link.url),
+                onOpen: (link) => launchUrl(Uri.parse(link.url)),
                 text: '$entry -- $description',
                 style: GoogleFonts.firaMono(),
                 options: const LinkifyOptions(humanize: false),
