@@ -31,6 +31,8 @@ RUN curl -O https://taskwarrior.org/download/task-2.6.2.tar.gz \
     && cd .. \
     && rm -r task-2.6.2
 
+RUN apt-get install lcov -y
+
 ADD taskc/pubspec.yaml taskc/pubspec.yaml
 ADD taskj/pubspec.yaml taskj/pubspec.yaml
 ADD taskw/pubspec.yaml taskw/pubspec.yaml
@@ -39,5 +41,4 @@ RUN dart pub get -C taskc
 RUN dart pub get -C taskj
 RUN dart pub get -C taskw
 
-RUN dart pub global activate test_cov
 RUN dart pub global activate dlcov

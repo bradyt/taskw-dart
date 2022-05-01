@@ -24,22 +24,18 @@ jobs:
 
     - run: dart pub get --offline
       working-directory: taskj
-    - run: dart test
+    - run: dart run coverage:test_with_coverage
       working-directory: taskj
-    - run: dlcov gen-refs
-      working-directory: taskj
-    - run: test_cov
+    - run: genhtml -o coverage coverage/lcov.info
       working-directory: taskj
     - run: dlcov -c 100
       working-directory: taskj
 
     - run: dart pub get --offline
       working-directory: taskw
-    - run: dart test
+    - run: dart run coverage:test_with_coverage
       working-directory: taskw
-    - run: dlcov gen-refs
+    - run: genhtml -o coverage coverage/lcov.info
       working-directory: taskw
-    - run: test_cov
-      working-directory: taskw
-    - run: dlcov -c 87.3
+    - run: dlcov -c 86.2
       working-directory: taskw
