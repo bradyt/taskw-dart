@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:test/test.dart';
 
-import 'package:built_collection/built_collection.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:taskj/json.dart';
@@ -43,8 +42,6 @@ void main() {
               ..uuid = const Uuid().v1()
               ..entry = DateTime.now().toUtc()
               ..description = description
-              ..tags = ListBuilder(const [])
-              ..annotations = ListBuilder(const [])
               ..udas = json.encode(const {}),
           ),
         );
