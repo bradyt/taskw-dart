@@ -4,7 +4,5 @@ class TaskrcException implements Exception {
   String message;
 
   @override
-  String toString() {
-    return message;
-  }
+  String toString() => message;
 }
