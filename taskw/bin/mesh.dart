@@ -15,7 +15,8 @@ Future<int> main(List<String> args) async {
     'CLI utility to develop taskw-dart project.',
   )
     ..addCommand(NextCommand())
-    ..addCommand(StatisticsCommand());
+    ..addCommand(StatisticsCommand())
+    ..addCommand(ApiCommand());
   await runner.run(args);
 
   return 0;
@@ -118,6 +119,41 @@ class StatisticsCommand extends Command {
     stdout
       ..write('Statistics: ')
       ..writeln(const JsonEncoder.withIndent('  ').convert(stats));
+    return 0;
+  }
+}
+
+class ApiCommand extends Command {
+  @override
+  String name = 'api';
+
+  @override
+  String description =
+      'Send sync request with empty payload to your Taskserver';
+
+  @override
+  List<String> aliases = [
+    for (var i = 1; i < 'api'.length; i++) 'api'.substring(0, i),
+  ];
+
+  @override
+  String category = 'taskd client';
+
+  @override
+  Future<int> run() async {
+    var homePath = Platform.environment['HOME']!;
+    var taskrc = parseTaskrc(await File('$homePath/.taskrc').readAsString())
+      ..updateAll((_, value) => value.replaceAll('~', homePath));
+    var taskdClient = home_impl.TaskdClient(
+      taskrc: Taskrc.fromMap(taskrc),
+    );
+    taskdClient.progress.listen((event) {
+      stdout.writeln(event);
+    });
+    var response = await taskdClient.request(type: 'sync', payload: '');
+    stdout
+      ..write('Response.header: ')
+      ..writeln(response.header);
     return 0;
   }
 }
