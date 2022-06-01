@@ -35,10 +35,6 @@ dependencies:
   uuid:
 
 dependency_overrides:
-  file_picker_writable:
-    git:
-      url: https://github.com/bradyt/file_picker_writable.git
-      ref: fix-build-with-flutter-3.0
   win32: '>2.3.1'
 
 dev_dependencies:
