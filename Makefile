@@ -31,8 +31,9 @@ docs: get
 	cd taskj && dart doc .
 
 format:
-	dart format taskc --fix --output none --set-exit-if-changed --summary none
-	dart format taskw --fix --output none --set-exit-if-changed --summary none
+	dart format --fix --output none --set-exit-if-changed --summary none taskc
+	dart format --fix --output none --set-exit-if-changed --summary none `find taskj -name '*.dart' ! -name '*.g.dart'`
+	dart format --fix --output none --set-exit-if-changed --summary none taskw
 
 install:
 	dart pub global activate -spath taskc
