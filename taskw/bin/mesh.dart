@@ -66,8 +66,7 @@ class NextCommand extends Command {
       if (left.length > width - urgency.length - 4) {
         left = '${left.substring(0, width - urgency.length - 8).trim()}...';
       }
-      var secondLine =
-          '$left '.padRight(width - urgency.length - 4) + urgency;
+      var secondLine = '$left '.padRight(width - urgency.length - 4) + urgency;
 
       result.write(
         '''
