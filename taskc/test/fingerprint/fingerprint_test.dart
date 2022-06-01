@@ -14,10 +14,10 @@ void main() {
     var taskddata = normalize(absolute('../fixture/var/taskd'));
 
     var certs = {
-      'ca.cert.pem': '5af6be490c85794f5ea6789ac9348107224ea9ab',
-      'client.cert.pem': '925132d002e0633891e0911bf4588255cc6a035c',
-      'server.cert.pem': 'c9229d1b818f063fdf510c6db665193eb18ad9e0',
-      'pki/first_last.cert.pem': '194ef6dd023a5aa7ccdc23ec709aedd1ae7af16b',
+      'api.cert.pem': 'd429c4f9a62fd48caa84a35fc41838241460ec26',
+      'ca.cert.pem': 'dc7098b831589a958167f433fa30dc2c83e0ca81',
+      'pki/first_last.cert.pem': 'f9767156871e46e4a0f9edab09ef02cfc142ea98',
+      'server.cert.pem': '97d2a2acb7dbfd8f0b71115612a5e93e7eabb8d2',
     };
 
     for (var cert in certs.entries) {
