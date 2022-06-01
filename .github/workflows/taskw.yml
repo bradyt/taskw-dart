@@ -37,5 +37,5 @@ jobs:
       working-directory: taskw
     - run: genhtml -o coverage coverage/lcov.info
       working-directory: taskw
-    - run: dlcov -c 86.2
+    - run: dlcov -c 86.1
       working-directory: taskw
