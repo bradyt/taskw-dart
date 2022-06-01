@@ -18,7 +18,7 @@ void main() {
     );
     expect(
       () => validateTaskDescription('hello\nworld'),
-      throwsException,
+      returnsNormally,
     );
     expect(
       () => validateTaskProject(r'foo\'),
