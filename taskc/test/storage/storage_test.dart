@@ -83,7 +83,14 @@ void main() {
           ..description = 'foo'
           ..entry = now
           ..modified = now
-          ..tags = ListBuilder(const ['qux']),
+          ..tags = ListBuilder(const ['qux'])
+          ..annotations = ListBuilder([
+            Annotation(
+              (b) => b
+                ..entry = now
+                ..description = 'some annotation',
+            ),
+          ]),
       ),
       Task(
         (b) => b

@@ -93,7 +93,6 @@ class Data {
 
           var keyOrder = [
             'id',
-            'annotations',
             'depends',
             'description',
             'due',
@@ -109,10 +108,11 @@ class Data {
             'scheduled',
             'start',
             'status',
-            'tags',
             'until',
             'uuid',
             'wait',
+            'annotations',
+            'tags',
             'urgency',
           ].asMap().map((key, value) => MapEntry(value, key));
 

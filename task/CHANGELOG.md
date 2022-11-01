@@ -1,3 +1,7 @@
+# 0.2.8
+
+- JSON export puts attributes and tags next to last, to match CLI task
+
 # 0.2.7
 
 - Allow line breaks in description
