@@ -88,7 +88,7 @@ void main() {
       Task(
         (b) => b
           ..uuid = const Uuid().v1()
-          ..status = 'waiting'
+          ..status = 'pending'
           ..description = 'bar'
           ..entry = now
           ..modified = now
